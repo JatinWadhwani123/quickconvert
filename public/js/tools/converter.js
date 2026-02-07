@@ -1,23 +1,53 @@
-const form = document.getElementById("convertForm");
-const fileInput = document.getElementById("fileInput");
-const toggle = document.getElementById("modeToggle");
+// =========================
+// DOM references
+// =========================
 
-form.addEventListener("submit", async (e) => {
+const convertFormEl = document.getElementById("convertForm");
+const fileInputEl = document.getElementById("fileInput");
+
+const modeToggleEl = document.getElementById("modeToggle");
+const modeInputEl = document.getElementById("modeInput");
+const modeLabelEl = document.getElementById("modeLabel");
+
+const loaderEl = document.getElementById("loader");
+const toastEl = document.getElementById("toast");
+
+const errorModalEl = document.getElementById("errorModal");
+const errorTextEl = document.getElementById("errorText");
+const closeErrorEl = document.getElementById("closeError");
+
+// =========================
+// Toggle conversion mode
+// =========================
+
+modeToggleEl.addEventListener("change", () => {
+
+  if (modeToggleEl.checked) {
+    modeInputEl.value = "pdf2img";
+    modeLabelEl.textContent = "PDF → Image";
+  } else {
+    modeInputEl.value = "img2pdf";
+    modeLabelEl.textContent = "Image → PDF";
+  }
+
+});
+
+// =========================
+// Submit handler
+// =========================
+
+convertFormEl.addEventListener("submit", async (e) => {
 
   e.preventDefault();
 
-  if (!fileInput.files.length) {
-    alert("Select a file first");
+  if (!fileInputEl.files.length) {
+    showError("Please select a file first.");
     return;
   }
 
-  const formData = new FormData();
+  const formData = new FormData(convertFormEl);
 
-  formData.append("file", fileInput.files[0]);
-
-  // toggle decides mode
-  const mode = toggle.checked ? "pdf2img" : "img2pdf";
-  formData.append("mode", mode);
+  loaderEl.classList.remove("hidden");
 
   try {
 
@@ -31,22 +61,50 @@ form.addEventListener("submit", async (e) => {
     const blob = await res.blob();
 
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
 
+    const a = document.createElement("a");
     a.href = url;
     a.download = "converted-file";
-
     document.body.appendChild(a);
     a.click();
-
     a.remove();
-    window.URL.revokeObjectURL(url);
+
+    showToast();
 
   } catch (err) {
 
     console.error(err);
-    alert("Conversion failed");
+    showError("Conversion failed. Try again.");
+
+  } finally {
+
+    loaderEl.classList.add("hidden");
 
   }
 
+});
+
+// =========================
+// UI helpers
+// =========================
+
+function showToast() {
+
+  toastEl.classList.remove("hidden");
+
+  setTimeout(() => {
+    toastEl.classList.add("hidden");
+  }, 3000);
+
+}
+
+function showError(msg) {
+
+  errorTextEl.textContent = msg;
+  errorModalEl.classList.remove("hidden");
+
+}
+
+closeErrorEl.addEventListener("click", () => {
+  errorModalEl.classList.add("hidden");
 });
