@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>PDF Merger — QuickConvert</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+
+<!-- NAV -->
+
+<header class="navbar">
+
+<div class="logo">⚡ QuickConvert</div>
+
+<nav class="tool-tabs">
+
+<a href="index.html" class="tab">Dashboard</a>
+<a href="converter.html" class="tab">Converter</a>
+<a href="compressor.html" class="tab">Compressor</a>
+<a href="merger.html" class="tab active">Merger</a>
+
+</nav>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<h1>PDF Merger</h1>
+
+<p>
+Combine multiple PDF files into one document —
+fast, secure, and browser-based.
+</p>
+
+
+<form id="mergeForm" action="/merge" method="post" enctype="multipart/form-data">
+
+<!-- Drop Area -->
+
+<label class="upload-box" id="dropArea">
+
+<span id="fileText">
+Drag & drop PDFs here<br>
+or click to upload
+</span>
+
+<input type="file" id="fileInput" name="files" multiple accept=".pdf">
+
+</label>
+<div id="fileList" class="file-list"></div>
+
+
+
+<!-- Button -->
+
+<button type="submit" id="mergeBtn" class="primary-btn">
+Merge PDFs
+</button>
+
+</form>
+
+
+<!-- Progress -->
+
+<div id="progressContainer" class="progress hidden">
+<div id="progressBar"></div>
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+<div class="footer-brand">
+⚡ QuickConvert — Fast & Secure File Tools
+</div>
+
+<div class="footer-info">
+Files are processed temporarily and never stored.
+</div>
+
+<div class="footer-copy">
+© 2026 QuickConvert
+</div>
+
+</footer>
+
+<!-- Error popup -->
+
+<div id="errorModal" class="modal hidden">
+  <div class="modal-content">
+    <span id="closeError" class="close">×</span>
+    <p id="errorText"></p>
+  </div>
+</div>
+<div id="toast" class="toast">Merge complete ✅</div>
+
+
+
+<script src="../js/core/ui.js"></script>
+<script src="../js/core/toast.js"></script>
+<script src="../js/tools/merger.js"></script>
+
+</body>
+</html>

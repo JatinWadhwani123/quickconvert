@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Image Compressor | QuickConvert</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+  <div class="logo">⚡ QuickConvert</div>
+
+  <nav class="tool-tabs">
+
+    <a href="index.html" class="tab">Converter</a>
+    <a href="compressor.html" class="tab active">Compressor</a>
+
+
+  </nav>
+
+</header>
+
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<h1>Image Compressor</h1>
+
+<p class="seo-text">
+Reduce image size instantly while keeping quality.
+Fast, secure, browser-based compression.
+</p>
+
+<form id="compressForm" action="/compress" method="post" enctype="multipart/form-data">
+
+<label class="upload-box" id="dropArea">
+
+<span id="fileText">
+Drag & drop image here<br>
+or click to upload
+</span>
+
+<input type="file" id="fileInput" name="file" required>
+
+</label>
+
+<button id="compressBtn" class="primary-btn">
+Compress Image
+</button>
+
+<div id="progressContainer" class="progress hidden">
+<div id="progressBar"></div>
+</div>
+
+</form>
+
+<div id="loader" class="loader hidden"></div>
+
+<div id="toast" class="toast hidden">
+✅ Compression complete
+</div>
+
+</section>
+
+<!-- FEATURES -->
+
+<section class="features">
+
+<div class="feature">⚡ Fast compression</div>
+<div class="feature">🔒 Secure processing</div>
+<div class="feature">📱 Mobile friendly</div>
+
+</section>
+
+<!-- INFO -->
+
+<section class="info">
+
+<h3>Why compress images?</h3>
+
+<p>
+QuickConvert reduces image size instantly while maintaining visual quality.
+Perfect for faster uploads, sharing, and storage optimization.
+</p>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+<div class="footer-brand">
+⚡ QuickConvert — Fast & Secure File Tools
+</div>
+
+<div class="footer-info">
+Your files are processed securely and never stored.
+</div>
+
+<div class="footer-links">
+<a href="index.html">Image ↔ PDF Converter</a>
+</div>
+
+<div class="footer-copy">
+© 2026 QuickConvert
+</div>
+
+</footer>
+
+<!-- JS UX LOGIC -->
+
+<script src="../js/core/app.js"></script>
+<script src="../js/tools/compressor.js"></script>
+
+
+
+
+
+</body>
+</html>

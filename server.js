@@ -3,6 +3,14 @@ const multer = require("multer");
 const { PDFDocument } = require("pdf-lib");
 const fs = require("fs");
 const os = require("os");
+const sharp = require("sharp");
+const CloudConvert = require("cloudconvert");
+
+const cloudConvert = new CloudConvert(
+  process.env.CLOUDCONVERT_API_KEY
+);
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -108,6 +116,87 @@ function cleanup(path) {
     fs.unlinkSync(path);
   } catch {}
 }
+
+// ===============================
+// IMAGE COMPRESSOR
+// ===============================
+
+app.post("/compress", upload.single("file"), async (req, res) => {
+
+  if (!req.file) return res.send("No file uploaded");
+  if (!req.file.mimetype.startsWith("image/")) {
+  return res.status(400).send("Only images allowed");
+}
+
+
+  const filePath = req.file.path;
+
+  try {
+
+    const original = req.file.originalname.split(".")[0];
+    const output = `uploads/${original}-compressed.jpg`;
+
+    await sharp(filePath)
+      .jpeg({ quality: 60 }) // adjust compression level
+      .toFile(output);
+
+    res.download(output, `${original}-compressed.jpg`, () => {
+      cleanup(filePath);
+      cleanup(output);
+    });
+
+  } catch (err) {
+
+    console.error("Compression error:", err);
+    cleanup(filePath);
+
+    res.send("Compression failed");
+
+  }
+
+});
+app.post("/merge", upload.array("file"), async (req, res) => {
+
+  if (!req.files || req.files.length < 2) {
+    return res.status(400).json({ error: "Upload at least 2 PDFs" });
+  }
+
+  try {
+
+    const mergedPdf = await PDFDocument.create();
+
+    for (const file of req.files) {
+
+      const bytes = fs.readFileSync(file.path);
+      const pdf = await PDFDocument.load(bytes);
+
+      const pages = await mergedPdf.copyPages(
+        pdf,
+        pdf.getPageIndices()
+      );
+
+      pages.forEach(p => mergedPdf.addPage(p));
+    }
+
+    const mergedBytes = await mergedPdf.save();
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=merged.pdf"
+    );
+
+    res.send(Buffer.from(mergedBytes));
+
+  } catch (err) {
+
+    console.error(err);
+    res.status(500).json({ error: "Merge failed" });
+
+  }
+
+});
+
+
 
 
 // ===============================

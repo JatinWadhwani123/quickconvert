@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Free Image ↔ PDF Converter | QuickConvert</title>
+
+<meta name="description"
+content="Convert images to PDF or PDF to image instantly. Free, secure, browser-based converter with drag & drop support.">
+
+<meta name="keywords"
+content="image to pdf converter, pdf to image converter, free pdf tool, online converter">
+
+<meta name="author" content="QuickConvert">
+
+<link rel="stylesheet" href="../css/style.css">
+
+
+</head>
+
+<body>
+
+<!-- Header -->
+
+<header class="navbar">
+
+  <div class="logo">⚡ QuickConvert</div>
+
+  <nav class="tool-tabs">
+
+    <a href="index.html" class="tab active">Converter</a>
+    <a href="compressor.html" class="tab">Compressor</a>
+
+
+  </nav>
+
+</header>
+
+
+
+<!-- Hero / Main Tool -->
+
+<section class="hero">
+
+<h1>Free Image ↔ PDF Converter</h1>
+
+<p class="seo-text">
+Convert JPG, PNG, or PDF files instantly using our secure online converter.
+No uploads stored. Fast drag-and-drop conversion.
+</p>
+
+<form id="convertForm" action="/convert" method="POST" enctype="multipart/form-data">
+
+  <input type="file" name="file" required>
+  <input type="hidden" name="mode" id="mode" value="img2pdf">
+
+  <button type="submit">Convert File</button>
+
+</form>
+
+<!-- Toggle -->
+
+<div class="toggle-wrapper">
+
+  <span id="modeLabel">Image → PDF</span>
+
+  <label class="switch">
+    <input type="checkbox" id="modeToggle">
+    <span class="slider"></span>
+  </label>
+
+</div>
+
+<input type="hidden" name="mode" id="modeInput" value="img2pdf">
+
+<!-- Upload -->
+
+<label class="upload-box" id="dropArea">
+
+  <span id="fileText">
+    Drag & drop file here<br>
+    or click to upload
+  </span>
+
+  <input type="file" id="fileInput" name="file" required>
+
+</label>
+
+<!-- Convert Button -->
+
+<button id="convertBtn" type="submit" class="primary-btn">
+  Convert File
+</button>
+
+<!-- Progress -->
+
+<div id="progressContainer" class="progress hidden">
+  <div id="progressBar"></div>
+</div>
+
+</form>
+
+<div id="loader" class="loader hidden"></div>
+
+</section>
+
+<!-- Features -->
+
+<section class="features">
+
+<div class="feature">⚡ Lightning fast conversion</div>
+<div class="feature">🔒 Secure file processing</div>
+<div class="feature">📱 Mobile friendly</div>
+
+</section>
+
+<!-- Info -->
+
+<section class="info">
+
+<h3>Why use our converter?</h3>
+
+<p>
+QuickConvert allows instant image ↔ PDF transformation directly in your browser.
+No software installation required. Files are processed securely and never stored.
+</p>
+
+</section>
+
+<!-- Footer -->
+
+<footer class="footer">
+
+<div class="footer-brand">
+⚡ QuickConvert — Fast & Secure File Conversion
+</div>
+
+<div class="footer-info">
+Your files are processed securely and never stored.
+</div>
+
+<div class="footer-links">
+<a href="#" onclick="openModal('privacy')">Privacy</a>
+<a href="#" onclick="openModal('terms')">Terms</a>
+<a href="#" onclick="openModal('contact')">Contact</a>
+</div>
+
+<div class="footer-copy">
+© 2026 QuickConvert. All rights reserved.
+</div>
+
+</footer>
+
+<!-- Info Modal -->
+
+<div id="modal" class="modal hidden">
+
+<div class="modal-content">
+
+<span id="closeModal" class="close">&times;</span>
+
+<div id="modalText"></div>
+
+</div>
+
+</div>
+
+<!-- Error Modal -->
+
+<div id="errorModal" class="modal hidden">
+
+<div class="modal-content">
+
+<span id="closeError" class="close">&times;</span>
+
+<h2>Invalid File</h2>
+<p id="errorText"></p>
+
+</div>
+
+</div>
+
+<!-- Success Toast -->
+
+<div id="toast" class="toast hidden">
+✅ File downloaded successfully
+</div>
+
+<script src="../js/core/app.js"></script>
+<script src="../js/tools/converter.js"></script>
+
+
+
+</body>
+</html>
