@@ -11,19 +11,13 @@
 <meta name="description"
 content="Convert images to PDF or PDF to image instantly. Free, secure, browser-based converter with drag & drop support.">
 
-<meta name="keywords"
-content="image to pdf converter, pdf to image converter, free pdf tool, online converter">
-
-<meta name="author" content="QuickConvert">
-
-<link rel="stylesheet" href="../css/style.css">
-
+<link rel="stylesheet" href="/css/style.css">
 
 </head>
 
 <body>
 
-<!-- Header -->
+<!-- ================= HEADER ================= -->
 
 <header class="navbar">
 
@@ -32,16 +26,13 @@ content="image to pdf converter, pdf to image converter, free pdf tool, online c
   <nav class="tool-tabs">
 
     <a href="/" class="tab active">Converter</a>
-    <a href="/compressor.html" class="tab">Compressor</a>
-
+    <a href="/compressor" class="tab">Compressor</a>
 
   </nav>
 
 </header>
 
-
-
-<!-- Hero / Main Tool -->
+<!-- ================= MAIN TOOL ================= -->
 
 <section class="hero">
 
@@ -52,54 +43,50 @@ Convert JPG, PNG, or PDF files instantly using our secure online converter.
 No uploads stored. Fast drag-and-drop conversion.
 </p>
 
-<form id="convertForm" action="/convert" method="POST" enctype="multipart/form-data">
+<!-- ===== SINGLE CLEAN FORM ===== -->
 
-  <input type="file" name="file" required>
-  <input type="hidden" name="mode" id="mode" value="img2pdf">
+<form id="convertForm" enctype="multipart/form-data">
 
-  <button type="submit">Convert File</button>
+  <!-- hidden mode -->
+  <input type="hidden" name="mode" id="modeInput" value="img2pdf">
 
-</form>
+  <!-- upload box -->
 
-<!-- Toggle -->
+  <label class="upload-box" id="dropArea">
 
-<div class="toggle-wrapper">
+    <span id="fileText">
+      Drag & drop file here<br>
+      or click to upload
+    </span>
 
-  <span id="modeLabel">Image → PDF</span>
+    <input type="file" id="fileInput" name="file" required>
 
-  <label class="switch">
-    <input type="checkbox" id="modeToggle">
-    <span class="slider"></span>
   </label>
 
-</div>
+  <!-- toggle -->
 
-<input type="hidden" name="mode" id="modeInput" value="img2pdf">
+  <div class="toggle-wrapper">
 
-<!-- Upload -->
+    <span id="modeLabel">Image → PDF</span>
 
-<label class="upload-box" id="dropArea">
+    <label class="switch">
+      <input type="checkbox" id="modeToggle">
+      <span class="slider"></span>
+    </label>
 
-  <span id="fileText">
-    Drag & drop file here<br>
-    or click to upload
-  </span>
+  </div>
 
-  <input type="file" id="fileInput" name="file" required>
+  <!-- convert button -->
 
-</label>
+  <button type="submit" class="primary-btn">
+    Convert File
+  </button>
 
-<!-- Convert Button -->
+  <!-- progress bar -->
 
-<button id="convertBtn" type="submit" class="primary-btn">
-  Convert File
-</button>
-
-<!-- Progress -->
-
-<div id="progressContainer" class="progress hidden">
-  <div id="progressBar"></div>
-</div>
+  <div id="progressContainer" class="progress hidden">
+    <div id="progressBar"></div>
+  </div>
 
 </form>
 
@@ -107,7 +94,7 @@ No uploads stored. Fast drag-and-drop conversion.
 
 </section>
 
-<!-- Features -->
+<!-- ================= FEATURES ================= -->
 
 <section class="features">
 
@@ -117,7 +104,7 @@ No uploads stored. Fast drag-and-drop conversion.
 
 </section>
 
-<!-- Info -->
+<!-- ================= INFO ================= -->
 
 <section class="info">
 
@@ -130,7 +117,7 @@ No software installation required. Files are processed securely and never stored
 
 </section>
 
-<!-- Footer -->
+<!-- ================= FOOTER ================= -->
 
 <footer class="footer">
 
@@ -149,26 +136,23 @@ Your files are processed securely and never stored.
 </div>
 
 <div class="footer-copy">
-© 2026 QuickConvert. All rights reserved.
+© 2026 QuickConvert
 </div>
 
 </footer>
 
-<!-- Info Modal -->
+<!-- ================= MODALS ================= -->
 
 <div id="modal" class="modal hidden">
 
 <div class="modal-content">
 
 <span id="closeModal" class="close">&times;</span>
-
 <div id="modalText"></div>
 
 </div>
 
 </div>
-
-<!-- Error Modal -->
 
 <div id="errorModal" class="modal hidden">
 
@@ -183,16 +167,14 @@ Your files are processed securely and never stored.
 
 </div>
 
-<!-- Success Toast -->
-
 <div id="toast" class="toast hidden">
 ✅ File downloaded successfully
 </div>
 
-<script src="../js/core/app.js"></script>
-<script src="../js/tools/converter.js"></script>
+<!-- ================= SCRIPTS ================= -->
 
-
+<script src="/js/core/app.js"></script>
+<script src="/js/tools/converter.js"></script>
 
 </body>
 </html>
