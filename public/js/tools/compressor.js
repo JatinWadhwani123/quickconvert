@@ -1,97 +1,93 @@
-const dropArea = document.getElementById("dropArea");
-const fileInput = document.getElementById("fileInput");
-const fileText = document.getElementById("fileText");
+// ===============================
+// IMAGE COMPRESSOR — FRONTEND
+// ===============================
+
 const form = document.getElementById("compressForm");
-const btn = document.getElementById("compressBtn");
-const progress = document.getElementById("progressContainer");
-const bar = document.getElementById("progressBar");
-const toast = document.getElementById("toast");
+const fileInput = document.getElementById("fileInput");
 
+const errorModal = document.getElementById("errorModal");
+const errorText = document.getElementById("errorText");
+const closeError = document.getElementById("closeError");
 
-// =================
-// Drag UI
-// =================
+const loader = document.getElementById("loader");
 
-dropArea.addEventListener("dragover", e => {
-  e.preventDefault();
-  dropArea.classList.add("drag-active");
-});
+// Allowed image MIME types
+const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 
-dropArea.addEventListener("dragleave", () => {
-  dropArea.classList.remove("drag-active");
-});
+// ===============================
+// Popup helper
+// ===============================
 
-dropArea.addEventListener("drop", e => {
-  e.preventDefault();
-  dropArea.classList.remove("drag-active");
+function showError(msg) {
+  errorText.textContent = msg;
+  errorModal.classList.remove("hidden");
+}
 
-  fileInput.files = e.dataTransfer.files;
+closeError.onclick = () => {
+  errorModal.classList.add("hidden");
+};
 
-  if (fileInput.files.length)
-    fileText.textContent = fileInput.files[0].name;
-});
+// ===============================
+// Submit handler
+// ===============================
 
+form.addEventListener("submit", async (e) => {
 
-// =================
-// File preview
-// =================
-
-fileInput.addEventListener("change", () => {
+  e.preventDefault(); // 🚀 STOP browser redirect
 
   const file = fileInput.files[0];
 
-  if (!file) return;
+  if (!file) {
+    showError("Please upload an image.");
+    return;
+  }
 
-  if (!file.type.startsWith("image/")) {
-  showToast("Only images allowed!", "error");
-  return;
-}
+  // ❌ Block PDFs and other formats
+  if (!allowedTypes.includes(file.type)) {
+    showError("Only JPG, PNG, or WEBP images are allowed.");
+    return;
+  }
 
+  try {
 
-});
+    loader?.classList.remove("hidden");
 
+    const formData = new FormData();
+    formData.append("file", file);
 
+    const res = await fetch("/compress", {
+      method: "POST",
+      body: formData
+    });
 
-// =================
-// Submit UX
-// =================
+    if (!res.ok) {
+      throw new Error("Compression failed");
+    }
 
-form.addEventListener("submit", () => {
+    const blob = await res.blob();
 
-  btn.disabled = true;
-  btn.textContent = "Compressing...";
+    // ✅ Auto download
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
 
-  progress.classList.remove("hidden");
-  bar.style.width = "0%";
+    a.href = url;
+    a.download = "compressed-image.jpg";
 
-  let p = 0;
+    document.body.appendChild(a);
+    a.click();
 
-  const interval = setInterval(() => {
-    p += 10;
-    bar.style.width = p + "%";
+    a.remove();
+    window.URL.revokeObjectURL(url);
 
-    if (p >= 100)
-      clearInterval(interval);
+  } catch (err) {
 
-  }, 150);
+    console.error(err);
+    showError("Compression failed. Try again.");
 
-  setTimeout(() => {
+  } finally {
 
-    btn.textContent = "Downloaded ✓";
-    btn.style.background = "#4CAF50";
+    loader?.classList.add("hidden");
 
-    toast.classList.remove("hidden");
-
-    setTimeout(() => {
-
-      toast.classList.add("hidden");
-      btn.disabled = false;
-      btn.textContent = "Compress Image";
-      btn.style.background = "#00e0ff";
-      progress.classList.add("hidden");
-
-    }, 3000);
-
-  }, 2000);
+  }
 
 });
