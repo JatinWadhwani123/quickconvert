@@ -183,10 +183,14 @@ app.post("/compress", upload.single("file"), async (req, res) => {
   }
 
 });
-app.post("/merge", upload.array("file"), async (req, res) => {
+// ===============================
+// PDF MERGE ROUTE — FIXED
+// ===============================
+
+app.post("/merge", upload.array("files"), async (req, res) => {
 
   if (!req.files || req.files.length < 2) {
-    return res.status(400).json({ error: "Upload at least 2 PDFs" });
+    return res.status(400).send("Upload at least 2 PDFs");
   }
 
   try {
@@ -195,30 +199,38 @@ app.post("/merge", upload.array("file"), async (req, res) => {
 
     for (const file of req.files) {
 
-      const bytes = fs.readFileSync(file.path);
-      const pdf = await PDFDocument.load(bytes);
+      const pdfBytes = fs.readFileSync(file.path);
+      const pdf = await PDFDocument.load(pdfBytes);
 
       const pages = await mergedPdf.copyPages(
         pdf,
         pdf.getPageIndices()
       );
 
-      pages.forEach(p => mergedPdf.addPage(p));
+      pages.forEach(page => mergedPdf.addPage(page));
+
+      cleanup(file.path);
     }
 
     const mergedBytes = await mergedPdf.save();
 
+    res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=merged.pdf"
+      `attachment; filename="merged.pdf"`
     );
 
-    res.send(Buffer.from(mergedBytes));
+    res.end(Buffer.from(mergedBytes));
 
-  } catch (err) {
+  }
 
-    console.error(err);
-    res.status(500).json({ error: "Merge failed" });
+  catch (err) {
+
+    console.error("Merge error:", err);
+
+    req.files.forEach(f => cleanup(f.path));
+
+    res.status(500).send("Merge failed");
 
   }
 
