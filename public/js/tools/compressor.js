@@ -43,12 +43,10 @@ fileInput.addEventListener("change", () => {
   if (!file) return;
 
   if (!file.type.startsWith("image/")) {
+  showToast("Only images allowed!", "error");
+  return;
+}
 
-    alert("Only image files are supported in compressor.");
-    fileInput.value = "";
-    return;
-
-  }
 
 });
 
