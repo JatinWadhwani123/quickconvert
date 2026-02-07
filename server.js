@@ -22,6 +22,19 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/pages/index.html");
 });
 
+app.get("/converter.html", (req, res) => {
+  res.sendFile(__dirname + "/public/pages/converter.html");
+});
+
+app.get("/compressor.html", (req, res) => {
+  res.sendFile(__dirname + "/public/pages/compressor.html");
+});
+
+app.get("/merger.html", (req, res) => {
+  res.sendFile(__dirname + "/public/pages/merger.html");
+});
+
+
 
 // ===============================
 // CONVERSION ROUTE
