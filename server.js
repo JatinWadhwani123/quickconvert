@@ -37,12 +37,14 @@ app.get("/merger.html", (req, res) => {
 
 
 // ===============================
-// CONVERSION ROUTE
+// CONVERSION ROUTE — SAFE VERSION
 // ===============================
 
 app.post("/convert", upload.single("file"), async (req, res) => {
 
-  if (!req.file) return res.send("No file uploaded");
+  if (!req.file) {
+    return res.status(400).send("No file uploaded");
+  }
 
   const filePath = req.file.path;
   const type = req.body.mode;
@@ -62,11 +64,15 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
       if (req.file.mimetype === "image/jpeg") {
         image = await pdfDoc.embedJpg(bytes);
-      } else if (req.file.mimetype === "image/png") {
+      }
+
+      else if (req.file.mimetype === "image/png") {
         image = await pdfDoc.embedPng(bytes);
-      } else {
+      }
+
+      else {
         cleanup(filePath);
-        return res.send("Unsupported image format");
+        return res.status(400).send("Unsupported image format");
       }
 
       const page = pdfDoc.addPage([image.width, image.height]);
@@ -74,49 +80,55 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
       const pdfBytes = await pdfDoc.save();
 
-      const original = req.file.originalname.split(".")[0];
-      const filename = `${original}.pdf`;
+      cleanup(filePath);
 
+      res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
-        `attachment; filename="${filename}"`
+        `attachment; filename="converted.pdf"`
       );
 
-      res.send(Buffer.from(pdfBytes));
+      return res.send(Buffer.from(pdfBytes));
 
-      cleanup(filePath);
     }
 
 
     // ===============================
-    // PDF → IMAGE (disabled on Linux)
+    // PDF → IMAGE (placeholder)
     // ===============================
 
     else if (type === "pdf2img") {
 
-      if (os.platform() !== "win32") {
-        cleanup(filePath);
-        return res.send(
-          "PDF → Image conversion is not available on the hosted version yet."
-        );
-      }
-
       cleanup(filePath);
-      res.send("Feature coming soon.");
+
+      return res.status(501).send(
+        "PDF → Image conversion not enabled on server."
+      );
+
     }
 
+
+    // ===============================
+    // INVALID MODE
+    // ===============================
 
     else {
+
       cleanup(filePath);
-      res.send("Invalid conversion mode");
+
+      return res.status(400).send("Invalid conversion mode");
+
     }
 
-  } catch (err) {
+  }
+
+  catch (err) {
 
     console.error("Conversion error:", err);
 
     cleanup(filePath);
-    res.send("Conversion failed");
+
+    return res.status(500).send("Conversion failed");
 
   }
 

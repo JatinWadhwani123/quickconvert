@@ -56,15 +56,30 @@ convertFormEl.addEventListener("submit", async (e) => {
       body: formData
     });
 
-    if (!res.ok) throw new Error("Conversion failed");
+    const contentType = res.headers.get("content-type");
 
+    // 🚨 backend returned error text/html
+    if (!res.ok || contentType.includes("text")) {
+
+      const msg = await res.text();
+      throw new Error(msg);
+
+    }
+
+    // ✅ real file download
     const blob = await res.blob();
 
     const url = window.URL.createObjectURL(blob);
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "converted-file";
+
+    // detect file type
+    if (contentType.includes("pdf"))
+      a.download = "converted.pdf";
+    else
+      a.download = "converted.png";
+
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -74,7 +89,7 @@ convertFormEl.addEventListener("submit", async (e) => {
   } catch (err) {
 
     console.error(err);
-    showError("Conversion failed. Try again.");
+    showError(err.message || "Conversion failed");
 
   } finally {
 
@@ -83,6 +98,7 @@ convertFormEl.addEventListener("submit", async (e) => {
   }
 
 });
+
 
 // =========================
 // UI helpers
