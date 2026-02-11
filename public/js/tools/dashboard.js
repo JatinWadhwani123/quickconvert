@@ -1,62 +1,64 @@
+// ===============================
+// Dashboard tools data
+// ===============================
+
 const tools = [
 
   {
-    title: "📄 Image ↔ PDF",
+    icon: "📄",
+    title: "Image ↔ PDF",
     desc: "Convert images and PDFs instantly.",
-    link: "converter.html",
-    active: true
+    link: "/converter"
   },
 
   {
-    title: "🗜 Image Compressor",
-    desc: "Reduce file size while keeping quality.",
-    link: "compressor.html",
-    active: true
+    icon: "🗜",
+    title: "Image Compressor",
+    desc: "Reduce image size while keeping quality.",
+    link: "/compressor"
   },
 
   {
-  title: "📑 PDF Merger",
-  desc: "Combine PDFs easily.",
-  link: "merger.html",
-  active: true
-}
+    icon: "📑",
+    title: "PDF Merger",
+    desc: "Combine multiple PDFs into one.",
+    link: "/merger"
+  }
+
 ];
 
-const grid = document.getElementById("toolGrid");
+// ===============================
+// Render dashboard cards
+// ===============================
 
-tools.forEach(tool => {
-
-  const card = document.createElement(tool.active ? "a" : "div");
-
-  card.className = "tool-card";
-
-  if (!tool.active) card.classList.add("coming");
-
-  if (tool.active) card.href = tool.link;
-
-  card.innerHTML = `
-    <h2>${tool.title}</h2>
-    <p>${tool.desc}</p>
-    ${tool.active ? "" : "<span>Coming soon</span>"}
-  `;
-
-  grid.appendChild(card);
-
-});
 document.addEventListener("DOMContentLoaded", () => {
 
-  const cards = document.querySelectorAll(".tool-card");
+  const grid = document.getElementById("toolGrid");
 
-  cards.forEach((card, i) => {
+  tools.forEach((tool, index) => {
 
+    const card = document.createElement("a");
+
+    card.href = tool.link;
+    card.className = "tool-card";
+
+    card.innerHTML = `
+      <div class="tool-icon">${tool.icon}</div>
+      <h3>${tool.title}</h3>
+      <p>${tool.desc}</p>
+    `;
+
+    // animation
     card.style.opacity = 0;
-    card.style.transform = "translateY(20px)";
+    card.style.transform = "translateY(25px)";
 
     setTimeout(() => {
-      card.style.transition = "all 0.5s ease";
+      card.style.transition = "all 0.4s ease";
       card.style.opacity = 1;
       card.style.transform = "translateY(0)";
-    }, i * 120);
+    }, index * 120);
+
+    grid.appendChild(card);
 
   });
 
