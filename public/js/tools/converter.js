@@ -1,41 +1,43 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   // =========================
-  // DOM references (SAFE)
+  // DOM references
   // =========================
 
-  const convertFormEl = document.getElementById("convertForm");
-  const fileInputEl = document.getElementById("fileInput");
+  const convertForm = document.getElementById("convertForm");
+  const fileInput = document.getElementById("fileInput");
 
-  const loaderEl = document.getElementById("loader");
-  const toastEl = document.getElementById("toast");
+  const loader = document.getElementById("loader");
+  const toast = document.getElementById("toast");
 
-  const errorModalEl = document.getElementById("errorModal");
-  const errorTextEl = document.getElementById("errorText");
-  const closeErrorEl = document.getElementById("closeError");
-
-  // Force clean UI state on load
-
-  if (errorModalEl) errorModalEl.style.display = "none";
-  if (toastEl) toastEl.classList.add("hidden");
-  if (loaderEl) loaderEl.classList.add("hidden");
+  const errorModal = document.getElementById("errorModal");
+  const errorText = document.getElementById("errorText");
+  const closeBtn = document.getElementById("closeError");
 
   // =========================
-  // Submit handler
+  // CLEAN startup state
   // =========================
 
-  convertFormEl?.addEventListener("submit", async (e) => {
+  loader?.classList.add("hidden");
+  toast?.classList.add("hidden");
+  errorModal?.classList.remove("show");
+
+  // =========================
+  // Submit conversion
+  // =========================
+
+  convertForm?.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
-    if (!fileInputEl.files.length) {
+    if (!fileInput || fileInput.files.length === 0) {
       showError("Please select an image first.");
       return;
     }
 
-    const formData = new FormData(convertFormEl);
+    loader?.classList.remove("hidden");
 
-    loaderEl.classList.remove("hidden");
+    const formData = new FormData(convertForm);
 
     try {
 
@@ -44,14 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
         body: formData
       });
 
-      const contentType = res.headers.get("content-type") || "";
+      const type = res.headers.get("content-type") || "";
 
-      if (!res.ok || contentType.includes("text")) {
-        const msg = await res.text();
-        throw new Error(msg);
+      if (!res.ok || type.includes("text")) {
+        throw new Error(await res.text());
       }
 
-      // download file
+      // download PDF
 
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
@@ -70,14 +71,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     catch (err) {
 
-      console.error(err);
+      console.error("Conversion failed:", err);
       showError(err.message || "Conversion failed");
 
     }
 
     finally {
 
-      loaderEl.classList.add("hidden");
+      loader?.classList.add("hidden");
 
     }
 
@@ -89,37 +90,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showToast() {
 
-    if (!toastEl) return;
+    if (!toast) return;
 
-    toastEl.classList.remove("hidden");
+    toast.classList.remove("hidden");
 
     setTimeout(() => {
-      toastEl.classList.add("hidden");
+      toast.classList.add("hidden");
     }, 3000);
 
   }
 
-  function showError(msg) {
+  function showError(message) {
 
-    if (!errorModalEl || !errorTextEl) return;
+    if (!errorModal || !errorText) return;
 
-    errorTextEl.textContent = msg;
-    errorModalEl.style.display = "flex";
+    errorText.textContent = message;
+    errorModal.classList.add("show");
 
   }
 
-  // close modal
+  // =========================
+  // Modal closing
+  // =========================
 
-  closeErrorEl?.addEventListener("click", () => {
-    errorModalEl.style.display = "none";
+  closeBtn?.addEventListener("click", () => {
+    errorModal?.classList.remove("show");
   });
 
-  // click outside modal closes
+  // click outside modal closes it
 
-  errorModalEl?.addEventListener("click", (e) => {
-    if (e.target === errorModalEl) {
-      errorModalEl.style.display = "none";
+  errorModal?.addEventListener("click", (e) => {
+
+    if (e.target === errorModal) {
+      errorModal.classList.remove("show");
     }
+
   });
 
 });

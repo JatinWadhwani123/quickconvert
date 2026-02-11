@@ -220,33 +220,7 @@ body {
   font-size: 14px;
 }
 
-/* ===============================
-   MODAL
-=============================== */
 
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 400px;
-  width: 90%;
-}
-
-.close {
-  float: right;
-  cursor: pointer;
-  font-size: 20px;
-}
 
 /* ===============================
    LOADER + PROGRESS
@@ -334,4 +308,48 @@ body {
     grid-template-columns: 1fr;
   }
 
+}
+/* ===============================
+   MODAL
+=============================== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+
+  display: none; /* hidden by default */
+
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  color: black;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 10px;
+  top: 6px;
+
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.hidden {
+  display: none !important;
 }
