@@ -15,40 +15,39 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ MEMORY upload — Render safe
+// ✅ MEMORY upload — no temp files
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }
 });
 
-// static frontend files
+// static frontend
 app.use(express.static("public"));
 
 // ===============================
-// PAGE ROUTES (clean URLs)
+// PAGE ROUTES
 // ===============================
 
-app.get("/", (req, res) =>
+app.get("/", (_, res) =>
   res.sendFile(path.join(__dirname, "public/pages/index.html"))
 );
 
-app.get("/converter", (req, res) =>
+app.get("/converter", (_, res) =>
   res.sendFile(path.join(__dirname, "public/pages/converter.html"))
 );
 
-app.get("/compressor", (req, res) =>
+app.get("/compressor", (_, res) =>
   res.sendFile(path.join(__dirname, "public/pages/compressor.html"))
 );
 
-app.get("/merger", (req, res) =>
+app.get("/merger", (_, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merger.html"))
 );
 
 // backward compatibility
-
-app.get("/converter.html", (req, res) => res.redirect("/converter"));
-app.get("/compressor.html", (req, res) => res.redirect("/compressor"));
-app.get("/merger.html", (req, res) => res.redirect("/merger"));
+app.get("/converter.html", (_, res) => res.redirect("/converter"));
+app.get("/compressor.html", (_, res) => res.redirect("/compressor"));
+app.get("/merger.html", (_, res) => res.redirect("/merger"));
 
 // ===============================
 // IMAGE → PDF CONVERTER
@@ -56,40 +55,36 @@ app.get("/merger.html", (req, res) => res.redirect("/merger"));
 
 app.post("/convert", upload.single("file"), async (req, res) => {
 
-  if (!req.file)
-    return res.status(400).send("No file uploaded");
-
-  const filePath = req.file.path;
-
   try {
+
+    if (!req.file)
+      return res.status(400).send("No file uploaded");
 
     const allowed = ["image/jpeg", "image/png"];
 
-    if (!allowed.includes(req.file.mimetype)) {
-      cleanup(filePath);
+    if (!allowed.includes(req.file.mimetype))
       return res.status(400).send("Only JPG or PNG supported");
-    }
 
-    // 🔥 Normalize image using sharp
-    const normalizedBuffer = await sharp(filePath)
-      .rotate()
-      .jpeg({ quality: 95 })
-      .toBuffer();
+    const buffer = req.file.buffer;
+
+    // validate image buffer
+    await sharp(buffer).metadata();
 
     const pdfDoc = await PDFDocument.create();
 
-    const image = await pdfDoc.embedJpg(normalizedBuffer);
+    let image;
 
-    const page = pdfDoc.addPage([
-      image.width,
-      image.height
-    ]);
+    if (req.file.mimetype === "image/jpeg")
+      image = await pdfDoc.embedJpg(buffer);
+
+    if (req.file.mimetype === "image/png")
+      image = await pdfDoc.embedPng(buffer);
+
+    const page = pdfDoc.addPage([image.width, image.height]);
 
     page.drawImage(image, { x: 0, y: 0 });
 
     const pdfBytes = await pdfDoc.save();
-
-    cleanup(filePath);
 
     res.set({
       "Content-Type": "application/pdf",
@@ -103,22 +98,17 @@ app.post("/convert", upload.single("file"), async (req, res) => {
   catch (err) {
 
     console.error("🔥 Conversion crash:", err);
-
-    cleanup(filePath);
-
     res.status(500).send("Server conversion failed");
 
   }
 
 });
 
-
-
 // ===============================
 // IMAGE COMPRESSOR
 // ===============================
 
-app.post("/compress", upload.single("image"), async (req, res) => {
+app.post("/compress", upload.single("file"), async (req, res) => {
 
   try {
 
@@ -128,9 +118,7 @@ app.post("/compress", upload.single("image"), async (req, res) => {
     const allowed = ["image/jpeg", "image/png", "image/webp"];
 
     if (!allowed.includes(req.file.mimetype))
-      return res.status(400).send(
-        "Only JPG, PNG or WEBP supported"
-      );
+      return res.status(400).send("Only JPG, PNG or WEBP supported");
 
     const compressed = await sharp(req.file.buffer)
       .jpeg({ quality: 60 })
@@ -138,8 +126,7 @@ app.post("/compress", upload.single("image"), async (req, res) => {
 
     res.set({
       "Content-Type": "image/jpeg",
-      "Content-Disposition": "attachment; filename=compressed.jpg",
-      "Content-Length": compressed.length
+      "Content-Disposition": "attachment; filename=compressed.jpg"
     });
 
     res.end(compressed);
