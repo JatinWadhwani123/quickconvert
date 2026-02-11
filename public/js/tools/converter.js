@@ -1,12 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // DOM references
-  // =========================
-
   const form = document.getElementById("convertForm");
   const fileInput = document.getElementById("fileInput");
-
   const uploadArea = document.querySelector(".upload-area");
 
   const loader = document.getElementById("loader");
@@ -16,8 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const errorText = document.getElementById("errorText");
   const closeError = document.getElementById("closeError");
 
+  let selectedFile = null; // 🔥 real file storage
+
   // =========================
-  // Clean UI state
+  // UI reset
   // =========================
 
   loader?.classList.add("hidden");
@@ -25,10 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
   errorModal?.classList.remove("show");
 
   // =========================
-  // File preview helper
+  // Show filename
   // =========================
 
-  function showFileName(file) {
+  function showFile(file) {
+
+    selectedFile = file;
 
     uploadArea.innerHTML = `
       <strong>📄 ${file.name}</strong>
@@ -41,84 +40,64 @@ document.addEventListener("DOMContentLoaded", () => {
   // Click upload
   // =========================
 
-  uploadArea.addEventListener("click", () => {
-    fileInput.click();
-  });
+  uploadArea.addEventListener("click", () => fileInput.click());
 
   fileInput.addEventListener("change", () => {
-
-    if (fileInput.files.length) {
-      showFileName(fileInput.files[0]);
-    }
-
+    if (fileInput.files.length) showFile(fileInput.files[0]);
   });
 
   // =========================
-  // Drag & drop support
+  // Drag & drop
   // =========================
 
-  ["dragenter", "dragover"].forEach(event => {
-
-    uploadArea.addEventListener(event, e => {
-
-      e.preventDefault();
-      uploadArea.style.background = "#f3f3f3";
-
-    });
-
+  uploadArea.addEventListener("dragover", e => {
+    e.preventDefault();
+    uploadArea.classList.add("drag-active");
   });
 
-  ["dragleave", "drop"].forEach(event => {
-
-    uploadArea.addEventListener(event, e => {
-
-      e.preventDefault();
-      uploadArea.style.background = "";
-
-    });
-
+  uploadArea.addEventListener("dragleave", () => {
+    uploadArea.classList.remove("drag-active");
   });
 
   uploadArea.addEventListener("drop", e => {
 
-    const files = e.dataTransfer.files;
+    e.preventDefault();
+    uploadArea.classList.remove("drag-active");
 
-    if (files.length) {
+    const file = e.dataTransfer.files[0];
 
-      fileInput.files = files;
-      showFileName(files[0]);
-
-    }
+    if (file) showFile(file);
 
   });
 
   // =========================
-  // Submit handler
+  // Submit
   // =========================
 
   form.addEventListener("submit", async e => {
 
     e.preventDefault();
 
-    if (!fileInput.files.length) {
+    if (!selectedFile) {
       showError("Please select an image first.");
       return;
     }
 
-    const formData = new FormData(form);
-
     loader.classList.remove("hidden");
 
     try {
+
+      const formData = new FormData();
+      formData.append("file", selectedFile); // 🔥 FIX
 
       const res = await fetch("/convert", {
         method: "POST",
         body: formData
       });
 
-      const contentType = res.headers.get("content-type") || "";
+      const type = res.headers.get("content-type") || "";
 
-      if (!res.ok || contentType.includes("text")) {
+      if (!res.ok || type.includes("text")) {
         throw new Error(await res.text());
       }
 
@@ -160,9 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     toast.classList.remove("hidden");
 
-    setTimeout(() => {
-      toast.classList.add("hidden");
-    }, 3000);
+    setTimeout(() => toast.classList.add("hidden"), 3000);
 
   }
 
@@ -173,14 +150,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  closeError.addEventListener("click", () => {
-    errorModal.classList.remove("show");
-  });
+  closeError.addEventListener("click", () =>
+    errorModal.classList.remove("show")
+  );
 
   errorModal.addEventListener("click", e => {
-    if (e.target === errorModal) {
+    if (e.target === errorModal)
       errorModal.classList.remove("show");
-    }
   });
 
 });
