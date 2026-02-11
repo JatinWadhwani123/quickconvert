@@ -14,8 +14,6 @@
 
 <body>
 
-<!-- ================= HEADER ================= -->
-
 <header class="navbar">
 
   <div class="logo">⚡ QuickConvert</div>
@@ -23,12 +21,9 @@
   <nav class="tool-tabs">
     <a href="/pages/converter.html" class="tab">Converter</a>
     <a href="/pages/compressor.html" class="tab active">Compressor</a>
-
   </nav>
 
 </header>
-
-<!-- ================= HERO ================= -->
 
 <section class="hero">
 
@@ -39,8 +34,6 @@ Reduce image size instantly while keeping quality.
 Fast, secure, browser-based compression.
 </p>
 
-<!-- FORM (JS handles submit — no redirect) -->
-
 <form id="compressForm">
 
 <label class="upload-box" id="dropArea">
@@ -50,25 +43,17 @@ Drag & drop image here<br>
 or click to upload
 </span>
 
-<input type="file" id="fileInput" name="file" hidden required>
+<input type="file" id="fileInput" accept="image/*" hidden required>
 
 </label>
 
-<button id="compressBtn" type="submit" class="primary-btn">
+<button type="submit" class="primary-btn">
 Compress Image
 </button>
 
-<div id="progressContainer" class="progress hidden">
-<div id="progressBar"></div>
-</div>
-
 </form>
 
-<!-- Loader -->
-
 <div id="loader" class="loader hidden"></div>
-
-<!-- Toast -->
 
 <div id="toast" class="toast hidden">
 ✅ Compression complete
@@ -76,67 +61,25 @@ Compress Image
 
 </section>
 
-<!-- ================= FEATURES ================= -->
-
 <section class="features">
-
 <div class="feature">⚡ Fast compression</div>
 <div class="feature">🔒 Secure processing</div>
 <div class="feature">📱 Mobile friendly</div>
-
 </section>
-
-<!-- ================= INFO ================= -->
-
-<section class="info">
-
-<h3>Why compress images?</h3>
-
-<p>
-QuickConvert reduces image size instantly while maintaining visual quality.
-Perfect for faster uploads, sharing, and storage optimization.
-</p>
-
-</section>
-
-<!-- ================= FOOTER ================= -->
 
 <footer class="footer">
-
-<div class="footer-brand">
-⚡ QuickConvert — Fast & Secure File Tools
-</div>
-
-<div class="footer-info">
-Your files are processed securely and never stored.
-</div>
-
-<div class="footer-links">
-<a href="/converter.html">Image ↔ PDF Converter</a>
-</div>
-
-<div class="footer-copy">
-© 2026 QuickConvert
-</div>
-
+<div class="footer-brand">⚡ QuickConvert — Fast & Secure File Tools</div>
+<div class="footer-info">Your files are processed securely and never stored.</div>
+<div class="footer-copy">© 2026 QuickConvert</div>
 </footer>
 
-<!-- ================= ERROR MODAL ================= -->
-
 <div id="errorModal" class="modal hidden">
-
 <div class="modal-content">
-
 <span id="closeError" class="close">&times;</span>
-
-<h2>Invalid File</h2>
+<h2>Error</h2>
 <p id="errorText"></p>
-
 </div>
-
 </div>
-
-<!-- ================= JS ================= -->
 
 <script src="../js/core/app.js"></script>
 <script src="../js/tools/compressor.js"></script>
