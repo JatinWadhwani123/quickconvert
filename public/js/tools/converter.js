@@ -4,18 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // DOM references
   // =========================
 
-  const convertForm = document.getElementById("convertForm");
+  const form = document.getElementById("convertForm");
   const fileInput = document.getElementById("fileInput");
+
+  const uploadArea = document.querySelector(".upload-area");
 
   const loader = document.getElementById("loader");
   const toast = document.getElementById("toast");
 
   const errorModal = document.getElementById("errorModal");
   const errorText = document.getElementById("errorText");
-  const closeBtn = document.getElementById("closeError");
+  const closeError = document.getElementById("closeError");
 
   // =========================
-  // CLEAN startup state
+  // Clean UI state
   // =========================
 
   loader?.classList.add("hidden");
@@ -23,21 +25,89 @@ document.addEventListener("DOMContentLoaded", () => {
   errorModal?.classList.remove("show");
 
   // =========================
-  // Submit conversion
+  // File preview helper
   // =========================
 
-  convertForm?.addEventListener("submit", async (e) => {
+  function showFileName(file) {
+
+    uploadArea.innerHTML = `
+      <strong>📄 ${file.name}</strong>
+      <small>Click to change file</small>
+    `;
+
+  }
+
+  // =========================
+  // Click upload
+  // =========================
+
+  uploadArea.addEventListener("click", () => {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener("change", () => {
+
+    if (fileInput.files.length) {
+      showFileName(fileInput.files[0]);
+    }
+
+  });
+
+  // =========================
+  // Drag & drop support
+  // =========================
+
+  ["dragenter", "dragover"].forEach(event => {
+
+    uploadArea.addEventListener(event, e => {
+
+      e.preventDefault();
+      uploadArea.style.background = "#f3f3f3";
+
+    });
+
+  });
+
+  ["dragleave", "drop"].forEach(event => {
+
+    uploadArea.addEventListener(event, e => {
+
+      e.preventDefault();
+      uploadArea.style.background = "";
+
+    });
+
+  });
+
+  uploadArea.addEventListener("drop", e => {
+
+    const files = e.dataTransfer.files;
+
+    if (files.length) {
+
+      fileInput.files = files;
+      showFileName(files[0]);
+
+    }
+
+  });
+
+  // =========================
+  // Submit handler
+  // =========================
+
+  form.addEventListener("submit", async e => {
 
     e.preventDefault();
 
-    if (!fileInput || fileInput.files.length === 0) {
+    if (!fileInput.files.length) {
       showError("Please select an image first.");
       return;
     }
 
-    loader?.classList.remove("hidden");
+    const formData = new FormData(form);
 
-    const formData = new FormData(convertForm);
+    loader.classList.remove("hidden");
 
     try {
 
@@ -46,21 +116,19 @@ document.addEventListener("DOMContentLoaded", () => {
         body: formData
       });
 
-      const type = res.headers.get("content-type") || "";
+      const contentType = res.headers.get("content-type") || "";
 
-      if (!res.ok || type.includes("text")) {
+      if (!res.ok || contentType.includes("text")) {
         throw new Error(await res.text());
       }
 
-      // download PDF
-
       const blob = await res.blob();
+
       const url = window.URL.createObjectURL(blob);
 
       const a = document.createElement("a");
       a.href = url;
       a.download = "converted.pdf";
-
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -71,14 +139,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     catch (err) {
 
-      console.error("Conversion failed:", err);
+      console.error(err);
       showError(err.message || "Conversion failed");
 
     }
 
     finally {
 
-      loader?.classList.add("hidden");
+      loader.classList.add("hidden");
 
     }
 
@@ -90,8 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showToast() {
 
-    if (!toast) return;
-
     toast.classList.remove("hidden");
 
     setTimeout(() => {
@@ -100,31 +166,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  function showError(message) {
+  function showError(msg) {
 
-    if (!errorModal || !errorText) return;
-
-    errorText.textContent = message;
+    errorText.textContent = msg;
     errorModal.classList.add("show");
 
   }
 
-  // =========================
-  // Modal closing
-  // =========================
-
-  closeBtn?.addEventListener("click", () => {
-    errorModal?.classList.remove("show");
+  closeError.addEventListener("click", () => {
+    errorModal.classList.remove("show");
   });
 
-  // click outside modal closes it
-
-  errorModal?.addEventListener("click", (e) => {
-
+  errorModal.addEventListener("click", e => {
     if (e.target === errorModal) {
       errorModal.classList.remove("show");
     }
-
   });
 
 });

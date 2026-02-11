@@ -443,3 +443,7 @@ body {
 .why-section h2 {
   margin-bottom: 10px;
 }
+.upload-area.drag-active {
+  background: #f0f0f0;
+  border-color: #e5322d;
+}
