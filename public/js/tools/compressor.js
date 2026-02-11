@@ -77,17 +77,46 @@ document.addEventListener("DOMContentLoaded", () => {
   // FORM SUBMIT
   // =========================
 
-  form.addEventListener("submit", e => {
+form.addEventListener("submit", async e => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!selectedFile) {
-      alert("Please upload an image first.");
-      return;
-    }
+  if (!selectedFile) {
+    alert("Please upload an image first.");
+    return;
+  }
 
-    alert("Compression logic will run here 🚀");
+  const formData = new FormData();
+  formData.append("image", selectedFile);
 
-  });
+  try {
+
+    const res = await fetch("/compress", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok) throw new Error("Compression failed");
+
+    const blob = await res.blob();
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "compressed-image.jpg";
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+  } catch (err) {
+
+    alert(err.message);
+
+  }
+
+});
+
 
 });
