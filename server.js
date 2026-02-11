@@ -6,7 +6,6 @@ const express = require("express");
 const multer = require("multer");
 const { PDFDocument } = require("pdf-lib");
 const sharp = require("sharp");
-const fs = require("fs");
 const path = require("path");
 
 // ===============================
@@ -16,8 +15,11 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// temp upload storage (Render safe)
-const upload = multer({ dest: "uploads/" });
+// ✅ MEMORY upload — Render safe
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }
+});
 
 // static frontend files
 app.use(express.static("public"));
@@ -42,87 +44,41 @@ app.get("/merger", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merger.html"))
 );
 
-// ===============================
-// BACKWARD COMPATIBILITY ROUTES
-// ===============================
+// backward compatibility
 
-app.get("/converter.html", (req, res) =>
-  res.redirect("/converter")
-);
-
-app.get("/compressor.html", (req, res) =>
-  res.redirect("/compressor")
-);
-
-app.get("/merger.html", (req, res) =>
-  res.redirect("/merger")
-);
+app.get("/converter.html", (req, res) => res.redirect("/converter"));
+app.get("/compressor.html", (req, res) => res.redirect("/compressor"));
+app.get("/merger.html", (req, res) => res.redirect("/merger"));
 
 // ===============================
-// FILE CLEANUP HELPER
+// IMAGE → PDF CONVERTER
 // ===============================
 
-function cleanup(file) {
-  try {
-    fs.unlinkSync(file);
-  } catch {}
-}
-
-
-// ===============================
-// IMAGE → PDF CONVERTER (SAFE)
-// ===============================
-
-app.post("/convert", upload.single("file"), async (req, res) => {
-
-  if (!req.file)
-    return res.status(400).send("No file uploaded");
-
-  const filePath = req.file.path;
+app.post("/convert", upload.single("image"), async (req, res) => {
 
   try {
 
-    // ✅ Only allow supported formats
-    if (
-      req.file.mimetype !== "image/jpeg" &&
-      req.file.mimetype !== "image/png"
-    ) {
-      cleanup(filePath);
-      return res.status(400).send(
-        "Only JPG or PNG images are supported"
-      );
-    }
+    if (!req.file)
+      return res.status(400).send("No file uploaded");
+
+    if (!["image/jpeg", "image/png"].includes(req.file.mimetype))
+      return res.status(400).send("Only JPG or PNG supported");
 
     const pdfDoc = await PDFDocument.create();
-    const bytes = fs.readFileSync(filePath);
 
     let image;
 
-    try {
+    if (req.file.mimetype === "image/jpeg")
+      image = await pdfDoc.embedJpg(req.file.buffer);
 
-      if (req.file.mimetype === "image/jpeg")
-        image = await pdfDoc.embedJpg(bytes);
-
-      if (req.file.mimetype === "image/png")
-        image = await pdfDoc.embedPng(bytes);
-
-    } catch (embedErr) {
-
-      console.error("Embed error:", embedErr);
-      cleanup(filePath);
-
-      return res.status(500).send(
-        "Image format not supported for PDF conversion"
-      );
-
-    }
+    if (req.file.mimetype === "image/png")
+      image = await pdfDoc.embedPng(req.file.buffer);
 
     const page = pdfDoc.addPage([image.width, image.height]);
+
     page.drawImage(image, { x: 0, y: 0 });
 
     const pdfBytes = await pdfDoc.save();
-
-    cleanup(filePath);
 
     res.set({
       "Content-Type": "application/pdf",
@@ -135,9 +91,7 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
   catch (err) {
 
-    console.error("Conversion crash:", err);
-    cleanup(filePath);
-
+    console.error("🔥 Convert crash:", err);
     res.status(500).send("Conversion failed");
 
   }
@@ -145,36 +99,26 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 });
 
 // ===============================
-// IMAGE COMPRESSOR — SAFE VERSION
+// IMAGE COMPRESSOR
 // ===============================
 
-app.post("/compress", upload.single("file"), async (req, res) => {
-
-  if (!req.file)
-    return res.status(400).send("No file uploaded");
-
-  const filePath = req.file.path;
+app.post("/compress", upload.single("image"), async (req, res) => {
 
   try {
 
-    // ✅ Validate supported image formats
+    if (!req.file)
+      return res.status(400).send("No file uploaded");
+
     const allowed = ["image/jpeg", "image/png", "image/webp"];
 
-    if (!allowed.includes(req.file.mimetype)) {
-      cleanup(filePath);
+    if (!allowed.includes(req.file.mimetype))
       return res.status(400).send(
-        "Only JPG, PNG or WEBP images supported"
+        "Only JPG, PNG or WEBP supported"
       );
-    }
 
-    // ✅ Read buffer safely
-    const inputBuffer = fs.readFileSync(filePath);
-
-    const compressed = await sharp(inputBuffer)
+    const compressed = await sharp(req.file.buffer)
       .jpeg({ quality: 60 })
       .toBuffer();
-
-    cleanup(filePath);
 
     res.set({
       "Content-Type": "image/jpeg",
@@ -188,16 +132,12 @@ app.post("/compress", upload.single("file"), async (req, res) => {
 
   catch (err) {
 
-    console.error("🔥 Sharp compression crash:", err);
-
-    cleanup(filePath);
-
+    console.error("🔥 Compression crash:", err);
     res.status(500).send("Compression failed");
 
   }
 
 });
-
 
 // ===============================
 // PDF MERGER
@@ -205,23 +145,19 @@ app.post("/compress", upload.single("file"), async (req, res) => {
 
 app.post("/merge", upload.array("files"), async (req, res) => {
 
-  if (!req.files || req.files.length < 2)
-    return res.status(400).send("Upload at least 2 PDFs");
-
   try {
+
+    if (!req.files || req.files.length < 2)
+      return res.status(400).send("Upload at least 2 PDFs");
 
     const mergedPdf = await PDFDocument.create();
 
     for (const file of req.files) {
 
-      const pdfBytes = fs.readFileSync(file.path);
-
-      if (!pdfBytes.slice(0, 5).toString().includes("%PDF")) {
-        cleanup(file.path);
+      if (!file.buffer.slice(0, 5).toString().includes("%PDF"))
         return res.status(400).send("Invalid PDF detected");
-      }
 
-      const pdf = await PDFDocument.load(pdfBytes);
+      const pdf = await PDFDocument.load(file.buffer);
 
       const pages = await mergedPdf.copyPages(
         pdf,
@@ -229,8 +165,6 @@ app.post("/merge", upload.array("files"), async (req, res) => {
       );
 
       pages.forEach(p => mergedPdf.addPage(p));
-
-      cleanup(file.path);
     }
 
     const mergedBytes = await mergedPdf.save();
@@ -246,9 +180,7 @@ app.post("/merge", upload.array("files"), async (req, res) => {
 
   catch (err) {
 
-    console.error("Merge error:", err);
-    req.files?.forEach(f => cleanup(f.path));
-
+    console.error("🔥 Merge crash:", err);
     res.status(500).send("Merge failed");
 
   }
