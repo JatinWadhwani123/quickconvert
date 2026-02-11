@@ -109,9 +109,19 @@ function showError(title, message) {
   if (errorTitleEl) errorTitleEl.textContent = title;
   if (errorTextEl) errorTextEl.textContent = message;
 
-  errorModalEl.classList.remove("hidden");
-
+  errorModalEl.style.display = "flex";
 }
+
+closeErrorEl.addEventListener("click", () => {
+  errorModalEl.style.display = "none";
+});
+
+errorModalEl.addEventListener("click", (e) => {
+  if (e.target === errorModalEl) {
+    errorModalEl.style.display = "none";
+  }
+});
+
 
 
 // close modal
