@@ -548,3 +548,61 @@ body {
   background: #e53935;
   color: white;
 }
+/* =========================
+   MERGER FILE LIST POLISH
+========================= */
+
+.file-list-wrapper {
+  margin: 18px 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* file item */
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #f7f7f7;
+  border-radius: 10px;
+
+  padding: 10px 14px;
+
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.file-item:hover {
+  background: #ececec;
+}
+
+/* file name */
+
+.file-item span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80%;
+}
+
+/* remove button */
+
+.remove-btn {
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+  transition: 0.2s ease;
+}
+
+.remove-btn:hover {
+  color: #e53935;
+  transform: scale(1.2);
+}

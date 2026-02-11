@@ -14,27 +14,25 @@
 
 <body>
 
-<!-- NAV -->
-
 <header class="navbar">
 
 <div class="logo">⚡ QuickConvert</div>
 
 <nav class="tool-tabs">
-
 <a href="/" class="tab">Dashboard</a>
 <a href="/converter.html" class="tab">Converter</a>
 <a href="/compressor.html" class="tab">Compressor</a>
 <a href="/merger.html" class="tab active">Merger</a>
-
 </nav>
 
 </header>
 
 
-<!-- HERO -->
+<!-- MAIN WRAPPER -->
 
-<section class="hero">
+<main class="tool-wrapper">
+
+<div class="tool-card-main">
 
 <h1>PDF Merger</h1>
 
@@ -44,25 +42,33 @@ fast, secure, and browser-based.
 </p>
 
 
-<form id="mergeForm" action="/merge" method="post" enctype="multipart/form-data">
+<form id="mergeForm">
 
-<!-- Drop Area -->
+<!-- Upload zone -->
 
-<label class="upload-box" id="dropArea">
+<div class="upload-area" id="dropArea">
 
-<span id="fileText">
-Drag & drop PDFs here<br>
-or click to upload
-</span>
+<div id="fileText">
+<strong>Drag & drop PDFs here</strong><br>
+<span>or click to upload</span>
+</div>
 
-<input type="file" id="fileInput" name="files" multiple accept=".pdf">
+<input
+type="file"
+id="fileInput"
+name="files"
+multiple
+accept=".pdf"
+hidden
+>
 
-</label>
-<div id="fileList" class="file-list"></div>
+</div>
 
+<!-- Selected files -->
 
-
-<!-- Button -->
+<div class="file-list-wrapper">
+  <div id="fileList" class="file-list"></div>
+</div>
 
 <button type="submit" id="mergeBtn" class="primary-btn">
 Merge PDFs
@@ -70,44 +76,53 @@ Merge PDFs
 
 </form>
 
-
 <!-- Progress -->
 
 <div id="progressContainer" class="progress hidden">
 <div id="progressBar"></div>
 </div>
 
+</div>
+
+
+<section class="tool-info">
+
+<h2>Why use our merger?</h2>
+
+<p>
+QuickConvert merges PDFs directly in your browser.
+No software installation required. Files are processed
+securely and never stored.
+</p>
+
 </section>
 
+</main>
 
-<!-- FOOTER -->
 
 <footer class="footer">
 
-<div class="footer-brand">
-⚡ QuickConvert — Fast & Secure File Tools
-</div>
-
-<div class="footer-info">
-Files are processed temporarily and never stored.
-</div>
-
-<div class="footer-copy">
+⚡ QuickConvert — Fast & Secure File Tools  
+Files are processed temporarily and never stored.  
 © 2026 QuickConvert
-</div>
 
 </footer>
 
-<!-- Error popup -->
+
+<!-- Error modal -->
 
 <div id="errorModal" class="modal hidden">
-  <div class="modal-content">
-    <span id="closeError" class="close">×</span>
-    <p id="errorText"></p>
-  </div>
+<div class="modal-content">
+<span id="closeError" class="close">×</span>
+<p id="errorText"></p>
 </div>
-<div id="toast" class="toast">Merge complete ✅</div>
+</div>
 
+<!-- Toast -->
+
+<div id="toast" class="toast">
+Merge complete ✅
+</div>
 
 
 <script src="../js/core/ui.js"></script>

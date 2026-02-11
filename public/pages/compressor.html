@@ -14,8 +14,6 @@
 
 <body>
 
-<!-- NAV -->
-
 <header class="navbar">
 
   <div class="logo">⚡ QuickConvert</div>
@@ -27,8 +25,6 @@
   </nav>
 
 </header>
-
-<!-- MAIN -->
 
 <main class="tool-wrapper">
 
@@ -44,9 +40,19 @@
     <form id="compressForm">
 
       <div class="upload-area" id="uploadArea">
-        <strong>Drag & drop image here</strong>
-        <span>or click to upload</span>
-        <input type="file" id="fileInput" name="image">
+
+        <strong id="uploadText">Drag & drop image here</strong>
+        <span id="uploadSub">or click to upload</span>
+
+        <!-- IMPORTANT FIX -->
+        <input
+          type="file"
+          id="fileInput"
+          name="file"
+          accept="image/*"
+          hidden
+        >
+
       </div>
 
       <button type="submit" class="primary-btn">
@@ -70,8 +76,6 @@
   </section>
 
 </main>
-
-<!-- FOOTER -->
 
 <footer class="footer">
 

@@ -4,20 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileInput = document.getElementById("fileInput");
   const form = document.getElementById("compressForm");
 
+  const uploadText = document.getElementById("uploadText");
+  const uploadSub = document.getElementById("uploadSub");
+
   let selectedFile = null;
 
-  // =========================
-  // CLICK → open file picker
-  // =========================
+  // CLICK → open picker
+  uploadArea.addEventListener("click", () => fileInput.click());
 
-  uploadArea.addEventListener("click", () => {
-    fileInput.click();
-  });
-
-  // =========================
-  // FILE PICK
-  // =========================
-
+  // FILE SELECT
   fileInput.addEventListener("change", () => {
 
     if (!fileInput.files.length) return;
@@ -28,10 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // =========================
-  // DRAG & DROP
-  // =========================
-
+  // DRAG OVER
   uploadArea.addEventListener("dragover", e => {
     e.preventDefault();
     uploadArea.classList.add("drag-active");
@@ -41,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadArea.classList.remove("drag-active");
   });
 
+  // DROP
   uploadArea.addEventListener("drop", e => {
 
     e.preventDefault();
@@ -60,66 +53,56 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // =========================
-  // SHOW FILE NAME
-  // =========================
-
+  // SHOW FILE
   function showFile(file) {
 
-    uploadArea.innerHTML = `
-      📄 <strong>${file.name}</strong>
-      <br><span>Click to change file</span>
-    `;
+    uploadText.textContent = file.name;
+    uploadSub.textContent = "Click to change file";
 
   }
 
-  // =========================
-  // FORM SUBMIT
-  // =========================
+  // SUBMIT
+  form.addEventListener("submit", async e => {
 
-form.addEventListener("submit", async e => {
+    e.preventDefault();
 
-  e.preventDefault();
+    if (!selectedFile) {
+      alert("Please upload an image first.");
+      return;
+    }
 
-  if (!selectedFile) {
-    alert("Please upload an image first.");
-    return;
-  }
+    const formData = new FormData();
+    formData.append("file", selectedFile); // ✅ matches server
 
-  const formData = new FormData();
-  formData.append("image", selectedFile);
+    try {
 
-  try {
+      const res = await fetch("/compress", {
+        method: "POST",
+        body: formData
+      });
 
-    const res = await fetch("/compress", {
-  method: "POST",
-  body: formData
-});
+      if (!res.ok) throw new Error("Compression failed");
 
-if (!res.ok) {
-  throw new Error("Server conversion failed");
-}
+      const blob = await res.blob();
 
+      const url = URL.createObjectURL(blob);
 
-    const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "compressed-image.jpg";
 
-    const url = URL.createObjectURL(blob);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "compressed-image.jpg";
+    }
 
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    catch (err) {
 
-  } catch (err) {
+      alert(err.message);
 
-    alert(err.message);
+    }
 
-  }
-
-});
-
+  });
 
 });
