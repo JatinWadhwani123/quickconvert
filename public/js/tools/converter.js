@@ -15,25 +15,21 @@ const closeErrorEl = document.getElementById("closeError");
 
 
 // =========================
-// Submit handler (SAFE)
+// Submit handler
 // =========================
 
 convertFormEl.addEventListener("submit", async (e) => {
 
-  // 🚨 block accidental submit
-  if (!e.submitter) {
-    e.preventDefault();
-    return;
-  }
-
   e.preventDefault();
 
-  // ✅ No file selected
+  // prevent ghost submit
   if (!fileInputEl.files.length) {
+
     showError(
       "No file selected",
-      "Please select an image before converting."
+      "Please choose an image before converting."
     );
+
     return;
   }
 
@@ -58,7 +54,6 @@ convertFormEl.addEventListener("submit", async (e) => {
       return;
     }
 
-    // ✅ download PDF
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
 
@@ -105,19 +100,38 @@ function showToast() {
   setTimeout(() => {
     toastEl.classList.add("hidden");
   }, 3000);
+
 }
 
 
 function showError(title, message) {
 
   if (errorTitleEl) errorTitleEl.textContent = title;
-
-  errorTextEl.textContent = message;
+  if (errorTextEl) errorTextEl.textContent = message;
 
   errorModalEl.classList.remove("hidden");
+
 }
 
 
-closeErrorEl.addEventListener("click", () => {
-  errorModalEl.classList.add("hidden");
+// close modal
+
+if (closeErrorEl) {
+
+  closeErrorEl.addEventListener("click", () => {
+    errorModalEl.classList.add("hidden");
+  });
+
+}
+
+
+// click outside modal closes it
+
+errorModalEl.addEventListener("click", (e) => {
+
+  if (e.target === errorModalEl) {
+    errorModalEl.classList.add("hidden");
+  }
+
 });
+
