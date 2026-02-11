@@ -353,3 +353,93 @@ body {
 .hidden {
   display: none !important;
 }
+/* ===============================
+   CONVERTER PAGE LAYOUT
+=============================== */
+
+.page-wrapper {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.converter-card {
+  background: white;
+  color: black;
+
+  padding: 35px;
+  border-radius: 16px;
+
+  text-align: center;
+
+  max-width: 600px;
+  margin: auto;
+
+  box-shadow: 0 6px 30px rgba(0,0,0,0.1);
+}
+
+.converter-card h1 {
+  margin-bottom: 12px;
+}
+
+.converter-desc {
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.upload-area {
+  display: block;
+
+  border: 2px dashed #ddd;
+  padding: 30px;
+  border-radius: 12px;
+
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  transition: 0.2s;
+}
+
+.upload-area:hover {
+  background: #f7f7f7;
+}
+
+.upload-area input {
+  display: none;
+}
+
+.upload-area span {
+  display: block;
+  font-weight: bold;
+}
+
+.upload-area small {
+  opacity: 0.7;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 14px;
+
+  background: #e5322d;
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  opacity: 0.9;
+}
+
+.why-section {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.why-section h2 {
+  margin-bottom: 10px;
+}

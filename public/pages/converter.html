@@ -8,71 +8,56 @@
 
 <title>Free Image → PDF Converter | QuickConvert</title>
 
-<meta name="description"
-content="Convert images to PDF instantly. Free, secure, browser-based converter with drag & drop support.">
-
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="../css/style.css">
 
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
+<!-- ================= NAV ================= -->
 
 <header class="navbar">
 
-  <div class="logo">⚡ QuickConvert</div>
+<div class="logo">⚡ QuickConvert</div>
 
-  <nav class="tool-tabs">
-
-    <a href="/pages/converter.html" class="tab active">Converter</a>
-    <a href="/pages/compressor.html" class="tab">Compressor</a>
-
-  </nav>
+<nav class="tool-tabs">
+<a href="/" class="tab">Dashboard</a>
+<a href="/converter.html" class="tab active">Converter</a>
+<a href="/compressor.html" class="tab">Compressor</a>
+</nav>
 
 </header>
 
-<!-- ================= MAIN TOOL ================= -->
 
-<section class="hero">
+<!-- ================= MAIN ================= -->
+
+<main class="page-wrapper">
+
+<section class="converter-card">
 
 <h1>Free Image → PDF Converter</h1>
 
-<p class="seo-text">
+<p class="converter-desc">
 Convert JPG or PNG images instantly into a PDF using our secure online converter.
 No uploads stored. Fast drag-and-drop conversion.
 </p>
 
-<form id="convertForm" enctype="multipart/form-data">
+<form id="convertForm">
 
-  <!-- locked mode -->
+<label class="upload-area">
 
-  <input type="hidden" name="mode" id="modeInput" value="img2pdf">
+<input type="file" id="fileInput" name="file" accept="image/*">
 
-  <!-- upload box -->
+<span>Drag & drop image here</span>
+<small>or click to upload</small>
 
-  <label class="upload-box" id="dropArea">
+</label>
 
-    <span id="fileText">
-      Drag & drop image here<br>
-      or click to upload
-    </span>
+<input type="hidden" name="mode" value="img2pdf">
 
-    <input type="file" id="fileInput" name="file" accept="image/*" required>
-
-  </label>
-
-  <!-- convert button -->
-
-  <button type="submit" class="primary-btn">
-    Convert to PDF
-  </button>
-
-  <!-- progress bar -->
-
-  <div id="progressContainer" class="progress hidden">
-    <div id="progressBar"></div>
-  </div>
+<button class="primary-btn">
+Convert to PDF
+</button>
 
 </form>
 
@@ -80,21 +65,12 @@ No uploads stored. Fast drag-and-drop conversion.
 
 </section>
 
-<!-- ================= FEATURES ================= -->
 
-<section class="features">
+<!-- WHY SECTION -->
 
-<div class="feature">⚡ Lightning fast conversion</div>
-<div class="feature">🔒 Secure file processing</div>
-<div class="feature">📱 Mobile friendly</div>
+<section class="why-section">
 
-</section>
-
-<!-- ================= INFO ================= -->
-
-<section class="info">
-
-<h3>Why use our converter?</h3>
+<h2>Why use our converter?</h2>
 
 <p>
 QuickConvert allows instant image → PDF transformation directly in your browser.
@@ -102,6 +78,9 @@ No software installation required. Files are processed securely and never stored
 </p>
 
 </section>
+
+</main>
+
 
 <!-- ================= FOOTER ================= -->
 
@@ -116,9 +95,9 @@ Your files are processed securely and never stored.
 </div>
 
 <div class="footer-links">
-<a href="#" onclick="openModal('privacy')">Privacy</a>
-<a href="#" onclick="openModal('terms')">Terms</a>
-<a href="#" onclick="openModal('contact')">Contact</a>
+<a href="/privacy.html">Privacy</a>
+<a href="/terms.html">Terms</a>
+<a href="/contact.html">Contact</a>
 </div>
 
 <div class="footer-copy">
@@ -127,42 +106,31 @@ Your files are processed securely and never stored.
 
 </footer>
 
-<!-- ================= MODALS ================= -->
 
-<div id="modal" class="modal hidden">
+<!-- ================= MODAL ================= -->
+
+<div id="errorModal" class="modal">
 
 <div class="modal-content">
 
-<span id="closeModal" class="close">&times;</span>
-<div id="modalText"></div>
+<span id="closeError" class="close">×</span>
+
+<h3>Error</h3>
+<p id="errorText"></p>
 
 </div>
 
 </div>
 
-<div id="errorModal" class="modal" style="display:none;">
 
-  <div class="modal-content">
-
-    <span id="closeError" class="close">&times;</span>
-
-    <h2 id="errorTitle">Error</h2>
-    <p id="errorText"></p>
-
-  </div>
-
-</div>
-
-
+<!-- ================= TOAST ================= -->
 
 <div id="toast" class="toast hidden">
-✅ File downloaded successfully
+✔ File downloaded successfully
 </div>
 
-<!-- ================= SCRIPTS ================= -->
 
-<script src="/js/core/app.js"></script>
-<script src="/js/tools/converter.js"></script>
+<script src="../js/tools/converter.js"></script>
 
 </body>
 </html>
