@@ -1,125 +1,93 @@
-// ===============================
-// Compressor script — scoped version
-// ===============================
+document.addEventListener("DOMContentLoaded", () => {
 
-(() => {
-
-  const compressForm = document.getElementById("compressForm");
+  const uploadArea = document.getElementById("uploadArea");
   const fileInput = document.getElementById("fileInput");
-  const dropArea = document.getElementById("dropArea");
-  const fileText = document.getElementById("fileText");
+  const form = document.getElementById("compressForm");
 
-  const loader = document.getElementById("loader");
-  const toast = document.getElementById("toast");
+  let selectedFile = null;
 
-  const errorModal = document.getElementById("errorModal");
-  const errorText = document.getElementById("errorText");
-  const closeError = document.getElementById("closeError");
+  // =========================
+  // CLICK → open file picker
+  // =========================
 
-  // ---------- upload UI ----------
+  uploadArea.addEventListener("click", () => {
+    fileInput.click();
+  });
 
-  dropArea.addEventListener("click", () => fileInput.click());
+  // =========================
+  // FILE PICK
+  // =========================
 
   fileInput.addEventListener("change", () => {
-    if (fileInput.files.length) {
-      fileText.textContent = fileInput.files[0].name;
-    }
+
+    if (!fileInput.files.length) return;
+
+    selectedFile = fileInput.files[0];
+
+    showFile(selectedFile);
+
   });
 
-  dropArea.addEventListener("dragover", e => {
+  // =========================
+  // DRAG & DROP
+  // =========================
+
+  uploadArea.addEventListener("dragover", e => {
     e.preventDefault();
-    dropArea.classList.add("dragging");
+    uploadArea.classList.add("drag-active");
   });
 
-  dropArea.addEventListener("dragleave", () => {
-    dropArea.classList.remove("dragging");
+  uploadArea.addEventListener("dragleave", () => {
+    uploadArea.classList.remove("drag-active");
   });
 
-  dropArea.addEventListener("drop", e => {
+  uploadArea.addEventListener("drop", e => {
+
     e.preventDefault();
-    dropArea.classList.remove("dragging");
+    uploadArea.classList.remove("drag-active");
 
     const file = e.dataTransfer.files[0];
 
-    if (!file.type.startsWith("image/")) {
-      showError("Only image files allowed!");
+    if (!file || !file.type.startsWith("image/")) {
+      alert("Please drop a valid image file.");
       return;
     }
 
+    selectedFile = file;
     fileInput.files = e.dataTransfer.files;
-    fileText.textContent = file.name;
+
+    showFile(file);
+
   });
 
-  // ---------- submit ----------
+  // =========================
+  // SHOW FILE NAME
+  // =========================
 
-  compressForm.addEventListener("submit", async e => {
+  function showFile(file) {
+
+    uploadArea.innerHTML = `
+      📄 <strong>${file.name}</strong>
+      <br><span>Click to change file</span>
+    `;
+
+  }
+
+  // =========================
+  // FORM SUBMIT
+  // =========================
+
+  form.addEventListener("submit", e => {
 
     e.preventDefault();
 
-    const file = fileInput.files[0];
-
-    if (!file) {
-      showError("Select an image first.");
+    if (!selectedFile) {
+      alert("Please upload an image first.");
       return;
     }
 
-    loader.classList.remove("hidden");
-
-    const data = new FormData();
-    data.append("file", file);
-
-    try {
-
-      const res = await fetch("/compress", {
-        method: "POST",
-        body: data
-      });
-
-      if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg);
-      }
-
-      const blob = await res.blob();
-
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "compressed.jpg";
-
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-
-      toast.classList.remove("hidden");
-      setTimeout(() => toast.classList.add("hidden"), 2500);
-
-    }
-
-    catch (err) {
-
-      showError(err.message || "Compression failed");
-
-    }
-
-    finally {
-
-      loader.classList.add("hidden");
-
-    }
+    alert("Compression logic will run here 🚀");
 
   });
 
-  // ---------- error modal ----------
-
-  function showError(msg) {
-    errorText.textContent = msg;
-    errorModal.classList.remove("hidden");
-  }
-
-  closeError.addEventListener("click", () => {
-    errorModal.classList.add("hidden");
-  });
-
-})();
+});
