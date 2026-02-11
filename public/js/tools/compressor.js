@@ -1,123 +1,125 @@
 // ===============================
-// Compressor script — clean version
+// Compressor script — scoped version
 // ===============================
 
-const compressForm = document.getElementById("compressForm");
-const fileInput = document.getElementById("fileInput");
-const dropArea = document.getElementById("dropArea");
-const fileText = document.getElementById("fileText");
+(() => {
 
-const loader = document.getElementById("loader");
-const toast = document.getElementById("toast");
+  const compressForm = document.getElementById("compressForm");
+  const fileInput = document.getElementById("fileInput");
+  const dropArea = document.getElementById("dropArea");
+  const fileText = document.getElementById("fileText");
 
-const errorModal = document.getElementById("errorModal");
-const errorText = document.getElementById("errorText");
-const closeError = document.getElementById("closeError");
+  const loader = document.getElementById("loader");
+  const toast = document.getElementById("toast");
 
-// ---------- upload UI ----------
+  const errorModal = document.getElementById("errorModal");
+  const errorText = document.getElementById("errorText");
+  const closeError = document.getElementById("closeError");
 
-dropArea.addEventListener("click", () => fileInput.click());
+  // ---------- upload UI ----------
 
-fileInput.addEventListener("change", () => {
-  if (fileInput.files.length) {
-    fileText.textContent = fileInput.files[0].name;
-  }
-});
+  dropArea.addEventListener("click", () => fileInput.click());
 
-// drag/drop
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files.length) {
+      fileText.textContent = fileInput.files[0].name;
+    }
+  });
 
-dropArea.addEventListener("dragover", e => {
-  e.preventDefault();
-  dropArea.classList.add("dragging");
-});
+  dropArea.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropArea.classList.add("dragging");
+  });
 
-dropArea.addEventListener("dragleave", () => {
-  dropArea.classList.remove("dragging");
-});
+  dropArea.addEventListener("dragleave", () => {
+    dropArea.classList.remove("dragging");
+  });
 
-dropArea.addEventListener("drop", e => {
-  e.preventDefault();
-  dropArea.classList.remove("dragging");
+  dropArea.addEventListener("drop", e => {
+    e.preventDefault();
+    dropArea.classList.remove("dragging");
 
-  const file = e.dataTransfer.files[0];
+    const file = e.dataTransfer.files[0];
 
-  if (!file.type.startsWith("image/")) {
-    showError("Only image files allowed!");
-    return;
-  }
-
-  fileInput.files = e.dataTransfer.files;
-  fileText.textContent = file.name;
-});
-
-// ---------- submit ----------
-
-compressForm.addEventListener("submit", async e => {
-
-  e.preventDefault();
-
-  const file = fileInput.files[0];
-
-  if (!file) {
-    showError("Select an image first.");
-    return;
-  }
-
-  loader.classList.remove("hidden");
-
-  const data = new FormData();
-  data.append("file", file);
-
-  try {
-
-    const res = await fetch("/compress", {
-      method: "POST",
-      body: data
-    });
-
-    if (!res.ok) {
-      const msg = await res.text();
-      throw new Error(msg);
+    if (!file.type.startsWith("image/")) {
+      showError("Only image files allowed!");
+      return;
     }
 
-    const blob = await res.blob();
+    fileInput.files = e.dataTransfer.files;
+    fileText.textContent = file.name;
+  });
 
-    const url = window.URL.createObjectURL(blob);
+  // ---------- submit ----------
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "compressed.jpg";
+  compressForm.addEventListener("submit", async e => {
 
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    e.preventDefault();
 
-    toast.classList.remove("hidden");
-    setTimeout(() => toast.classList.add("hidden"), 2500);
+    const file = fileInput.files[0];
 
+    if (!file) {
+      showError("Select an image first.");
+      return;
+    }
+
+    loader.classList.remove("hidden");
+
+    const data = new FormData();
+    data.append("file", file);
+
+    try {
+
+      const res = await fetch("/compress", {
+        method: "POST",
+        body: data
+      });
+
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg);
+      }
+
+      const blob = await res.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "compressed.jpg";
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 2500);
+
+    }
+
+    catch (err) {
+
+      showError(err.message || "Compression failed");
+
+    }
+
+    finally {
+
+      loader.classList.add("hidden");
+
+    }
+
+  });
+
+  // ---------- error modal ----------
+
+  function showError(msg) {
+    errorText.textContent = msg;
+    errorModal.classList.remove("hidden");
   }
 
-  catch (err) {
+  closeError.addEventListener("click", () => {
+    errorModal.classList.add("hidden");
+  });
 
-    showError(err.message || "Compression failed");
-
-  }
-
-  finally {
-
-    loader.classList.add("hidden");
-
-  }
-
-});
-
-// ---------- error modal ----------
-
-function showError(msg) {
-  errorText.textContent = msg;
-  errorModal.classList.remove("hidden");
-}
-
-closeError.addEventListener("click", () => {
-  errorModal.classList.add("hidden");
-});
+})();
