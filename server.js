@@ -68,8 +68,9 @@ function cleanup(file) {
   } catch {}
 }
 
+
 // ===============================
-// IMAGE → PDF CONVERTER
+// IMAGE → PDF CONVERTER (SAFE)
 // ===============================
 
 app.post("/convert", upload.single("file"), async (req, res) => {
@@ -81,20 +82,39 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
   try {
 
+    // ✅ Only allow supported formats
+    if (
+      req.file.mimetype !== "image/jpeg" &&
+      req.file.mimetype !== "image/png"
+    ) {
+      cleanup(filePath);
+      return res.status(400).send(
+        "Only JPG or PNG images are supported"
+      );
+    }
+
     const pdfDoc = await PDFDocument.create();
     const bytes = fs.readFileSync(filePath);
 
     let image;
 
-    if (req.file.mimetype === "image/jpeg")
-      image = await pdfDoc.embedJpg(bytes);
+    try {
 
-    else if (req.file.mimetype === "image/png")
-      image = await pdfDoc.embedPng(bytes);
+      if (req.file.mimetype === "image/jpeg")
+        image = await pdfDoc.embedJpg(bytes);
 
-    else {
+      if (req.file.mimetype === "image/png")
+        image = await pdfDoc.embedPng(bytes);
+
+    } catch (embedErr) {
+
+      console.error("Embed error:", embedErr);
       cleanup(filePath);
-      return res.status(400).send("Unsupported image format");
+
+      return res.status(500).send(
+        "Image format not supported for PDF conversion"
+      );
+
     }
 
     const page = pdfDoc.addPage([image.width, image.height]);
@@ -115,7 +135,7 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
   catch (err) {
 
-    console.error("Convert error:", err);
+    console.error("Conversion crash:", err);
     cleanup(filePath);
 
     res.status(500).send("Conversion failed");
