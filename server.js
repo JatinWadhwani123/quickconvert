@@ -145,7 +145,7 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 });
 
 // ===============================
-// IMAGE COMPRESSOR
+// IMAGE COMPRESSOR — SAFE VERSION
 // ===============================
 
 app.post("/compress", upload.single("file"), async (req, res) => {
@@ -153,18 +153,28 @@ app.post("/compress", upload.single("file"), async (req, res) => {
   if (!req.file)
     return res.status(400).send("No file uploaded");
 
-  if (!req.file.mimetype.startsWith("image/")) {
-    cleanup(req.file.path);
-    return res.status(400).send("Only image files allowed");
-  }
+  const filePath = req.file.path;
 
   try {
 
-    const compressed = await sharp(req.file.path)
+    // ✅ Validate supported image formats
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+
+    if (!allowed.includes(req.file.mimetype)) {
+      cleanup(filePath);
+      return res.status(400).send(
+        "Only JPG, PNG or WEBP images supported"
+      );
+    }
+
+    // ✅ Read buffer safely
+    const inputBuffer = fs.readFileSync(filePath);
+
+    const compressed = await sharp(inputBuffer)
       .jpeg({ quality: 60 })
       .toBuffer();
 
-    cleanup(req.file.path);
+    cleanup(filePath);
 
     res.set({
       "Content-Type": "image/jpeg",
@@ -178,14 +188,16 @@ app.post("/compress", upload.single("file"), async (req, res) => {
 
   catch (err) {
 
-    console.error("Compression error:", err);
-    cleanup(req.file.path);
+    console.error("🔥 Sharp compression crash:", err);
+
+    cleanup(filePath);
 
     res.status(500).send("Compression failed");
 
   }
 
 });
+
 
 // ===============================
 // PDF MERGER
