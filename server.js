@@ -146,39 +146,54 @@ function cleanup(path) {
 }
 
 // ===============================
-// IMAGE COMPRESSOR
+// IMAGE COMPRESSOR — FIXED VERSION
 // ===============================
 
 app.post("/compress", upload.single("file"), async (req, res) => {
 
-  if (!req.file) return res.send("No file uploaded");
+  if (!req.file) {
+    return res.status(400).send("No file uploaded");
+  }
+
   if (!req.file.mimetype.startsWith("image/")) {
-  return res.status(400).send("Only images allowed");
-}
+    cleanup(req.file.path);
+    return res.status(400).send("Only image files allowed");
+  }
 
-
-  const filePath = req.file.path;
+  const inputPath = req.file.path;
 
   try {
 
     const original = req.file.originalname.split(".")[0];
-    const output = `uploads/${original}-compressed.jpg`;
+    const outputPath = `uploads/${original}-compressed.jpg`;
 
-    await sharp(filePath)
-      .jpeg({ quality: 60 }) // adjust compression level
-      .toFile(output);
+    await sharp(inputPath)
+      .jpeg({ quality: 60 })
+      .toFile(outputPath);
 
-    res.download(output, `${original}-compressed.jpg`, () => {
-      cleanup(filePath);
-      cleanup(output);
+    res.setHeader("Content-Type", "image/jpeg");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${original}-compressed.jpg"`
+    );
+
+    const stream = fs.createReadStream(outputPath);
+    stream.pipe(res);
+
+    stream.on("close", () => {
+      cleanup(inputPath);
+      cleanup(outputPath);
     });
 
-  } catch (err) {
+  }
+
+  catch (err) {
 
     console.error("Compression error:", err);
-    cleanup(filePath);
 
-    res.send("Compression failed");
+    cleanup(inputPath);
+
+    return res.status(500).send("Compression failed");
 
   }
 
