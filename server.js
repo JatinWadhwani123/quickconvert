@@ -144,12 +144,13 @@ function cleanup(path) {
     fs.unlinkSync(path);
   } catch {}
 }
-
 // ===============================
-// IMAGE COMPRESSOR — FIXED VERSION
+// IMAGE COMPRESSOR — MEMORY SAFE
 // ===============================
 
 app.post("/compress", upload.single("file"), async (req, res) => {
+
+  console.log("🔥 Compress request received");
 
   if (!req.file) {
     return res.status(400).send("No file uploaded");
@@ -157,47 +158,41 @@ app.post("/compress", upload.single("file"), async (req, res) => {
 
   if (!req.file.mimetype.startsWith("image/")) {
     cleanup(req.file.path);
-    return res.status(400).send("Only image files allowed");
+    return res.status(400).send("Only images allowed");
   }
-
-  const inputPath = req.file.path;
 
   try {
 
-    const original = req.file.originalname.split(".")[0];
-    const outputPath = `uploads/${original}-compressed.jpg`;
-
-    await sharp(inputPath)
+    const compressedBuffer = await sharp(req.file.path)
       .jpeg({ quality: 60 })
-      .toFile(outputPath);
+      .toBuffer();
+
+    cleanup(req.file.path);
 
     res.setHeader("Content-Type", "image/jpeg");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${original}-compressed.jpg"`
+      'attachment; filename="compressed.jpg"'
     );
 
-    const stream = fs.createReadStream(outputPath);
-    stream.pipe(res);
+    res.send(compressedBuffer);
 
-    stream.on("close", () => {
-      cleanup(inputPath);
-      cleanup(outputPath);
-    });
+    console.log("✅ Compression success");
 
   }
 
   catch (err) {
 
-    console.error("Compression error:", err);
+    console.error("💥 Sharp crash:", err);
 
-    cleanup(inputPath);
+    cleanup(req.file.path);
 
-    return res.status(500).send("Compression failed");
+    res.status(500).send("Compression failed");
 
   }
 
 });
+
 // ===============================
 // PDF MERGE ROUTE — FINAL SAFE VERSION
 // ===============================
