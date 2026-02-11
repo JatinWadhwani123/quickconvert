@@ -92,8 +92,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const res = await fetch("/convert", {
         method: "POST",
-        body: formData
+         body: formData
       });
+
+if (!res.ok) {
+  throw new Error("Server conversion failed");
+}
 
       const type = res.headers.get("content-type") || "";
 

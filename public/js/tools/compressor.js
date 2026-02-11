@@ -92,11 +92,14 @@ form.addEventListener("submit", async e => {
   try {
 
     const res = await fetch("/compress", {
-      method: "POST",
-      body: formData
-    });
+  method: "POST",
+  body: formData
+});
 
-    if (!res.ok) throw new Error("Compression failed");
+if (!res.ok) {
+  throw new Error("Server conversion failed");
+}
+
 
     const blob = await res.blob();
 
