@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 // temp upload storage (Render safe)
 const upload = multer({ dest: "uploads/" });
 
-// static frontend
+// static frontend files
 app.use(express.static("public"));
 
 // ===============================
@@ -40,6 +40,22 @@ app.get("/compressor", (req, res) =>
 
 app.get("/merger", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merger.html"))
+);
+
+// ===============================
+// BACKWARD COMPATIBILITY ROUTES
+// ===============================
+
+app.get("/converter.html", (req, res) =>
+  res.redirect("/converter")
+);
+
+app.get("/compressor.html", (req, res) =>
+  res.redirect("/compressor")
+);
+
+app.get("/merger.html", (req, res) =>
+  res.redirect("/merger")
 );
 
 // ===============================
