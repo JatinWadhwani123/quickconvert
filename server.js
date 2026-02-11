@@ -56,29 +56,39 @@ app.get("/merger.html", (req, res) => res.redirect("/merger"));
 
 app.post("/convert", upload.single("image"), async (req, res) => {
 
+  if (!req.file)
+    return res.status(400).send("No file uploaded");
+
+  const filePath = req.file.path;
+
   try {
 
-    if (!req.file)
-      return res.status(400).send("No file uploaded");
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
 
-    if (!["image/jpeg", "image/png"].includes(req.file.mimetype))
-      return res.status(400).send("Only JPG or PNG supported");
+    if (!allowed.includes(req.file.mimetype)) {
+      cleanup(filePath);
+      return res.status(400).send("Unsupported image format");
+    }
 
+    // 🔥 sanitize image with Sharp first
+    const cleanBuffer = await sharp(filePath)
+      .jpeg({ quality: 100 })
+      .toBuffer();
+
+    // create PDF
     const pdfDoc = await PDFDocument.create();
+    const image = await pdfDoc.embedJpg(cleanBuffer);
 
-    let image;
-
-    if (req.file.mimetype === "image/jpeg")
-      image = await pdfDoc.embedJpg(req.file.buffer);
-
-    if (req.file.mimetype === "image/png")
-      image = await pdfDoc.embedPng(req.file.buffer);
-
-    const page = pdfDoc.addPage([image.width, image.height]);
+    const page = pdfDoc.addPage([
+      image.width,
+      image.height
+    ]);
 
     page.drawImage(image, { x: 0, y: 0 });
 
     const pdfBytes = await pdfDoc.save();
+
+    cleanup(filePath);
 
     res.set({
       "Content-Type": "application/pdf",
@@ -91,12 +101,16 @@ app.post("/convert", upload.single("image"), async (req, res) => {
 
   catch (err) {
 
-    console.error("🔥 Convert crash:", err);
+    console.error("🔥 Conversion crash:", err);
+
+    cleanup(filePath);
+
     res.status(500).send("Conversion failed");
 
   }
 
 });
+
 
 // ===============================
 // IMAGE COMPRESSOR
