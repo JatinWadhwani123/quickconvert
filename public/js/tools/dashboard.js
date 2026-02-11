@@ -20,14 +20,6 @@ const tools = [
   link: "merger.html",
   active: true
 }
-,
-
-  {
-    title: "🖼 Background Remover",
-    desc: "AI-powered image cleanup.",
-    active: false
-  }
-
 ];
 
 const grid = document.getElementById("toolGrid");
