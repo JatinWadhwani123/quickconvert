@@ -6,10 +6,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Free Image ↔ PDF Converter | QuickConvert</title>
+<title>Free Image → PDF Converter | QuickConvert</title>
 
 <meta name="description"
-content="Convert images to PDF or PDF to image instantly. Free, secure, browser-based converter with drag & drop support.">
+content="Convert images to PDF instantly. Free, secure, browser-based converter with drag & drop support.">
 
 <link rel="stylesheet" href="/css/style.css">
 
@@ -28,7 +28,6 @@ content="Convert images to PDF or PDF to image instantly. Free, secure, browser-
     <a href="/pages/converter.html" class="tab active">Converter</a>
     <a href="/pages/compressor.html" class="tab">Compressor</a>
 
-
   </nav>
 
 </header>
@@ -37,18 +36,17 @@ content="Convert images to PDF or PDF to image instantly. Free, secure, browser-
 
 <section class="hero">
 
-<h1>Free Image ↔ PDF Converter</h1>
+<h1>Free Image → PDF Converter</h1>
 
 <p class="seo-text">
-Convert JPG, PNG, or PDF files instantly using our secure online converter.
+Convert JPG or PNG images instantly into a PDF using our secure online converter.
 No uploads stored. Fast drag-and-drop conversion.
 </p>
 
-<!-- ===== SINGLE CLEAN FORM ===== -->
-
 <form id="convertForm" enctype="multipart/form-data">
 
-  <!-- hidden mode -->
+  <!-- locked mode -->
+
   <input type="hidden" name="mode" id="modeInput" value="img2pdf">
 
   <!-- upload box -->
@@ -56,31 +54,18 @@ No uploads stored. Fast drag-and-drop conversion.
   <label class="upload-box" id="dropArea">
 
     <span id="fileText">
-      Drag & drop file here<br>
+      Drag & drop image here<br>
       or click to upload
     </span>
 
-    <input type="file" id="fileInput" name="file" required>
+    <input type="file" id="fileInput" name="file" accept="image/*" required>
 
   </label>
-
-  <!-- toggle -->
-
-  <div class="toggle-wrapper">
-
-    <span id="modeLabel">Image → PDF</span>
-
-    <label class="switch">
-      <input type="checkbox" id="modeToggle">
-      <span class="slider"></span>
-    </label>
-
-  </div>
 
   <!-- convert button -->
 
   <button type="submit" class="primary-btn">
-    Convert File
+    Convert to PDF
   </button>
 
   <!-- progress bar -->
@@ -112,7 +97,7 @@ No uploads stored. Fast drag-and-drop conversion.
 <h3>Why use our converter?</h3>
 
 <p>
-QuickConvert allows instant image ↔ PDF transformation directly in your browser.
+QuickConvert allows instant image → PDF transformation directly in your browser.
 No software installation required. Files are processed securely and never stored.
 </p>
 
