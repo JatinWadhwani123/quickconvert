@@ -10,7 +10,9 @@ const toastEl = document.getElementById("toast");
 
 const errorModalEl = document.getElementById("errorModal");
 const errorTextEl = document.getElementById("errorText");
+const errorTitleEl = document.getElementById("errorTitle");
 const closeErrorEl = document.getElementById("closeError");
+
 
 // =========================
 // Submit handler
@@ -20,8 +22,12 @@ convertFormEl.addEventListener("submit", async (e) => {
 
   e.preventDefault();
 
+  // ✅ No file selected
   if (!fileInputEl.files.length) {
-    showError("Please select an image first.");
+    showError(
+      "No file selected",
+      "Please select an image before converting."
+    );
     return;
   }
 
@@ -38,15 +44,17 @@ convertFormEl.addEventListener("submit", async (e) => {
 
     const contentType = res.headers.get("content-type") || "";
 
-    // backend returned error
+    // 🚨 backend error response
     if (!res.ok || contentType.includes("text")) {
 
       const msg = await res.text();
-      throw new Error(msg);
+
+      showError("Invalid file", msg);
+      return;
 
     }
 
-    // download PDF
+    // ✅ download PDF
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
 
@@ -60,18 +68,27 @@ convertFormEl.addEventListener("submit", async (e) => {
 
     showToast();
 
-  } catch (err) {
+  }
+
+  catch (err) {
 
     console.error(err);
-    showError(err.message || "Conversion failed");
 
-  } finally {
+    showError(
+      "Conversion failed",
+      err.message || "Something went wrong."
+    );
+
+  }
+
+  finally {
 
     loaderEl.classList.add("hidden");
 
   }
 
 });
+
 
 // =========================
 // UI helpers
@@ -87,13 +104,20 @@ function showToast() {
 
 }
 
-function showError(msg) {
 
-  errorTextEl.textContent = msg;
+function showError(title, message) {
+
+  if (errorTitleEl) errorTitleEl.textContent = title;
+
+  errorTextEl.textContent = message;
+
   errorModalEl.classList.remove("hidden");
 
 }
 
+
 closeErrorEl.addEventListener("click", () => {
+
   errorModalEl.classList.add("hidden");
+
 });
