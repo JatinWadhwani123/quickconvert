@@ -54,7 +54,7 @@ app.get("/merger.html", (req, res) => res.redirect("/merger"));
 // IMAGE → PDF CONVERTER
 // ===============================
 
-app.post("/convert", upload.single("image"), async (req, res) => {
+app.post("/convert", upload.single("file"), async (req, res) => {
 
   if (!req.file)
     return res.status(400).send("No file uploaded");
@@ -63,21 +63,22 @@ app.post("/convert", upload.single("image"), async (req, res) => {
 
   try {
 
-    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    const allowed = ["image/jpeg", "image/png"];
 
     if (!allowed.includes(req.file.mimetype)) {
       cleanup(filePath);
-      return res.status(400).send("Unsupported image format");
+      return res.status(400).send("Only JPG or PNG supported");
     }
 
-    // 🔥 sanitize image with Sharp first
-    const cleanBuffer = await sharp(filePath)
-      .jpeg({ quality: 100 })
+    // 🔥 Normalize image using sharp
+    const normalizedBuffer = await sharp(filePath)
+      .rotate()
+      .jpeg({ quality: 95 })
       .toBuffer();
 
-    // create PDF
     const pdfDoc = await PDFDocument.create();
-    const image = await pdfDoc.embedJpg(cleanBuffer);
+
+    const image = await pdfDoc.embedJpg(normalizedBuffer);
 
     const page = pdfDoc.addPage([
       image.width,
@@ -105,11 +106,12 @@ app.post("/convert", upload.single("image"), async (req, res) => {
 
     cleanup(filePath);
 
-    res.status(500).send("Conversion failed");
+    res.status(500).send("Server conversion failed");
 
   }
 
 });
+
 
 
 // ===============================
