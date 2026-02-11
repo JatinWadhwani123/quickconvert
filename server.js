@@ -147,51 +147,67 @@ function cleanup(path) {
 // ===============================
 // IMAGE COMPRESSOR — MEMORY SAFE
 // ===============================
-
 app.post("/compress", upload.single("file"), async (req, res) => {
 
-  console.log("🔥 Compress request received");
+  console.log("🔥 TEST compress route hit");
 
   if (!req.file) {
+    console.log("❌ No file received");
     return res.status(400).send("No file uploaded");
   }
 
-  if (!req.file.mimetype.startsWith("image/")) {
-    cleanup(req.file.path);
-    return res.status(400).send("Only images allowed");
-  }
+  console.log("✅ File received:", req.file.originalname);
 
-  try {
+  cleanup(req.file.path);
 
-    const compressedBuffer = await sharp(req.file.path)
-      .jpeg({ quality: 60 })
-      .toBuffer();
-
-    cleanup(req.file.path);
-
-    res.setHeader("Content-Type", "image/jpeg");
-    res.setHeader(
-      "Content-Disposition",
-      'attachment; filename="compressed.jpg"'
-    );
-
-    res.send(compressedBuffer);
-
-    console.log("✅ Compression success");
-
-  }
-
-  catch (err) {
-
-    console.error("💥 Sharp crash:", err);
-
-    cleanup(req.file.path);
-
-    res.status(500).send("Compression failed");
-
-  }
+  res.send("SERVER RESPONSE OK");
 
 });
+
+// app.post("/compress", upload.single("file"), async (req, res) => {
+
+//   console.log("🔥 Compress request received");
+
+//   if (!req.file) {
+//     return res.status(400).send("No file uploaded");
+//   }
+
+//   if (!req.file.mimetype.startsWith("image/")) {
+//     cleanup(req.file.path);
+//     return res.status(400).send("Only images allowed");
+//   }
+
+//   try {
+
+//     const compressedBuffer = await sharp(req.file.path)
+//       .jpeg({ quality: 60 })
+//       .toBuffer();
+
+//     cleanup(req.file.path);
+
+//     res.setHeader("Content-Type", "image/jpeg");
+//     res.setHeader(
+//       "Content-Disposition",
+//       'attachment; filename="compressed.jpg"'
+//     );
+
+//     res.send(compressedBuffer);
+
+//     console.log("✅ Compression success");
+
+//   }
+
+//   catch (err) {
+
+//     console.error("💥 Sharp crash:", err);
+
+//     cleanup(req.file.path);
+
+//     res.status(500).send("Compression failed");
+
+//   }
+
+// });
 
 // ===============================
 // PDF MERGE ROUTE — FINAL SAFE VERSION
