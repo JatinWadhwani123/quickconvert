@@ -447,3 +447,85 @@ body {
   background: #f0f0f0;
   border-color: #e5322d;
 }
+/* ===============================
+   TOOL PAGE LAYOUT
+=============================== */
+
+.tool-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.tool-card-main {
+
+  background: white;
+  color: #222;
+
+  padding: 35px;
+  border-radius: 16px;
+
+  width: 100%;
+  max-width: 620px;
+
+  text-align: center;
+
+  box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+}
+
+.tool-card-main h1 {
+  margin-bottom: 10px;
+}
+
+.tool-card-main p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+/* Upload box */
+
+.upload-area {
+
+  border: 2px dashed #bbb;
+  border-radius: 12px;
+
+  padding: 35px;
+  margin-bottom: 20px;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.upload-area:hover {
+  border-color: #e53935;
+  background: #fafafa;
+}
+
+.upload-area strong {
+  display: block;
+}
+
+.upload-area span {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Info section */
+
+.tool-info {
+
+  max-width: 650px;
+  text-align: center;
+
+  margin-top: 35px;
+}
+
+.tool-info h2 {
+  margin-bottom: 8px;
+}
+
+.tool-info p {
+  color: #555;
+}

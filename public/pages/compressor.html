@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Image Compressor | QuickConvert</title>
+<title>Image Compressor — QuickConvert</title>
 
 <link rel="stylesheet" href="../css/style.css">
 
@@ -14,74 +14,73 @@
 
 <body>
 
+<!-- NAV -->
+
 <header class="navbar">
 
   <div class="logo">⚡ QuickConvert</div>
 
-  <nav class="tool-tabs">
-    <a href="/pages/converter.html" class="tab">Converter</a>
-    <a href="/pages/compressor.html" class="tab active">Compressor</a>
+  <nav>
+    <a href="/" class="nav-link">Dashboard</a>
+    <a href="/converter.html" class="nav-link">Converter</a>
+    <a href="/compressor.html" class="nav-link active">Compressor</a>
   </nav>
 
 </header>
 
-<section class="hero">
+<!-- MAIN -->
 
-<h1>Image Compressor</h1>
+<main class="tool-wrapper">
 
-<p class="seo-text">
-Reduce image size instantly while keeping quality.
-Fast, secure, browser-based compression.
-</p>
+  <div class="tool-card-main">
 
-<form id="compressForm">
+    <h1>Image Compressor</h1>
 
-<label class="upload-box" id="dropArea">
+    <p>
+      Reduce image size instantly while keeping quality.
+      Fast, secure, and browser-based compression.
+    </p>
 
-<span id="fileText">
-Drag & drop image here<br>
-or click to upload
-</span>
+    <form id="compressForm">
 
-<input type="file" id="fileInput" accept="image/*" hidden required>
+      <div class="upload-area" id="uploadArea">
+        <strong>Drag & drop image here</strong>
+        <span>or click to upload</span>
+        <input type="file" id="fileInput" hidden accept="image/*">
+      </div>
 
-</label>
+      <button type="submit" class="primary-btn">
+        Compress Image
+      </button>
 
-<button type="submit" class="primary-btn">
-Compress Image
-</button>
+    </form>
 
-</form>
+  </div>
 
-<div id="loader" class="loader hidden"></div>
+  <section class="tool-info">
 
-<div id="toast" class="toast hidden">
-✅ Compression complete
-</div>
+    <h2>Why use our compressor?</h2>
 
-</section>
+    <p>
+      QuickConvert compresses images directly in your browser.
+      No software installation required. Files are processed
+      securely and never stored.
+    </p>
 
-<section class="features">
-<div class="feature">⚡ Fast compression</div>
-<div class="feature">🔒 Secure processing</div>
-<div class="feature">📱 Mobile friendly</div>
-</section>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
 
 <footer class="footer">
-<div class="footer-brand">⚡ QuickConvert — Fast & Secure File Tools</div>
-<div class="footer-info">Your files are processed securely and never stored.</div>
-<div class="footer-copy">© 2026 QuickConvert</div>
+
+⚡ QuickConvert — Fast & Secure File Tools  
+Your files are processed securely and never stored.  
+© 2026 QuickConvert
+
 </footer>
 
-<div id="errorModal" class="modal hidden">
-<div class="modal-content">
-<span id="closeError" class="close">&times;</span>
-<h2>Error</h2>
-<p id="errorText"></p>
-</div>
-</div>
-
-<script src="../js/core/app.js"></script>
 <script src="../js/tools/compressor.js"></script>
 
 </body>
