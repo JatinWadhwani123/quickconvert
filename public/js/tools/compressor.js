@@ -1,5 +1,9 @@
-const form = document.getElementById("compressForm");
-const input = document.getElementById("fileInput");
+// ===============================
+// Compressor script — clean version
+// ===============================
+
+const compressForm = document.getElementById("compressForm");
+const fileInput = document.getElementById("fileInput");
 const dropArea = document.getElementById("dropArea");
 const fileText = document.getElementById("fileText");
 
@@ -10,16 +14,17 @@ const errorModal = document.getElementById("errorModal");
 const errorText = document.getElementById("errorText");
 const closeError = document.getElementById("closeError");
 
-// =========================
-// Upload UI handling
-// =========================
+// ---------- upload UI ----------
 
-dropArea.addEventListener("click", () => input.click());
+dropArea.addEventListener("click", () => fileInput.click());
 
-input.addEventListener("change", () => {
-  if (input.files.length)
-    fileText.textContent = input.files[0].name;
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length) {
+    fileText.textContent = fileInput.files[0].name;
+  }
 });
+
+// drag/drop
 
 dropArea.addEventListener("dragover", e => {
   e.preventDefault();
@@ -41,27 +46,20 @@ dropArea.addEventListener("drop", e => {
     return;
   }
 
-  input.files = e.dataTransfer.files;
+  fileInput.files = e.dataTransfer.files;
   fileText.textContent = file.name;
 });
 
-// =========================
-// Submit compression
-// =========================
+// ---------- submit ----------
 
-form.addEventListener("submit", async e => {
+compressForm.addEventListener("submit", async e => {
 
   e.preventDefault();
 
-  const file = input.files[0];
+  const file = fileInput.files[0];
 
   if (!file) {
     showError("Select an image first.");
-    return;
-  }
-
-  if (!file.type.startsWith("image/")) {
-    showError("Only image files allowed!");
     return;
   }
 
@@ -77,9 +75,7 @@ form.addEventListener("submit", async e => {
       body: data
     });
 
-    const type = res.headers.get("content-type") || "";
-
-    if (!res.ok || type.includes("text")) {
+    if (!res.ok) {
       const msg = await res.text();
       throw new Error(msg);
     }
@@ -90,7 +86,7 @@ form.addEventListener("submit", async e => {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "compressed-image.jpg";
+    a.download = "compressed.jpg";
 
     document.body.appendChild(a);
     a.click();
@@ -99,11 +95,15 @@ form.addEventListener("submit", async e => {
     toast.classList.remove("hidden");
     setTimeout(() => toast.classList.add("hidden"), 2500);
 
-  } catch (err) {
+  }
+
+  catch (err) {
 
     showError(err.message || "Compression failed");
 
-  } finally {
+  }
+
+  finally {
 
     loader.classList.add("hidden");
 
@@ -111,9 +111,7 @@ form.addEventListener("submit", async e => {
 
 });
 
-// =========================
-// Error modal
-// =========================
+// ---------- error modal ----------
 
 function showError(msg) {
   errorText.textContent = msg;
