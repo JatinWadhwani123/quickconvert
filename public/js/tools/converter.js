@@ -15,10 +15,16 @@ const closeErrorEl = document.getElementById("closeError");
 
 
 // =========================
-// Submit handler
+// Submit handler (SAFE)
 // =========================
 
 convertFormEl.addEventListener("submit", async (e) => {
+
+  // 🚨 block accidental submit
+  if (!e.submitter) {
+    e.preventDefault();
+    return;
+  }
 
   e.preventDefault();
 
@@ -44,14 +50,12 @@ convertFormEl.addEventListener("submit", async (e) => {
 
     const contentType = res.headers.get("content-type") || "";
 
-    // 🚨 backend error response
     if (!res.ok || contentType.includes("text")) {
 
       const msg = await res.text();
 
       showError("Invalid file", msg);
       return;
-
     }
 
     // ✅ download PDF
@@ -101,7 +105,6 @@ function showToast() {
   setTimeout(() => {
     toastEl.classList.add("hidden");
   }, 3000);
-
 }
 
 
@@ -112,12 +115,9 @@ function showError(title, message) {
   errorTextEl.textContent = message;
 
   errorModalEl.classList.remove("hidden");
-
 }
 
 
 closeErrorEl.addEventListener("click", () => {
-
   errorModalEl.classList.add("hidden");
-
 });
