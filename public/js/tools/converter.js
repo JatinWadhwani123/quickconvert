@@ -1,147 +1,125 @@
-// =========================
-// DOM references
-// =========================
+document.addEventListener("DOMContentLoaded", () => {
 
-const convertFormEl = document.getElementById("convertForm");
-const fileInputEl = document.getElementById("fileInput");
+  // =========================
+  // DOM references (SAFE)
+  // =========================
 
-const loaderEl = document.getElementById("loader");
-const toastEl = document.getElementById("toast");
+  const convertFormEl = document.getElementById("convertForm");
+  const fileInputEl = document.getElementById("fileInput");
 
-const errorModalEl = document.getElementById("errorModal");
-const errorTextEl = document.getElementById("errorText");
-const errorTitleEl = document.getElementById("errorTitle");
-const closeErrorEl = document.getElementById("closeError");
+  const loaderEl = document.getElementById("loader");
+  const toastEl = document.getElementById("toast");
 
+  const errorModalEl = document.getElementById("errorModal");
+  const errorTextEl = document.getElementById("errorText");
+  const closeErrorEl = document.getElementById("closeError");
 
-// =========================
-// Submit handler
-// =========================
+  // Force clean UI state on load
 
-convertFormEl.addEventListener("submit", async (e) => {
+  if (errorModalEl) errorModalEl.style.display = "none";
+  if (toastEl) toastEl.classList.add("hidden");
+  if (loaderEl) loaderEl.classList.add("hidden");
 
-  e.preventDefault();
+  // =========================
+  // Submit handler
+  // =========================
 
-  // prevent ghost submit
-  if (!fileInputEl.files.length) {
+  convertFormEl?.addEventListener("submit", async (e) => {
 
-    showError(
-      "No file selected",
-      "Please choose an image before converting."
-    );
+    e.preventDefault();
 
-    return;
-  }
-
-  const formData = new FormData(convertFormEl);
-
-  loaderEl.classList.remove("hidden");
-
-  try {
-
-    const res = await fetch("/convert", {
-      method: "POST",
-      body: formData
-    });
-
-    const contentType = res.headers.get("content-type") || "";
-
-    if (!res.ok || contentType.includes("text")) {
-
-      const msg = await res.text();
-
-      showError("Invalid file", msg);
+    if (!fileInputEl.files.length) {
+      showError("Please select an image first.");
       return;
     }
 
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
+    const formData = new FormData(convertFormEl);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "converted.pdf";
+    loaderEl.classList.remove("hidden");
 
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    try {
 
-    showToast();
+      const res = await fetch("/convert", {
+        method: "POST",
+        body: formData
+      });
 
-  }
+      const contentType = res.headers.get("content-type") || "";
 
-  catch (err) {
+      if (!res.ok || contentType.includes("text")) {
+        const msg = await res.text();
+        throw new Error(msg);
+      }
 
-    console.error(err);
+      // download file
 
-    showError(
-      "Conversion failed",
-      err.message || "Something went wrong."
-    );
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
 
-  }
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "converted.pdf";
 
-  finally {
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
 
-    loaderEl.classList.add("hidden");
+      showToast();
 
-  }
+    }
 
-});
+    catch (err) {
 
+      console.error(err);
+      showError(err.message || "Conversion failed");
 
-// =========================
-// UI helpers
-// =========================
+    }
 
-function showToast() {
+    finally {
 
-  toastEl.classList.remove("hidden");
+      loaderEl.classList.add("hidden");
 
-  setTimeout(() => {
-    toastEl.classList.add("hidden");
-  }, 3000);
+    }
 
-}
-
-
-function showError(title, message) {
-
-  if (errorTitleEl) errorTitleEl.textContent = title;
-  if (errorTextEl) errorTextEl.textContent = message;
-
-  errorModalEl.style.display = "flex";
-}
-
-closeErrorEl.addEventListener("click", () => {
-  errorModalEl.style.display = "none";
-});
-
-errorModalEl.addEventListener("click", (e) => {
-  if (e.target === errorModalEl) {
-    errorModalEl.style.display = "none";
-  }
-});
-
-
-
-// close modal
-
-if (closeErrorEl) {
-
-  closeErrorEl.addEventListener("click", () => {
-    errorModalEl.classList.add("hidden");
   });
 
-}
+  // =========================
+  // UI helpers
+  // =========================
 
+  function showToast() {
 
-// click outside modal closes it
+    if (!toastEl) return;
 
-errorModalEl.addEventListener("click", (e) => {
+    toastEl.classList.remove("hidden");
 
-  if (e.target === errorModalEl) {
-    errorModalEl.classList.add("hidden");
+    setTimeout(() => {
+      toastEl.classList.add("hidden");
+    }, 3000);
+
   }
 
-});
+  function showError(msg) {
 
+    if (!errorModalEl || !errorTextEl) return;
+
+    errorTextEl.textContent = msg;
+    errorModalEl.style.display = "flex";
+
+  }
+
+  // close modal
+
+  closeErrorEl?.addEventListener("click", () => {
+    errorModalEl.style.display = "none";
+  });
+
+  // click outside modal closes
+
+  errorModalEl?.addEventListener("click", (e) => {
+    if (e.target === errorModalEl) {
+      errorModalEl.style.display = "none";
+    }
+  });
+
+});
