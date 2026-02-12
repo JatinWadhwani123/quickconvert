@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileInput = document.getElementById("fileInput");
   const form = document.getElementById("convertForm");
 
+  const progress = document.getElementById("convertProgress");
+  const bar = document.getElementById("convertBar");
+
+  const uploadText = document.getElementById("uploadText");
+  const uploadSub = document.getElementById("uploadSub");
+
   if (!uploadArea || !fileInput || !form) {
     console.error("Converter UI elements missing");
     return;
@@ -24,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
   fileInput.addEventListener("change", () => {
 
     const file = fileInput.files[0];
-
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
@@ -35,11 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     selectedFile = file;
 
-    uploadArea.innerHTML = `
-      📄 <strong>${file.name}</strong>
-      <br><span>Click to change file</span>
-      <input type="file" id="fileInput" name="file" hidden>
-    `;
+    uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
+    uploadSub.textContent = "Click to change file";
 
   });
 
@@ -74,11 +76,8 @@ document.addEventListener("DOMContentLoaded", () => {
     dt.items.add(file);
     fileInput.files = dt.files;
 
-    uploadArea.innerHTML = `
-      📄 <strong>${file.name}</strong>
-      <br><span>Click to change file</span>
-      <input type="file" id="fileInput" name="file" hidden>
-    `;
+    uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
+    uploadSub.textContent = "Click to change file";
 
   });
 
@@ -98,6 +97,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
+    // 🔥 show progress
+    progress.classList.remove("hidden");
+
+    let p = 0;
+    const anim = setInterval(() => {
+      p += 6;
+      bar.style.width = p + "%";
+      if (p >= 90) clearInterval(anim);
+    }, 120);
+
     try {
 
       const res = await fetch("/convert", {
@@ -109,14 +118,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const blob = await res.blob();
 
+      bar.style.width = "100%";
+
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "converted.pdf";
       a.click();
 
-    } catch {
+    }
+
+    catch {
 
       alert("Conversion failed");
+
+    }
+
+    finally {
+
+      setTimeout(() => {
+
+        progress.classList.add("hidden");
+        bar.style.width = "0%";
+
+      }, 1200);
 
     }
 
