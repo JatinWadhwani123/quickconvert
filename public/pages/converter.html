@@ -14,126 +14,82 @@
 
 <body>
 
-<!-- ================= NAV ================= -->
+<!-- NAVBAR -->
 
 <header class="navbar">
+  <div class="logo">⚡ QuickConvert</div>
 
-<div class="logo">⚡ QuickConvert</div>
-
-<nav class="tool-tabs">
-<a href="/" class="tab">Dashboard</a>
-<a href="/converter.html" class="tab active">Converter</a>
-<a href="/compressor.html" class="tab">Compressor</a>
-</nav>
-
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/converter" class="active">Converter</a>
+    <a href="/compressor">Compressor</a>
+  </nav>
 </header>
 
+<!-- TOOL WRAPPER -->
 
-<!-- ================= MAIN ================= -->
+<div class="tool-wrapper">
 
-<main class="page-wrapper">
+  <div class="tool-card-main">
 
-<section class="converter-card">
+    <h1>Free Image → PDF Converter</h1>
 
-<h1>Free Image → PDF Converter</h1>
+    <p>
+      Convert JPG or PNG images instantly into a PDF using our secure online converter.
+      No uploads stored. Fast drag-and-drop conversion.
+    </p>
 
-<p class="converter-desc">
-Convert JPG or PNG images instantly into a PDF using our secure online converter.
-No uploads stored. Fast drag-and-drop conversion.
-</p>
+    <!-- CONVERTER FORM -->
 
-<form id="convertForm">
+    <form id="convertForm">
 
-  <div class="upload-area" id="uploadArea">
-    Drag & drop image here
-    <br>or click to upload
+     <label id="uploadArea" class="upload-area">
 
-    <input type="file" id="fileInput" name="file" hidden>
+  <strong id="uploadTitle">Drag & drop image here</strong>
+  <span id="uploadSubtitle">or click to upload</span>
+
+  <input type="file" id="fileInput" accept="image/*">
+
+</label>
+
+
+      <button type="submit" class="primary-btn">
+        Convert to PDF
+      </button>
+
+    </form>
+
+    <!-- PROGRESS BAR -->
+
+    <div id="convertProgress" class="progress hidden">
+      <div id="convertBar"></div>
+    </div>
+
   </div>
 
-  <button type="submit" class="primary-btn">
-    Convert to PDF
-  </button>
+  <!-- INFO SECTION -->
 
-</form>
-<!-- Progress bar -->
+  <div class="tool-info">
 
-<div id="convertProgress" class="progress hidden">
-  <div id="convertBar"></div>
+    <h2>Why use our converter?</h2>
+
+    <p>
+      QuickConvert allows instant image → PDF transformation directly in your browser.
+      No software installation required. Files are processed securely and never stored.
+    </p>
+
+  </div>
+
 </div>
 
-
-
-<div id="loader" class="loader hidden"></div>
-
-</section>
-
-
-<!-- WHY SECTION -->
-
-<section class="why-section">
-
-<h2>Why use our converter?</h2>
-
-<p>
-QuickConvert allows instant image → PDF transformation directly in your browser.
-No software installation required. Files are processed securely and never stored.
-</p>
-
-</section>
-
-</main>
-
-
-<!-- ================= FOOTER ================= -->
+<!-- FOOTER -->
 
 <footer class="footer">
-
-<div class="footer-brand">
-⚡ QuickConvert — Fast & Secure File Conversion
-</div>
-
-<div class="footer-info">
-Your files are processed securely and never stored.
-</div>
-
-<div class="footer-links">
-<a href="/privacy.html">Privacy</a>
-<a href="/terms.html">Terms</a>
-<a href="/contact.html">Contact</a>
-</div>
-
-<div class="footer-copy">
-© 2026 QuickConvert
-</div>
-
+  ⚡ QuickConvert — Fast & Secure File Conversion
 </footer>
-
-
-<!-- ================= MODAL ================= -->
-
-<div id="errorModal" class="modal">
-
-<div class="modal-content">
-
-<span id="closeError" class="close">×</span>
-
-<h3>Error</h3>
-<p id="errorText"></p>
-
-</div>
-
-</div>
-
-
-<!-- ================= TOAST ================= -->
-
-<div id="toast" class="toast hidden">
-✔ File downloaded successfully
-</div>
-
 
 <script src="../js/tools/converter.js"></script>
 
 </body>
+
 </html>

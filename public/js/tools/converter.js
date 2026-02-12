@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const progress = document.getElementById("convertProgress");
   const bar = document.getElementById("convertBar");
 
-  const uploadText = document.getElementById("uploadText");
-  const uploadSub = document.getElementById("uploadSub");
+  const uploadTitle = document.getElementById("uploadTitle");
+  const uploadSubtitle = document.getElementById("uploadSubtitle");
 
   if (!uploadArea || !fileInput || !form) {
     console.error("Converter UI elements missing");
@@ -40,8 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     selectedFile = file;
 
-    uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
-    uploadSub.textContent = "Click to change file";
+    // UI feedback
+    if (uploadTitle && uploadSubtitle) {
+      uploadTitle.textContent = "Selected file:";
+      uploadSubtitle.textContent = file.name;
+    }
+
+    uploadArea.classList.add("has-file");
 
   });
 
@@ -72,12 +77,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     selectedFile = file;
 
+    // sync input element
     const dt = new DataTransfer();
     dt.items.add(file);
     fileInput.files = dt.files;
 
-    uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
-    uploadSub.textContent = "Click to change file";
+    // UI feedback
+    if (uploadTitle && uploadSubtitle) {
+      uploadTitle.textContent = "Selected file:";
+      uploadSubtitle.textContent = file.name;
+    }
+
+    uploadArea.classList.add("has-file");
 
   });
 
@@ -97,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    // 🔥 show progress
+    // show progress UI
     progress.classList.remove("hidden");
 
     let p = 0;
@@ -128,9 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     catch {
-
       alert("Conversion failed");
-
     }
 
     finally {

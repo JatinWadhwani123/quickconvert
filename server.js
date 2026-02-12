@@ -28,19 +28,22 @@ app.use(express.static("public"));
 // PAGE ROUTES
 // ===============================
 
-app.get("/", (_, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/index.html"))
-);
+// Dashboard
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages/index.html"));
+});
 
-app.get("/converter", (_, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/converter.html"))
-);
+// Converter
+app.get("/converter", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages/converter.html"));
+});
 
-app.get("/compressor", (_, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/compressor.html"))
-);
-
-app.get("/merger", (_, res) =>
+// Compressor
+app.get("/compressor", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages/compressor.html"));
+});
+//Merger
+app.get("/merger", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merger.html"))
 );
 

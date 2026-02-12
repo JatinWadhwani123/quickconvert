@@ -1,6 +1,6 @@
-/* ===============================
+/* =================================
    GLOBAL RESET
-=============================== */
+================================= */
 
 * {
   margin: 0;
@@ -17,19 +17,17 @@ body {
   min-height: 100vh;
 }
 
-/* ===============================
+/* =================================
    NAVBAR
-=============================== */
+================================= */
 
 .navbar {
   background: white;
   border-bottom: 1px solid #e5e5e5;
   padding: 14px 24px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   position: sticky;
   top: 0;
   z-index: 100;
@@ -40,32 +38,27 @@ body {
   font-size: 18px;
 }
 
-.tool-tabs {
-  display: flex;
-  gap: 10px;
-}
-
-.tab {
-  text-decoration: none;
+.navbar nav a {
+  margin-left: 12px;
   padding: 8px 14px;
+  text-decoration: none;
+  color: #333;
   border-radius: 6px;
-  color: #555;
-  font-weight: 500;
   transition: 0.2s;
 }
 
-.tab:hover {
-  background: #f1f1f1;
+.navbar nav a:hover {
+  background: #eee;
 }
 
-.tab.active {
+.navbar nav a.active {
   background: #e53935;
   color: white;
 }
 
-/* ===============================
+/* =================================
    DASHBOARD HERO
-=============================== */
+================================= */
 
 .dashboard-hero {
   text-align: center;
@@ -81,7 +74,6 @@ body {
 
 .dashboard-hero p {
   color: #666;
-  font-size: 16px;
 }
 
 .hero-badges {
@@ -101,15 +93,14 @@ body {
   color: #555;
 }
 
-/* ===============================
+/* =================================
    TOOL GRID
-=============================== */
+================================= */
 
 .tool-grid {
   max-width: 1000px;
   margin: 40px auto;
   padding: 0 20px;
-
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
@@ -118,18 +109,16 @@ body {
 .tool-card {
   background: white;
   border: 1px solid #e5e5e5;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 22px;
-
   text-decoration: none;
   color: #222;
-
   transition: 0.25s ease;
 }
 
 .tool-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
 .tool-icon {
@@ -137,72 +126,100 @@ body {
   margin-bottom: 10px;
 }
 
-.tool-card h3 {
-  margin-bottom: 6px;
-}
-
 .tool-card p {
   font-size: 14px;
   color: #666;
 }
 
-/* ===============================
-   HERO TOOL PAGES
-=============================== */
+/* =================================
+   TOOL PAGE CARD
+================================= */
 
-.hero {
-  background: white;
-  margin: 40px auto;
-  padding: 30px;
-  border-radius: 12px;
-  max-width: 500px;
-  text-align: center;
-
-  border: 1px solid #e5e5e5;
-}
-
-.hero h1 {
-  margin-bottom: 8px;
-}
-
-.seo-text {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 15px;
-}
-
-.upload-box {
-  border: 2px dashed #ddd;
+.tool-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 40px 20px;
-  border-radius: 10px;
+}
+
+.tool-card-main {
+  background: white;
+  padding: 35px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 620px;
+  text-align: center;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+}
+
+.tool-card-main h1 {
+  margin-bottom: 10px;
+}
+
+.tool-card-main p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+/* =================================
+   UPLOAD AREA
+================================= */
+
+.upload-area {
+  border: 2px dashed #bbb;
+  border-radius: 12px;
+  padding: 35px;
+  margin-bottom: 20px;
+
   cursor: pointer;
-  margin-bottom: 15px;
+  transition: all 0.25s ease;
+
+  /* 🔥 FIX */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 90px;
+}
+
+
+.upload-area:hover {
+  border-color: #e53935;
   background: #fafafa;
 }
 
-.upload-box:hover {
+.upload-area.drag-active {
+  background: #f0f0f0;
   border-color: #e53935;
-  background: #fff;
+}
+/* 🔥 CRITICAL FIX */
+.upload-area input {
+  display: none;
 }
 
+/* =================================
+   BUTTON
+================================= */
+
 .primary-btn {
+  width: 100%;
+  padding: 14px;
   background: #e53935;
   color: white;
   border: none;
-  padding: 12px;
-  width: 100%;
   border-radius: 8px;
-  font-weight: 600;
+  font-size: 16px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
 .primary-btn:hover {
   background: #c62828;
 }
 
-/* ===============================
-   FEATURES
-=============================== */
+/* =================================
+   FEATURES / INFO
+================================= */
 
 .features {
   display: flex;
@@ -220,11 +237,16 @@ body {
   font-size: 14px;
 }
 
+.tool-info {
+  max-width: 650px;
+  text-align: center;
+  margin-top: 35px;
+  color: #555;
+}
 
-
-/* ===============================
-   LOADER + PROGRESS
-=============================== */
+/* =================================
+   PROGRESS + LOADER
+================================= */
 
 .loader {
   border: 4px solid #eee;
@@ -239,20 +261,6 @@ body {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-
-/* .progress {
-  width: 100%;
-  height: 6px;
-  background: #eee;
-  border-radius: 6px;
-  margin-top: 10px;
-}
-
-#progressBar {
-  height: 100%;
-  width: 0%;
-  background: #e53935;
-} */
 
 .progress {
   width: 100%;
@@ -271,28 +279,102 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-/* ===============================
+/* =================================
+   FILE LIST (MERGER)
+================================= */
+
+.file-list-wrapper {
+  margin: 18px 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f7f7f7;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.file-item:hover {
+  background: #ececec;
+}
+
+.remove-btn {
+  cursor: pointer;
+  font-size: 16px;
+  color: #999;
+}
+
+.remove-btn:hover {
+  color: #e53935;
+  transform: scale(1.2);
+}
+
+/* =================================
    TOAST
-=============================== */
+================================= */
 
 .toast {
   position: fixed;
   bottom: 20px;
   right: 20px;
-
   background: #2e7d32;
   color: white;
-
   padding: 10px 14px;
   border-radius: 6px;
 }
 
-/* ===============================
+/* =================================
+   MODAL
+================================= */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 10px;
+  top: 6px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* =================================
    FOOTER
-=============================== */
+================================= */
 
 .footer {
   margin-top: auto;
@@ -314,9 +396,9 @@ body {
   text-decoration: underline;
 }
 
-/* ===============================
+/* =================================
    MOBILE
-=============================== */
+================================= */
 
 @media (max-width: 600px) {
 
@@ -328,301 +410,4 @@ body {
     grid-template-columns: 1fr;
   }
 
-}
-/* ===============================
-   MODAL
-=============================== */
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-
-  display: none; /* hidden by default */
-
-  justify-content: center;
-  align-items: center;
-
-  z-index: 9999;
-}
-
-.modal.show {
-  display: flex;
-}
-
-.modal-content {
-  background: white;
-  color: black;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-
-  position: relative;
-}
-
-.close {
-  position: absolute;
-  right: 10px;
-  top: 6px;
-
-  cursor: pointer;
-  font-size: 20px;
-}
-
-.hidden {
-  display: none !important;
-}
-/* ===============================
-   CONVERTER PAGE LAYOUT
-=============================== */
-
-.page-wrapper {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-.converter-card {
-  background: white;
-  color: black;
-
-  padding: 35px;
-  border-radius: 16px;
-
-  text-align: center;
-
-  max-width: 600px;
-  margin: auto;
-
-  box-shadow: 0 6px 30px rgba(0,0,0,0.1);
-}
-
-.converter-card h1 {
-  margin-bottom: 12px;
-}
-
-.converter-desc {
-  margin-bottom: 20px;
-  opacity: 0.8;
-}
-
-.upload-area {
-  display: block;
-
-  border: 2px dashed #ddd;
-  padding: 30px;
-  border-radius: 12px;
-
-  cursor: pointer;
-  margin-bottom: 20px;
-
-  transition: 0.2s;
-}
-
-.upload-area:hover {
-  background: #f7f7f7;
-}
-
-.upload-area input {
-  display: none;
-}
-
-.upload-area span {
-  display: block;
-  font-weight: bold;
-}
-
-.upload-area small {
-  opacity: 0.7;
-}
-
-.primary-btn {
-  width: 100%;
-  padding: 14px;
-
-  background: #e5322d;
-  color: white;
-
-  border: none;
-  border-radius: 8px;
-
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.primary-btn:hover {
-  opacity: 0.9;
-}
-
-.why-section {
-  margin-top: 50px;
-  text-align: center;
-}
-
-.why-section h2 {
-  margin-bottom: 10px;
-}
-.upload-area.drag-active {
-  background: #f0f0f0;
-  border-color: #e5322d;
-}
-/* ===============================
-   TOOL PAGE LAYOUT
-=============================== */
-
-.tool-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 20px;
-}
-
-.tool-card-main {
-
-  background: white;
-  color: #222;
-
-  padding: 35px;
-  border-radius: 16px;
-
-  width: 100%;
-  max-width: 620px;
-
-  text-align: center;
-
-  box-shadow: 0 10px 35px rgba(0,0,0,0.15);
-}
-
-.tool-card-main h1 {
-  margin-bottom: 10px;
-}
-
-.tool-card-main p {
-  margin-bottom: 20px;
-  color: #555;
-}
-
-/* Upload box */
-
-.upload-area {
-
-  border: 2px dashed #bbb;
-  border-radius: 12px;
-
-  padding: 35px;
-  margin-bottom: 20px;
-
-  cursor: pointer;
-
-  transition: all 0.25s ease;
-}
-
-.upload-area:hover {
-  border-color: #e53935;
-  background: #fafafa;
-}
-
-.upload-area strong {
-  display: block;
-}
-
-.upload-area span {
-  font-size: 14px;
-  color: #777;
-}
-
-/* Info section */
-
-.tool-info {
-
-  max-width: 650px;
-  text-align: center;
-
-  margin-top: 35px;
-}
-
-.tool-info h2 {
-  margin-bottom: 8px;
-}
-
-.tool-info p {
-  color: #555;
-}
-.navbar nav a {
-  margin-left: 15px;
-  padding: 8px 14px;
-
-  text-decoration: none;
-  color: #333;
-
-  border-radius: 6px;
-  transition: 0.2s;
-}
-
-.navbar nav a:hover {
-  background: #eee;
-}
-
-.navbar nav a.active {
-  background: #e53935;
-  color: white;
-}
-/* =========================
-   MERGER FILE LIST POLISH
-========================= */
-
-.file-list-wrapper {
-  margin: 18px 0;
-  max-height: 180px;
-  overflow-y: auto;
-}
-
-.file-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* file item */
-
-.file-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  background: #f7f7f7;
-  border-radius: 10px;
-
-  padding: 10px 14px;
-
-  font-size: 14px;
-  transition: 0.2s ease;
-}
-
-.file-item:hover {
-  background: #ececec;
-}
-
-/* file name */
-
-.file-item span:first-child {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 80%;
-}
-
-/* remove button */
-
-.remove-btn {
-  cursor: pointer;
-  font-size: 16px;
-  color: #999;
-  transition: 0.2s ease;
-}
-
-.remove-btn:hover {
-  color: #e53935;
-  transform: scale(1.2);
 }
