@@ -69,6 +69,19 @@ app.get("/merger", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merger.html"))
 );
 
+app.get("/privacy", (req, res) => {
+  res.sendFile(__dirname + "/public/privacy.html");
+});
+
+app.get("/terms", (req, res) => {
+  res.sendFile(__dirname + "/public/terms.html");
+});
+
+app.get("/contact", (req, res) => {
+  res.sendFile(__dirname + "/public/contact.html");
+});
+
+
 // backward compatibility
 app.get("/converter.html", (_, res) => res.redirect("/converter"));
 app.get("/compressor.html", (_, res) => res.redirect("/compressor"));
