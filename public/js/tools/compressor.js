@@ -60,49 +60,63 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadSub.textContent = "Click to change file";
 
   }
+  const progress = document.getElementById("compressProgress");
+const bar = document.getElementById("compressBar");
+
 
   // SUBMIT
   form.addEventListener("submit", async e => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!selectedFile) {
-      alert("Please upload an image first.");
-      return;
-    }
+  if (!selectedFile) {
+    alert("Please upload an image first.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("file", selectedFile); // ✅ matches server
+  progress.classList.remove("hidden");
 
-    try {
+  let p = 0;
+  const anim = setInterval(() => {
+    p += 6;
+    bar.style.width = p + "%";
+    if (p >= 90) clearInterval(anim);
+  }, 120);
 
-      const res = await fetch("/compress", {
-        method: "POST",
-        body: formData
-      });
+  const formData = new FormData();
+  formData.append("file", selectedFile);
 
-      if (!res.ok) throw new Error("Compression failed");
+  try {
 
-      const blob = await res.blob();
+    const res = await fetch("/compress", {
+      method: "POST",
+      body: formData
+    });
 
-      const url = URL.createObjectURL(blob);
+    if (!res.ok) throw new Error("Compression failed");
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "compressed-image.jpg";
+    const blob = await res.blob();
 
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+    bar.style.width = "100%";
 
-    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "compressed.jpg";
+    a.click();
 
-    catch (err) {
+  } catch (err) {
 
-      alert(err.message);
+    alert(err.message);
 
-    }
+  }
 
-  });
+  setTimeout(() => {
+
+    progress.classList.add("hidden");
+    bar.style.width = "0%";
+
+  }, 1200);
+
+});
 
 });
