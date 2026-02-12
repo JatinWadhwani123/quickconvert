@@ -7,6 +7,7 @@ const multer = require("multer");
 const { PDFDocument } = require("pdf-lib");
 const sharp = require("sharp");
 const path = require("path");
+const storage = multer.memoryStorage();
 
 // ===============================
 // APP SETUP
@@ -15,11 +16,32 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ MEMORY upload — no temp files
+// =====================
+// MULTER CONFIG — LARGE FILE SUPPORT
+// =====================
 const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }
+  storage,
+
+  limits: {
+    fileSize: 50 * 1024 * 1024, // ✅ 50MB per file
+    files: 20                   // ✅ allow multiple PDFs
+  },
+
+  fileFilter: (req, file, cb) => {
+
+    if (
+      file.mimetype === "application/pdf" ||
+      file.mimetype.startsWith("image/")
+    ) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid file type"), false);
+    }
+
+  }
+
 });
+
 
 // static frontend
 app.use(express.static("public"));

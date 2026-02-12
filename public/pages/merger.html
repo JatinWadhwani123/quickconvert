@@ -2,131 +2,174 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>PDF Merger — QuickConvert</title>
+<title>PDF Merger | QuickConvert</title>
 
 <link rel="stylesheet" href="../css/style.css">
-
 </head>
 
 <body>
 
+<!-- NAVBAR -->
+
 <header class="navbar">
+  <div class="logo">⚡ QuickConvert</div>
 
-<div class="logo">⚡ QuickConvert</div>
-
-<nav class="tool-tabs">
-<a href="/" class="tab">Dashboard</a>
-<a href="/converter.html" class="tab">Converter</a>
-<a href="/compressor.html" class="tab">Compressor</a>
-<a href="/merger.html" class="tab active">Merger</a>
-</nav>
-
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/converter">Converter</a>
+    <a href="/compressor">Compressor</a>
+    <a href="/merger" class="active">Merger</a>
+  </nav>
 </header>
 
+<!-- HERO -->
 
-<!-- MAIN WRAPPER -->
+<section class="tool-hero convert-hero">
 
-<main class="tool-wrapper">
+  <div class="hero-icon modern-icon convert-icon">📄</div>
 
-<div class="tool-card-main">
+  <h1>PDF Merger</h1>
 
-<h1>PDF Merger</h1>
+  <p>
+    Combine multiple PDF files into one document instantly —
+    secure, fast, and fully browser-based.
+  </p>
+
+</section>
+
+<!-- TOOL CARD -->
+
+<section class="tool-wrapper">
+
+  <div class="tool-card-main">
+
+    <form id="mergeForm">
+
+      <label class="upload-area" id="uploadArea">
+
+        <strong id="uploadText">
+          Drag & drop PDFs here
+        </strong>
+
+        <span id="uploadSub">
+          or click to upload
+        </span>
+
+        <input
+          type="file"
+          id="fileInput"
+          accept="application/pdf"
+          multiple
+        >
+
+      </label>
+
+      <!-- PDF LIST -->
+      <ul id="pdfList" class="pdf-list"></ul>
+
+      <button type="submit" class="primary-btn">
+        Merge PDFs
+      </button>
+
+      <!-- PROGRESS -->
+      <div id="mergeProgress" class="progress hidden">
+        <div id="mergeBar"></div>
+      </div>
+
+    </form>
+
+  </div>
+
+</section>
+
+<!-- PREMIUM FEATURES -->
+
+<section class="premium-features">
+
+<h2>Why creators choose QuickConvert</h2>
+
+<div class="premium-feature-grid">
+
+  <div class="premium-feature">
+    <div class="feature-icon">⚡</div>
+    <h3>Lightning fast</h3>
+    <p>Instant browser merging</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🔒</div>
+    <h3>Private & secure</h3>
+    <p>No files are stored</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🌍</div>
+    <h3>Works anywhere</h3>
+    <p>Desktop or mobile</p>
+  </div>
+
+</div>
+
+</section>
+
+<!-- HOW IT WORKS (MISSING — NOW FIXED) -->
+
+<section class="how-section">
+
+<h2>How it works</h2>
+
+<div class="steps">
+
+  <div class="step">
+    📤 Upload
+    <p>Select multiple PDFs</p>
+  </div>
+
+  <div class="step">
+    🔄 Merge
+    <p>Instant browser processing</p>
+  </div>
+
+  <div class="step">
+    📥 Download
+    <p>Get your merged PDF</p>
+  </div>
+
+</div>
+
+</section>
+
+<!-- SEO TEXT (MISSING — NOW FIXED) -->
+
+<section class="seo-section">
+
+<h2>Free online PDF merger</h2>
 
 <p>
-Combine multiple PDF files into one document —
-fast, secure, and browser-based.
-</p>
-
-
-<form id="mergeForm">
-
-<!-- Upload zone -->
-
-<div class="upload-area" id="dropArea">
-
-<div id="fileText">
-<strong>Drag & drop PDFs here</strong><br>
-<span>or click to upload</span>
-</div>
-
-<input
-type="file"
-id="fileInput"
-name="files"
-multiple
-accept=".pdf"
-hidden
->
-
-</div>
-
-<!-- Selected files -->
-
-<div class="file-list-wrapper">
-  <div id="fileList" class="file-list"></div>
-</div>
-
-<button type="submit" id="mergeBtn" class="primary-btn">
-Merge PDFs
-</button>
-
-</form>
-
-<!-- Progress -->
-
-<div id="progressContainer" class="progress hidden">
-<div id="progressBar"></div>
-</div>
-
-</div>
-
-
-<section class="tool-info">
-
-<h2>Why use our merger?</h2>
-
-<p>
-QuickConvert merges PDFs directly in your browser.
-No software installation required. Files are processed
-securely and never stored.
+QuickConvert lets you merge multiple PDF files into a single document
+instantly. No software installation required. Everything runs securely
+inside your browser.
 </p>
 
 </section>
 
-</main>
-
+<!-- FOOTER -->
 
 <footer class="footer">
 
-⚡ QuickConvert — Fast & Secure File Tools  
-Files are processed temporarily and never stored.  
-© 2026 QuickConvert
+⚡ QuickConvert — Fast & Secure File Tools
+
+<div class="footer-links">
+  <a href="/privacy">Privacy</a>
+  <a href="/terms">Terms</a>
+  <a href="/contact">Contact</a>
+</div>
 
 </footer>
 
-
-<!-- Error modal -->
-
-<div id="errorModal" class="modal hidden">
-<div class="modal-content">
-<span id="closeError" class="close">×</span>
-<p id="errorText"></p>
-</div>
-</div>
-
-<!-- Toast -->
-
-<div id="toast" class="toast">
-Merge complete ✅
-</div>
-
-
-<script src="../js/core/ui.js"></script>
-<script src="../js/core/toast.js"></script>
 <script src="../js/tools/merger.js"></script>
 
 </body>

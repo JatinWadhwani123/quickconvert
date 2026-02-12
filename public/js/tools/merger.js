@@ -1,278 +1,202 @@
-// ======================
-// DOM references
-// ======================
+document.addEventListener("DOMContentLoaded", () => {
 
-const dropArea = document.getElementById("dropArea");
+const uploadArea = document.getElementById("uploadArea");
 const fileInput = document.getElementById("fileInput");
 const form = document.getElementById("mergeForm");
 
-const progress = document.getElementById("progressContainer");
-const bar = document.getElementById("progressBar");
-const btn = document.getElementById("mergeBtn");
+const pdfList = document.getElementById("pdfList");
 
-const fileListUI = document.getElementById("fileList");
-const toast = document.getElementById("toast");
+const progress = document.getElementById("mergeProgress");
+const bar = document.getElementById("mergeBar");
 
-let fileArray = [];
-let dragIndex = null;
-let progressAnim = null;
+let files = [];
 
+// =======================
+// ADD FILES
+// =======================
 
-// ======================
-// Upload handlers
-// ======================
+function addFiles(newFiles) {
 
-dropArea.addEventListener("click", () => fileInput.click());
+for (let file of newFiles) {
 
-dropArea.addEventListener("dragover", e => {
-  e.preventDefault();
-  dropArea.classList.add("drag-active");
-});
-
-dropArea.addEventListener("dragleave", () =>
-  dropArea.classList.remove("drag-active")
-);
-
-dropArea.addEventListener("drop", e => {
-  e.preventDefault();
-  dropArea.classList.remove("drag-active");
-  addFiles(e.dataTransfer.files);
-});
-
-fileInput.addEventListener("change", () => {
-  addFiles(fileInput.files);
-  fileInput.value = "";
-});
-
-
-// ======================
-// Add files safely
-// ======================
-
-function addFiles(files) {
-
-  Array.from(files).forEach(file => {
-
-    if (file.type !== "application/pdf") {
-      glowInvalid();
-      return;
-    }
-
-    const exists = fileArray.some(f =>
-      f.name === file.name &&
-      f.size === file.size
-    );
-
-    if (!exists)
-      fileArray.push(file);
-
-  });
-
-  renderList();
+if (file.type !== "application/pdf") {
+alert("Only PDFs allowed");
+continue;
 }
 
+files.push(file);
 
-// ======================
-// Invalid glow
-// ======================
-
-function glowInvalid() {
-
-  dropArea.style.boxShadow = "0 0 15px red";
-
-  setTimeout(() =>
-    dropArea.style.boxShadow = "",
-    600
-  );
 }
 
+renderList();
+}
 
-// ======================
-// Render + drag reorder
-// ======================
+// =======================
+// RENDER LIST
+// =======================
 
 function renderList() {
 
-  fileListUI.innerHTML = "";
+pdfList.innerHTML = "";
 
-  fileArray.forEach((file, index) => {
+files.forEach((file, index) => {
 
-    const item = document.createElement("div");
-    item.className = "file-item";
-    item.draggable = true;
+const li = document.createElement("li");
 
-    item.innerHTML = `
-      <span>${file.name}</span>
-      <span class="remove-btn">✖</span>
-    `;
+li.draggable = true;
+li.className = "pdf-item";
 
-    // remove button
-    item.querySelector(".remove-btn").onclick = () => {
-      fileArray.splice(index, 1);
-      renderList();
-    };
+li.innerHTML = `
+<span>${index + 1}. ${file.name}</span>
+<button data-index="${index}">✕</button>
+`;
 
-    // drag start
-    item.addEventListener("dragstart", () => {
-      dragIndex = index;
-      item.classList.add("dragging");
-    });
-
-    // drag end
-    item.addEventListener("dragend", () => {
-      item.classList.remove("dragging");
-      dragIndex = null;
-    });
-
-    fileListUI.appendChild(item);
-  });
-}
-
-
-// reorder logic
-fileListUI.addEventListener("dragover", e => {
-
-  e.preventDefault();
-
-  const dragging = document.querySelector(".dragging");
-  const afterElement = getDragAfterElement(e.clientY);
-
-  if (!dragging) return;
-
-  if (afterElement == null) {
-    fileListUI.appendChild(dragging);
-  } else {
-    fileListUI.insertBefore(dragging, afterElement);
-  }
-
-  updateArrayOrder();
+pdfList.appendChild(li);
 });
 
+// remove buttons
 
-function getDragAfterElement(y) {
+pdfList.querySelectorAll("button").forEach(btn => {
 
-  const items = [
-    ...fileListUI.querySelectorAll(".file-item:not(.dragging)")
-  ];
+btn.onclick = e => {
 
-  return items.reduce((closest, child) => {
+files.splice(e.target.dataset.index, 1);
+renderList();
 
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
+};
 
-    if (offset < 0 && offset > closest.offset)
-      return { offset, element: child };
-    else
-      return closest;
+});
 
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
+// drag reorder
+
+let dragIndex;
+
+pdfList.querySelectorAll(".pdf-item").forEach((item, i) => {
+
+item.addEventListener("dragstart", () => dragIndex = i);
+
+item.addEventListener("dragover", e => e.preventDefault());
+
+item.addEventListener("drop", () => {
+
+const temp = files[dragIndex];
+files[dragIndex] = files[i];
+files[i] = temp;
+
+renderList();
+
+});
+
+});
+
 }
 
+// =======================
+// INPUT PICKER
+// =======================
 
-function updateArrayOrder() {
+fileInput.addEventListener("change", () => {
 
-  const items = [...fileListUI.children];
+addFiles(fileInput.files);
+fileInput.value = "";
 
-  fileArray = items.map(el => {
+});
 
-    const name = el.querySelector("span").textContent;
+// =======================
+// DRAG DROP
+// =======================
 
-    return fileArray.find(f => f.name === name);
+uploadArea.addEventListener("dragover", e => {
 
-  });
-}
+e.preventDefault();
+uploadArea.classList.add("drag-active");
 
+});
 
-// ======================
-// Submit merge
-// ======================
+uploadArea.addEventListener("dragleave", () => {
+
+uploadArea.classList.remove("drag-active");
+
+});
+
+uploadArea.addEventListener("drop", e => {
+
+e.preventDefault();
+uploadArea.classList.remove("drag-active");
+
+addFiles(e.dataTransfer.files);
+
+});
+
+// =======================
+// MERGE
+// =======================
 
 form.addEventListener("submit", async e => {
 
-  e.preventDefault();
+e.preventDefault();
 
-  if (fileArray.length < 2) {
-    glowInvalid();
-    return;
-  }
+if (!files.length) {
+alert("Upload PDFs first");
+return;
+}
 
-  btn.disabled = true;
-  btn.textContent = "Merging…";
+const formData = new FormData();
 
-  progress.classList.remove("hidden");
+files.forEach(file => formData.append("files", file));
 
-  let p = 0;
+// progress animation
 
-  clearInterval(progressAnim);
+progress.classList.remove("hidden");
 
-  progressAnim = setInterval(() => {
+let p = 0;
 
-    p += 5;
-    bar.style.width = p + "%";
+const anim = setInterval(() => {
 
-    if (p >= 95)
-      clearInterval(progressAnim);
+p += 6;
+bar.style.width = p + "%";
 
-  }, 120);
+if (p >= 90) clearInterval(anim);
 
-  try {
+}, 120);
 
-    const formData = new FormData();
+try {
 
-    fileArray.forEach(file =>
-      formData.append("files", file)
-    );
+const res = await fetch("/merge", {
+method: "POST",
+body: formData
+});
 
-    const res = await fetch("/merge", {
-      method: "POST",
-      body: formData
-    });
+if (!res.ok) throw new Error();
 
-    if (!res.ok)
-      throw new Error();
+const blob = await res.blob();
 
-    const blob = await res.blob();
+bar.style.width = "100%";
 
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "merged.pdf";
-    a.click();
+const a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "merged.pdf";
+a.click();
 
-    bar.style.width = "100%";
+}
 
-    showToast();
+catch {
 
-  }
+alert("Merge failed");
 
-  catch {
+}
 
-    alert("Merge failed");
+finally {
 
-  }
+setTimeout(() => {
 
-  setTimeout(() => {
+progress.classList.add("hidden");
+bar.style.width = "0%";
 
-    btn.disabled = false;
-    btn.textContent = "Merge PDFs";
+}, 1200);
 
-    progress.classList.add("hidden");
-    bar.style.width = "0%";
-
-  }, 2000);
+}
 
 });
 
-
-// ======================
-// Toast popup
-// ======================
-
-function showToast() {
-
-  toast.classList.add("show");
-
-  setTimeout(() =>
-    toast.classList.remove("show"),
-    2500
-  );
-}
+});

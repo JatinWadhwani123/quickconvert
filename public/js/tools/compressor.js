@@ -1,64 +1,156 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-const form = document.getElementById("compressForm");
-const input = document.getElementById("fileInput");
-const uploadText = document.getElementById("uploadText");
-const loader = document.getElementById("loader");
-const progress = document.getElementById("progress");
-const bar = document.getElementById("progressBar");
+  const uploadArea = document.getElementById("uploadArea");
+  const fileInput = document.getElementById("fileInput");
+  const form = document.getElementById("compressForm");
 
-if (!form || !input) return;
+  const progress = document.getElementById("convertProgress");
+  const bar = document.getElementById("convertBar");
 
-// ✅ show selected filename
+  const uploadText = document.getElementById("uploadText");
+  const uploadSub = document.getElementById("uploadSub");
 
-input.addEventListener("change", () => {
+  if (!uploadArea || !fileInput || !form) {
+    console.error("Compressor UI missing");
+    return;
+  }
 
-if (input.files.length > 0) {
-uploadText.textContent = input.files[0].name;
-}
+  let selectedFile = null;
 
-});
+  // ======================
+  // FILE PICKER
+  // ======================
 
-// ✅ form submit simulation
+  fileInput.addEventListener("change", () => {
 
-form.addEventListener("submit", e => {
+    const file = fileInput.files[0];
+    if (!file) return;
 
-e.preventDefault();
+    if (!file.type.startsWith("image/")) {
+      alert("Only image files allowed");
+      fileInput.value = "";
+      return;
+    }
 
-if (!input.files.length) {
-alert("Please select an image first");
-return;
-}
+    selectedFile = file;
 
-loader.classList.remove("hidden");
-progress.classList.remove("hidden");
+    if (uploadText) uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
+    if (uploadSub) uploadSub.textContent = "Click to change file";
 
-let percent = 0;
+  });
 
-const interval = setInterval(() => {
+  // ======================
+  // DRAG & DROP
+  // ======================
 
-percent += 10;
-bar.style.width = percent + "%";
+  uploadArea.addEventListener("dragover", e => {
+    e.preventDefault();
+    uploadArea.classList.add("drag-active");
+  });
 
-if (percent >= 100) {
+  uploadArea.addEventListener("dragleave", () => {
+    uploadArea.classList.remove("drag-active");
+  });
 
-clearInterval(interval);
+  uploadArea.addEventListener("drop", e => {
 
-loader.classList.add("hidden");
+    e.preventDefault();
+    uploadArea.classList.remove("drag-active");
 
-setTimeout(() => {
+    const file = e.dataTransfer.files[0];
 
-progress.classList.add("hidden");
-bar.style.width = "0%";
+    if (!file || !file.type.startsWith("image/")) {
+      alert("Only image files allowed");
+      return;
+    }
 
-alert("Compression complete!");
+    selectedFile = file;
 
-}, 500);
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    fileInput.files = dt.files;
 
-}
+    if (uploadText) uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
+    if (uploadSub) uploadSub.textContent = "Click to change file";
 
-}, 120);
+  });
 
-});
+  // ======================
+  // SUBMIT
+  // ======================
+
+  form.addEventListener("submit", async e => {
+
+    e.preventDefault();
+
+    if (!selectedFile) {
+      alert("Upload an image first");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    // safe progress animation
+    let anim;
+    if (progress && bar) {
+
+      progress.classList.remove("hidden");
+
+      let p = 0;
+      anim = setInterval(() => {
+        p += 5;
+        bar.style.width = p + "%";
+        if (p >= 90) clearInterval(anim);
+      }, 120);
+
+    }
+
+    try {
+
+      const res = await fetch("/compress", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!res.ok) throw new Error();
+
+      const blob = await res.blob();
+
+      if (bar) bar.style.width = "100%";
+
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "compressed.jpg";
+      a.click();
+
+    }
+
+    catch {
+
+      alert("Compression failed");
+
+    }
+
+    finally {
+
+      setTimeout(() => {
+
+        if (progress && bar) {
+          progress.classList.add("hidden");
+          bar.style.width = "0%";
+        }
+
+        selectedFile = null;
+        fileInput.value = "";
+
+        if (uploadText) uploadText.textContent = "Drag & drop image here";
+        if (uploadSub) uploadSub.textContent = "or click to upload";
+
+      }, 1000);
+
+    }
+
+  });
 
 });

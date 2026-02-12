@@ -737,3 +737,157 @@ section::before {
   margin-bottom: 6px;
 
 }
+/* ===== FEATURE GRID FIX ===== */
+
+.features-section {
+  margin: 100px auto;
+  max-width: 1000px;
+  text-align: center;
+}
+
+.features-section h2 {
+  margin-bottom: 40px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+.feature-box {
+  background: linear-gradient(145deg, #ffffff, #f5f5f5);
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+  transition: 0.25s ease;
+}
+
+.feature-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 35px rgba(0,0,0,0.1);
+}
+
+.feature-box h3 {
+  margin-top: 12px;
+}
+
+.feature-box p {
+  color: #666;
+  margin-top: 6px;
+}
+.upload-area {
+  position: relative;
+  cursor: pointer;
+}
+
+.upload-area input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.file-list {
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f7f7f7;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: grab;
+}
+
+.file-item span {
+  flex: 1;
+}
+
+.remove-btn {
+  background: #ff4d4d;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.file-item {
+  display:flex;
+  justify-content:space-between;
+  background:#f5f5f5;
+  padding:8px 12px;
+  border-radius:8px;
+  margin:6px 0;
+}
+
+.file-item button {
+  background:#ff4d4d;
+  color:white;
+  border:none;
+  padding:4px 8px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.drag-active {
+  border:2px dashed #e53935 !important;
+}
+
+.loader {
+  width:32px;
+  height:32px;
+  border:4px solid #eee;
+  border-top:4px solid #e53935;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:10px auto;
+}
+
+.progress {
+  width:100%;
+  height:6px;
+  background:#ddd;
+  border-radius:6px;
+  overflow:hidden;
+}
+
+#mergeBar {
+  height:100%;
+  width:0;
+  background:#e53935;
+}
+
+@keyframes spin {
+  to { transform:rotate(360deg); }
+}
+
+.pdf-list {
+margin: 15px 0;
+padding: 0;
+list-style: none;
+}
+
+.pdf-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 14px;
+margin-bottom: 8px;
+background: #f7f7f7;
+border-radius: 8px;
+cursor: grab;
+}
+
+.pdf-item button {
+background: #ff4b4b;
+border: none;
+color: white;
+padding: 4px 8px;
+border-radius: 6px;
+cursor: pointer;
+}
