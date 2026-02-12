@@ -14,6 +14,7 @@ const fileListUI = document.getElementById("fileList");
 const toast = document.getElementById("toast");
 
 let fileArray = [];
+let dragIndex = null;
 let progressAnim = null;
 
 
@@ -40,8 +41,6 @@ dropArea.addEventListener("drop", e => {
 
 fileInput.addEventListener("change", () => {
   addFiles(fileInput.files);
-
-  // allow same file re-upload
   fileInput.value = "";
 });
 
@@ -59,7 +58,6 @@ function addFiles(files) {
       return;
     }
 
-    // prevent duplicates
     const exists = fileArray.some(f =>
       f.name === file.name &&
       f.size === file.size
@@ -75,7 +73,7 @@ function addFiles(files) {
 
 
 // ======================
-// Invalid glow feedback
+// Invalid glow
 // ======================
 
 function glowInvalid() {
@@ -90,7 +88,7 @@ function glowInvalid() {
 
 
 // ======================
-// Render file list
+// Render + drag reorder
 // ======================
 
 function renderList() {
@@ -101,18 +99,85 @@ function renderList() {
 
     const item = document.createElement("div");
     item.className = "file-item";
+    item.draggable = true;
 
     item.innerHTML = `
       <span>${file.name}</span>
       <span class="remove-btn">✖</span>
     `;
 
+    // remove button
     item.querySelector(".remove-btn").onclick = () => {
       fileArray.splice(index, 1);
       renderList();
     };
 
+    // drag start
+    item.addEventListener("dragstart", () => {
+      dragIndex = index;
+      item.classList.add("dragging");
+    });
+
+    // drag end
+    item.addEventListener("dragend", () => {
+      item.classList.remove("dragging");
+      dragIndex = null;
+    });
+
     fileListUI.appendChild(item);
+  });
+}
+
+
+// reorder logic
+fileListUI.addEventListener("dragover", e => {
+
+  e.preventDefault();
+
+  const dragging = document.querySelector(".dragging");
+  const afterElement = getDragAfterElement(e.clientY);
+
+  if (!dragging) return;
+
+  if (afterElement == null) {
+    fileListUI.appendChild(dragging);
+  } else {
+    fileListUI.insertBefore(dragging, afterElement);
+  }
+
+  updateArrayOrder();
+});
+
+
+function getDragAfterElement(y) {
+
+  const items = [
+    ...fileListUI.querySelectorAll(".file-item:not(.dragging)")
+  ];
+
+  return items.reduce((closest, child) => {
+
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+
+    if (offset < 0 && offset > closest.offset)
+      return { offset, element: child };
+    else
+      return closest;
+
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+
+function updateArrayOrder() {
+
+  const items = [...fileListUI.children];
+
+  fileArray = items.map(el => {
+
+    const name = el.querySelector("span").textContent;
+
+    return fileArray.find(f => f.name === name);
 
   });
 }
@@ -141,6 +206,7 @@ form.addEventListener("submit", async e => {
   clearInterval(progressAnim);
 
   progressAnim = setInterval(() => {
+
     p += 5;
     bar.style.width = p + "%";
 
