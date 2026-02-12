@@ -2,12 +2,19 @@
 // IMPORTS
 // ===============================
 
+require("dotenv").config();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("./models/user");
+
 const express = require("express");
 const multer = require("multer");
 const { PDFDocument } = require("pdf-lib");
 const sharp = require("sharp");
 const path = require("path");
-const storage = multer.memoryStorage();
+
+const mongoose = require("mongoose");
+const cors = require("cors");
 
 // ===============================
 // APP SETUP
@@ -16,15 +23,174 @@ const storage = multer.memoryStorage();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// =====================
-// MULTER CONFIG — LARGE FILE SUPPORT
-// =====================
+app.use(cors());
+app.use(express.json());
+
+// ===============================
+// MONGODB CONNECTION
+// ===============================
+
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log("✅ MongoDB connected"))
+.catch(err => console.error("Mongo error:", err));
+
+
+// ===============================
+// USER MODEL
+// ===============================
+
+// const User = mongoose.model("User", new mongoose.Schema({
+
+//   email: { type: String, unique: true, required: true },
+//   password: { type: String, required: true },
+//   createdAt: { type: Date, default: Date.now }
+
+// }));
+
+
+// ===============================
+// AUTH MIDDLEWARE
+// ===============================
+
+function auth(req, res, next) {
+
+  const token = req.header("Authorization");
+
+  if (!token)
+    return res.status(401).json({ msg: "No token" });
+
+  try {
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    req.user = decoded;
+    next();
+
+  } catch {
+
+    res.status(401).json({ msg: "Invalid token" });
+
+  }
+
+}
+
+
+// ===============================
+// AUTH ROUTES
+// ===============================
+
+// REGISTER
+app.post("/api/register", express.json(), async (req, res) => {
+
+  try {
+
+    const { email, password } = req.body;
+
+    if (!email || !password)
+      return res.status(400).json({ msg: "Missing fields" });
+
+    const exists = await User.findOne({ email });
+
+    if (exists)
+      return res.status(400).json({ msg: "User already exists" });
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      email,
+      password: hashed
+    });
+
+    await user.save();
+
+    res.json({ msg: "Account created ✅" });
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+    res.status(500).json({ msg: "Server error" });
+
+  }
+
+});
+
+
+
+// LOGIN
+app.post("/api/login", express.json(), async (req, res) => {
+
+  try {
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user)
+      return res.status(400).json({ msg: "User not found" });
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match)
+      return res.status(400).json({ msg: "Wrong password" });
+
+    const token = jwt.sign(
+
+      { id: user._id },
+
+      process.env.JWT_SECRET,
+
+      { expiresIn: "2h" }
+
+    );
+
+    res.json({
+
+      msg: "Login success ✅",
+      token
+
+    });
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+    res.status(500).json({ msg: "Server error" });
+
+  }
+
+});
+
+
+// PROTECTED TEST ROUTE
+app.get("/api/protected", auth, (req, res) => {
+
+  res.json({
+    msg: "Protected route success",
+    user: req.user
+  });
+
+});
+
+
+// ===============================
+// MULTER CONFIG
+// ===============================
+
+const storage = multer.memoryStorage();
+
 const upload = multer({
+
   storage,
 
   limits: {
-    fileSize: 50 * 1024 * 1024, // ✅ 50MB per file
-    files: 20                   // ✅ allow multiple PDFs
+    fileSize: 50 * 1024 * 1024,
+    files: 20
   },
 
   fileFilter: (req, file, cb) => {
@@ -32,63 +198,115 @@ const upload = multer({
     if (
       file.mimetype === "application/pdf" ||
       file.mimetype.startsWith("image/")
-    ) {
-      cb(null, true);
-    } else {
-      cb(new Error("Invalid file type"), false);
-    }
+    ) cb(null, true);
+    else cb(new Error("Invalid file"), false);
 
   }
 
 });
 
 
-// static frontend
+// ===============================
+// STATIC FRONTEND
+// ===============================
+
 app.use(express.static("public"));
+
 
 // ===============================
 // PAGE ROUTES
 // ===============================
 
-// Dashboard
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/index.html"));
-});
+app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/index.html"))
+);
 
-// Converter
-app.get("/converter", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/converter.html"));
-});
+app.get("/converter", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/converter.html"))
+);
 
-// Compressor
-app.get("/compressor", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/compressor.html"));
-});
-//Merger
+app.get("/compressor", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/compressor.html"))
+);
+
 app.get("/merger", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merger.html"))
 );
 
-app.get("/privacy", (req, res) => {
-  res.sendFile(__dirname + "/public/privacy.html");
+//SIGNUP route
+
+app.post("/signup", express.json(), async (req, res) => {
+
+  try {
+
+    const { email, password } = req.body;
+
+    if (!email || !password)
+      return res.status(400).json({ msg: "Missing fields" });
+
+    const exists = await User.findOne({ email });
+
+    if (exists)
+      return res.status(400).json({ msg: "User already exists" });
+
+    const hash = await bcrypt.hash(password, 10);
+
+    const user = new User({ email, password: hash });
+
+    await user.save();
+
+    res.json({ msg: "Signup successful" });
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+    res.status(500).json({ msg: "Signup failed" });
+
+  }
+
 });
 
-app.get("/terms", (req, res) => {
-  res.sendFile(__dirname + "/public/terms.html");
+// Login Route 
+app.post("/login", express.json(), async (req, res) => {
+
+  try {
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user)
+      return res.status(400).json({ msg: "Invalid credentials" });
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match)
+      return res.status(400).json({ msg: "Invalid credentials" });
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({ token });
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+    res.status(500).json({ msg: "Login failed" });
+
+  }
+
 });
 
-app.get("/contact", (req, res) => {
-  res.sendFile(__dirname + "/public/contact.html");
-});
-
-
-// backward compatibility
-app.get("/converter.html", (_, res) => res.redirect("/converter"));
-app.get("/compressor.html", (_, res) => res.redirect("/compressor"));
-app.get("/merger.html", (_, res) => res.redirect("/merger"));
 
 // ===============================
-// IMAGE → PDF CONVERTER
+// IMAGE → PDF
 // ===============================
 
 app.post("/convert", upload.single("file"), async (req, res) => {
@@ -96,29 +314,23 @@ app.post("/convert", upload.single("file"), async (req, res) => {
   try {
 
     if (!req.file)
-      return res.status(400).send("No file uploaded");
-
-    const allowed = ["image/jpeg", "image/png"];
-
-    if (!allowed.includes(req.file.mimetype))
-      return res.status(400).send("Only JPG or PNG supported");
+      return res.status(400).send("No file");
 
     const buffer = req.file.buffer;
 
-    // validate image buffer
     await sharp(buffer).metadata();
 
     const pdfDoc = await PDFDocument.create();
 
-    let image;
+    let image =
+      req.file.mimetype === "image/jpeg"
+      ? await pdfDoc.embedJpg(buffer)
+      : await pdfDoc.embedPng(buffer);
 
-    if (req.file.mimetype === "image/jpeg")
-      image = await pdfDoc.embedJpg(buffer);
-
-    if (req.file.mimetype === "image/png")
-      image = await pdfDoc.embedPng(buffer);
-
-    const page = pdfDoc.addPage([image.width, image.height]);
+    const page = pdfDoc.addPage([
+      image.width,
+      image.height
+    ]);
 
     page.drawImage(image, { x: 0, y: 0 });
 
@@ -126,7 +338,7 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
     res.set({
       "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment; filename=converted.pdf"
+      "Content-Disposition": "attachment"
     });
 
     res.end(Buffer.from(pdfBytes));
@@ -135,28 +347,21 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
   catch (err) {
 
-    console.error("🔥 Conversion crash:", err);
-    res.status(500).send("Server conversion failed");
+    console.error(err);
+    res.status(500).send("Conversion failed");
 
   }
 
 });
 
+
 // ===============================
-// IMAGE COMPRESSOR
+// COMPRESS
 // ===============================
 
 app.post("/compress", upload.single("file"), async (req, res) => {
 
   try {
-
-    if (!req.file)
-      return res.status(400).send("No file uploaded");
-
-    const allowed = ["image/jpeg", "image/png", "image/webp"];
-
-    if (!allowed.includes(req.file.mimetype))
-      return res.status(400).send("Only JPG, PNG or WEBP supported");
 
     const compressed = await sharp(req.file.buffer)
       .jpeg({ quality: 60 })
@@ -164,39 +369,31 @@ app.post("/compress", upload.single("file"), async (req, res) => {
 
     res.set({
       "Content-Type": "image/jpeg",
-      "Content-Disposition": "attachment; filename=compressed.jpg"
+      "Content-Disposition": "attachment"
     });
 
     res.end(compressed);
 
   }
 
-  catch (err) {
-
-    console.error("🔥 Compression crash:", err);
+  catch {
     res.status(500).send("Compression failed");
-
   }
 
 });
 
+
 // ===============================
-// PDF MERGER
+// MERGE
 // ===============================
 
 app.post("/merge", upload.array("files"), async (req, res) => {
 
   try {
 
-    if (!req.files || req.files.length < 2)
-      return res.status(400).send("Upload at least 2 PDFs");
-
     const mergedPdf = await PDFDocument.create();
 
     for (const file of req.files) {
-
-      if (!file.buffer.slice(0, 5).toString().includes("%PDF"))
-        return res.status(400).send("Invalid PDF detected");
 
       const pdf = await PDFDocument.load(file.buffer);
 
@@ -205,33 +402,34 @@ app.post("/merge", upload.array("files"), async (req, res) => {
         pdf.getPageIndices()
       );
 
-      pages.forEach(p => mergedPdf.addPage(p));
+      pages.forEach(p =>
+        mergedPdf.addPage(p)
+      );
+
     }
 
     const mergedBytes = await mergedPdf.save();
 
     res.set({
       "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment; filename=merged.pdf"
+      "Content-Disposition": "attachment"
     });
 
     res.end(Buffer.from(mergedBytes));
 
   }
 
-  catch (err) {
-
-    console.error("🔥 Merge crash:", err);
+  catch {
     res.status(500).send("Merge failed");
-
   }
 
 });
+
 
 // ===============================
 // SERVER START
 // ===============================
 
 app.listen(PORT, () =>
-  console.log(`🚀 QuickConvert running on port ${PORT}`)
+  console.log(`🚀 QuickConvert running on ${PORT}`)
 );

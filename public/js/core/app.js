@@ -92,6 +92,16 @@ if (toggle) {
 
 }
 
+// Mobile navbar toggle
+document.querySelector(".menu-toggle")
+?.addEventListener("click", () => {
+
+  document.querySelector(".nav-links")
+  ?.classList.toggle("active");
+
+});
+
+
 
 // ===============================
 // SUBMIT + VALIDATION + UX FLOW

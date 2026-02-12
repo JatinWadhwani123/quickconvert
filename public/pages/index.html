@@ -2,14 +2,12 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>QuickConvert — Free Online File Tools</title>
 
 <link rel="stylesheet" href="../css/style.css">
-
 </head>
 
 <body>
@@ -18,14 +16,32 @@
 
 <header class="navbar">
 
-  <div class="logo">⚡ QuickConvert</div>
+  <div class="nav-left">
+    <div class="logo">⚡ QuickConvert</div>
 
-  <nav>
-    <a href="/" class="active">Dashboard</a>
-    <a href="/converter">Converter</a>
-    <a href="/compressor">Compressor</a>
-    <a href="/merger">Merger</a>
-  </nav>
+    <nav class="nav-links">
+      <a href="/" class="active">Dashboard</a>
+      <a href="/converter">Convert</a>
+      <a href="/compressor">Compress</a>
+      <a href="/merger">Merge</a>
+    </nav>
+  </div>
+
+  <div class="nav-right">
+
+    <input id="navSearch" placeholder="Search tools…" />
+
+    <a href="/pages/login.html" id="loginBtn" class="login-btn">
+      Login
+    </a>
+
+    <button id="logoutBtn" class="login-btn" style="display:none;">
+      Logout
+    </button>
+
+    <button class="menu-toggle">☰</button>
+
+  </div>
 
 </header>
 
@@ -36,8 +52,8 @@
   <h1>All-in-one Online File Tools</h1>
 
   <p>
-    Convert, compress, and merge files instantly — secure,
-    browser-based, and lightning fast.
+    Convert, compress, and merge files instantly —
+    secure, browser-based, and lightning fast.
   </p>
 
   <div class="hero-badges">
@@ -46,15 +62,13 @@
     <span>🌍 Works anywhere</span>
   </div>
 
-  <!-- SEARCH -->
-
   <div class="search-bar">
     <input id="toolSearch" placeholder="Search tools…">
   </div>
 
 </section>
 
-<!-- ================= CATEGORY FILTER ================= -->
+<!-- ================= FILTER ================= -->
 
 <section class="tool-tabs">
 
@@ -65,19 +79,15 @@
 
 </section>
 
-<!-- ================= HERO TOOL GRID ================= -->
+<!-- ================= TOOL GRID ================= -->
 
-<section class="tool-grid" id="toolGrid">
+<section class="tool-grid">
 
-  <!-- IMAGE → PDF -->
-
-  <a href="/converter"
-     class="tool-card convert"
+  <a href="/converter" class="tool-card convert"
      data-category="convert"
      data-name="image pdf convert">
 
     <div class="tool-category">Convert</div>
-
     <div class="modern-icon convert-icon">📄</div>
 
     <h3>
@@ -89,118 +99,132 @@
 
   </a>
 
-  <!-- COMPRESS -->
-
-  <a href="/compressor"
-     class="tool-card compress"
+  <a href="/compressor" class="tool-card compress"
      data-category="compress"
      data-name="compress image">
 
     <div class="tool-category">Compress</div>
-
     <div class="modern-icon compress-icon">📉</div>
 
     <h3>Image Compressor</h3>
-
     <p>Reduce image size while keeping quality.</p>
 
   </a>
 
-  <!-- MERGE -->
-
-  <a href="/merger"
-     class="tool-card merge"
+  <a href="/merger" class="tool-card merge"
      data-category="merge"
      data-name="merge pdf">
 
     <div class="tool-category">Merge</div>
-
     <div class="modern-icon merge-icon">📑</div>
 
     <h3>PDF Merger</h3>
-
     <p>Combine multiple PDFs into one file.</p>
 
   </a>
 
 </section>
 
-<!-- ================= SEO EXPLAINER ================= -->
-
-<section class="seo-section">
-
-  <h2>Free Online File Converter Tools</h2>
-
-  <p>
-    QuickConvert lets you convert images to PDF, compress files,
-    and merge documents instantly — no software installation required.
-    Everything runs securely inside your browser.
-  </p>
-
-</section>
-
 <!-- ================= FEATURES ================= -->
 
 <section class="features">
+<div class="container">
 
-  <h2 style="grid-column:1/-1;text-align:center;">
-    Why people choose QuickConvert
-  </h2>
+<h2>Why people choose QuickConvert</h2>
 
-  <div class="feature">
-    ⚡ Fast processing
-    <p>Instant browser conversion</p>
+<div class="feature-list">
+
+  <div class="feature-item">
+    ⚡ <div>
+      <strong>Fast processing</strong>
+      <p>Instant browser conversion</p>
+    </div>
   </div>
 
-  <div class="feature">
-    🔒 Privacy first
-    <p>Files are never stored</p>
+  <div class="feature-item">
+    🔒 <div>
+      <strong>Privacy first</strong>
+      <p>Files are never stored</p>
+    </div>
   </div>
 
-  <div class="feature">
-    🌍 Works anywhere
-    <p>Desktop & mobile support</p>
+  <div class="feature-item">
+    🌍 <div>
+      <strong>Works anywhere</strong>
+      <p>Desktop & mobile support</p>
+    </div>
   </div>
 
-  <div class="feature">
-    🚀 No installs
-    <p>100% online tools</p>
+  <div class="feature-item">
+    🚀 <div>
+      <strong>No installs</strong>
+      <p>100% online tools</p>
+    </div>
   </div>
 
-  <div class="feature">
-    📂 Multiple tools
-    <p>Convert • Compress • Merge</p>
+  <div class="feature-item">
+    📂 <div>
+      <strong>Multiple tools</strong>
+      <p>Convert • Compress • Merge</p>
+    </div>
   </div>
 
-  <div class="feature">
-    💡 Free to use
-    <p>No hidden costs</p>
+  <div class="feature-item">
+    💡 <div>
+      <strong>Free to use</strong>
+      <p>No hidden costs</p>
+    </div>
   </div>
 
+</div>
+
+</div>
 </section>
+
+
 
 <!-- ================= HOW IT WORKS ================= -->
 
 <section class="steps">
+<div class="container">
 
-  <h2 style="width:100%;text-align:center;">
-    How QuickConvert works
-  </h2>
+<h2>How QuickConvert works</h2>
 
-  <div class="step">
-    📤 Upload file
-    <p>Select or drag your file</p>
-  </div>
+<div class="steps-grid">
 
-  <div class="step">
-    ⚙ Process
-    <p>Instant browser conversion</p>
-  </div>
+<div class="step">
+📤 Upload file
+<p>Select or drag your file</p>
+</div>
 
-  <div class="step">
-    📥 Download
-    <p>Get results immediately</p>
-  </div>
+<div class="step">
+⚙ Process instantly
+<p>Fast browser conversion</p>
+</div>
+
+<div class="step">
+📥 Download result
+<p>Get results immediately</p>
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- ================= SEO ================= -->
+
+<section class="seo-section">
+
+<h2>Free Online File Converter Tools</h2>
+
+<p>
+QuickConvert lets you convert images to PDF,
+compress files, and merge documents instantly —
+no installation required. Everything runs securely
+inside your browser.
+</p>
 
 </section>
 
@@ -208,13 +232,13 @@
 
 <footer class="footer">
 
-  ⚡ QuickConvert — Fast & Secure File Tools
+⚡ QuickConvert — Fast & Secure File Tools
 
-  <div class="footer-links">
-    <a href="/privacy">Privacy</a>
-    <a href="/terms">Terms</a>
-    <a href="/contact">Contact</a>
-  </div>
+<div class="footer-links">
+<a href="/privacy">Privacy</a>
+<a href="/terms">Terms</a>
+<a href="/contact">Contact</a>
+</div>
 
 </footer>
 
@@ -222,46 +246,84 @@
 
 <script>
 
-// Search system
+document.addEventListener("DOMContentLoaded", () => {
 
-const search = document.getElementById("toolSearch");
-const cards = document.querySelectorAll(".tool-card");
+  // ===== LOGIN UI MODE =====
 
-search.addEventListener("input", () => {
+  const token = localStorage.getItem("token");
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-  const term = search.value.toLowerCase();
+  if (token) {
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+  } else {
+    loginBtn.style.display = "inline-block";
+    logoutBtn.style.display = "none";
+  }
+logoutBtn.addEventListener("click", () => {
 
-  cards.forEach(card => {
+  localStorage.removeItem("token");
 
-    const name = card.dataset.name;
-    card.style.display =
-      name.includes(term) ? "block" : "none";
-
-  });
+  window.location.href = "/";
 
 });
 
-// Category filter
 
-const tabs = document.querySelectorAll(".tab-btn");
 
-tabs.forEach(tab => {
+  // ===== SEARCH SYSTEM =====
 
-  tab.addEventListener("click", () => {
+  const toolSearch = document.getElementById("toolSearch");
+  const navSearch = document.getElementById("navSearch");
+  const cards = document.querySelectorAll(".tool-card");
 
-    tabs.forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
+  function filterCards(value) {
 
-    const filter = tab.dataset.filter;
+    const term = value.toLowerCase();
 
     cards.forEach(card => {
 
-      const cat = card.dataset.category;
+      const name = card.dataset.name || "";
 
       card.style.display =
-        filter === "all" || cat === filter
-          ? "block"
-          : "none";
+        name.includes(term) ? "block" : "none";
+
+    });
+
+  }
+
+  toolSearch?.addEventListener("input", e =>
+    filterCards(e.target.value)
+  );
+
+  navSearch?.addEventListener("input", e =>
+    filterCards(e.target.value)
+  );
+
+
+  // ===== CATEGORY FILTER =====
+
+  const tabs = document.querySelectorAll(".tab-btn");
+
+  tabs.forEach(tab => {
+
+    tab.addEventListener("click", () => {
+
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      const filter = tab.dataset.filter;
+
+      cards.forEach(card => {
+
+        const cat = card.dataset.category || "";
+
+        card.style.display =
+          filter === "all" || cat === filter
+            ? "block"
+            : "none";
+
+      });
 
     });
 
@@ -270,6 +332,8 @@ tabs.forEach(tab => {
 });
 
 </script>
+
+<script src="/js/core/app.js"></script>
 
 </body>
 </html>

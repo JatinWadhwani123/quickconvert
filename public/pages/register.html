@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Create Account — QuickConvert</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+<style>
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(120deg,#f5f6ff,#ffecec);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.register-card {
+  background: white;
+  padding: 40px;
+  border-radius: 18px;
+  width: 380px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  animation: fadeIn .4s ease;
+}
+
+.register-card h2 {
+  margin: 0 0 8px;
+}
+
+.register-card p {
+  margin-bottom: 25px;
+  color: #666;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #ff4d4d;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #ff4d4d;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.btn:hover {
+  opacity: .9;
+}
+
+.status {
+  margin-top: 12px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.success { color: green; }
+.error { color: red; }
+
+.footer-link {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.footer-link a {
+  color: #ff4d4d;
+  text-decoration: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="register-card">
+
+<h2>Create Account</h2>
+<p>Join QuickConvert and start converting instantly</p>
+
+<input id="email" class="input" type="email" placeholder="Email">
+<input id="password" class="input" type="password" placeholder="Password">
+
+<button class="btn" onclick="register()">Create Account</button>
+
+<div id="status" class="status"></div>
+
+<div class="footer-link">
+Already have an account?
+<a href="/pages/login.html">Login</a>
+</div>
+
+</div>
+
+<script>
+
+async function register() {
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const status = document.getElementById("status");
+
+  status.textContent = "Creating account...";
+  status.className = "status";
+
+  try {
+
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message);
+
+    // auto login
+    localStorage.setItem("token", data.token);
+
+    status.textContent = "Account created! Redirecting...";
+    status.className = "status success";
+
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 1200);
+
+  } catch (err) {
+
+    status.textContent = err.message || "Registration failed";
+    status.className = "status error";
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Login — QuickConvert</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+<style>
+
+/* ===== PAGE BACKGROUND ===== */
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(135deg,#f6f7fb,#e9ecf5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* ===== LOGIN CARD ===== */
+
+.login-card {
+  width: 360px;
+  background: white;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+
+/* ===== BRANDING ===== */
+
+.login-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.login-sub {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* ===== INPUTS ===== */
+
+.login-card input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.login-card input:focus {
+  outline: none;
+  border-color: #ff4d4f;
+}
+
+/* ===== BUTTON ===== */
+
+.login-btn-main {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #ff4d4f;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.login-btn-main:hover {
+  background: #e43d3f;
+}
+
+/* ===== FOOTER ===== */
+
+.login-footer {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.login-footer a {
+  color: #ff4d4f;
+  text-decoration: none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-card">
+
+  <div class="login-title">⚡ QuickConvert</div>
+  <div class="login-sub">Login to continue</div>
+
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+
+  <button class="login-btn-main" onclick="login()">
+    Login
+  </button>
+
+  <div class="login-footer">
+    New here? <a href="/pages/register.html">Create account</a>
+  </div>
+
+</div>
+
+<script>
+
+async function login() {
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+
+  if (data.token) {
+
+    localStorage.setItem("token", data.token);
+
+    window.location.href = "/";
+
+  } else {
+
+    alert(data.message || "Login failed");
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
