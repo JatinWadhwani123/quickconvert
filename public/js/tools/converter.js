@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
 if (!res.ok) {
-  throw new Error("Server conversion failed");
+  throw new Error("Invalid image..");
 }
 
       const type = res.headers.get("content-type") || "";
