@@ -6,73 +6,270 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>QuickConvert — File Tools Dashboard</title>
+<title>QuickConvert — Free Online File Tools</title>
 
 <link rel="stylesheet" href="../css/style.css">
-
 
 </head>
 
 <body>
 
-<!-- NAVBAR -->
+<!-- ================= NAVBAR ================= -->
 
 <header class="navbar">
+
   <div class="logo">⚡ QuickConvert</div>
 
   <nav>
     <a href="/" class="active">Dashboard</a>
-    <a href="converter.html">Converter</a>
-    <a href="compressor.html">Compressor</a>
-    <a href="merger.html">Merger</a>
+    <a href="/converter">Converter</a>
+    <a href="/compressor">Compressor</a>
+    <a href="/merger">Merger</a>
   </nav>
+
 </header>
 
-<!-- HERO -->
+<!-- ================= HERO ================= -->
 
 <section class="dashboard-hero">
 
-  <h1>All-in-one File Tools</h1>
-  <p>Convert, compress, and optimize files instantly</p>
+  <h1>All-in-one Online File Tools</h1>
+
+  <p>
+    Convert, compress, and merge files instantly — secure,
+    browser-based, and lightning fast.
+  </p>
 
   <div class="hero-badges">
     <span>⚡ Fast processing</span>
     <span>🔒 Secure uploads</span>
-    <span>🌍 Works everywhere</span>
+    <span>🌍 Works anywhere</span>
+  </div>
+
+  <!-- SEARCH -->
+
+  <div class="search-bar">
+    <input id="toolSearch" placeholder="Search tools…">
   </div>
 
 </section>
 
-<!-- TOOL GRID -->
+<!-- ================= CATEGORY FILTER ================= -->
 
-<section class="tool-grid">
+<section class="tool-tabs">
 
-  <a href="converter.html" class="tool-card">
-    <div class="tool-icon">📄</div>
-    <h3>Image → PDF</h3>
-    <p>Convert images instantly</p>
+  <button class="tab-btn active" data-filter="all">All</button>
+  <button class="tab-btn" data-filter="convert">Convert</button>
+  <button class="tab-btn" data-filter="compress">Compress</button>
+  <button class="tab-btn" data-filter="merge">Merge</button>
+
+</section>
+
+<!-- ================= HERO TOOL GRID ================= -->
+
+<section class="tool-grid" id="toolGrid">
+
+  <!-- IMAGE → PDF -->
+
+  <a href="/converter"
+     class="tool-card convert"
+     data-category="convert"
+     data-name="image pdf convert">
+
+    <div class="tool-category">Convert</div>
+
+    <div class="modern-icon convert-icon">📄</div>
+
+    <h3>
+      Image → PDF
+      <span class="popular-tag">Popular</span>
+    </h3>
+
+    <p>Convert images into PDFs instantly.</p>
+
   </a>
 
-  <a href="compressor.html" class="tool-card">
-    <div class="tool-icon">🗜️</div>
+  <!-- COMPRESS -->
+
+  <a href="/compressor"
+     class="tool-card compress"
+     data-category="compress"
+     data-name="compress image">
+
+    <div class="tool-category">Compress</div>
+
+    <div class="modern-icon compress-icon">📉</div>
+
     <h3>Image Compressor</h3>
-    <p>Reduce image size quickly</p>
+
+    <p>Reduce image size while keeping quality.</p>
+
   </a>
 
-  <a href="merger.html" class="tool-card">
-    <div class="tool-icon">📚</div>
+  <!-- MERGE -->
+
+  <a href="/merger"
+     class="tool-card merge"
+     data-category="merge"
+     data-name="merge pdf">
+
+    <div class="tool-category">Merge</div>
+
+    <div class="modern-icon merge-icon">📑</div>
+
     <h3>PDF Merger</h3>
-    <p>Combine PDFs easily</p>
+
+    <p>Combine multiple PDFs into one file.</p>
+
   </a>
 
 </section>
 
-<!-- FOOTER -->
+<!-- ================= SEO EXPLAINER ================= -->
+
+<section class="seo-section">
+
+  <h2>Free Online File Converter Tools</h2>
+
+  <p>
+    QuickConvert lets you convert images to PDF, compress files,
+    and merge documents instantly — no software installation required.
+    Everything runs securely inside your browser.
+  </p>
+
+</section>
+
+<!-- ================= FEATURES ================= -->
+
+<section class="features">
+
+  <h2 style="grid-column:1/-1;text-align:center;">
+    Why people choose QuickConvert
+  </h2>
+
+  <div class="feature">
+    ⚡ Fast processing
+    <p>Instant browser conversion</p>
+  </div>
+
+  <div class="feature">
+    🔒 Privacy first
+    <p>Files are never stored</p>
+  </div>
+
+  <div class="feature">
+    🌍 Works anywhere
+    <p>Desktop & mobile support</p>
+  </div>
+
+  <div class="feature">
+    🚀 No installs
+    <p>100% online tools</p>
+  </div>
+
+  <div class="feature">
+    📂 Multiple tools
+    <p>Convert • Compress • Merge</p>
+  </div>
+
+  <div class="feature">
+    💡 Free to use
+    <p>No hidden costs</p>
+  </div>
+
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+
+<section class="steps">
+
+  <h2 style="width:100%;text-align:center;">
+    How QuickConvert works
+  </h2>
+
+  <div class="step">
+    📤 Upload file
+    <p>Select or drag your file</p>
+  </div>
+
+  <div class="step">
+    ⚙ Process
+    <p>Instant browser conversion</p>
+  </div>
+
+  <div class="step">
+    📥 Download
+    <p>Get results immediately</p>
+  </div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
 
 <footer class="footer">
-  Secure processing • Files auto deleted
+
+  ⚡ QuickConvert — Fast & Secure File Tools
+
+  <div class="footer-links">
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="/contact">Contact</a>
+  </div>
+
 </footer>
 
-</body>
+<!-- ================= SCRIPT ================= -->
 
+<script>
+
+// Search system
+
+const search = document.getElementById("toolSearch");
+const cards = document.querySelectorAll(".tool-card");
+
+search.addEventListener("input", () => {
+
+  const term = search.value.toLowerCase();
+
+  cards.forEach(card => {
+
+    const name = card.dataset.name;
+    card.style.display =
+      name.includes(term) ? "block" : "none";
+
+  });
+
+});
+
+// Category filter
+
+const tabs = document.querySelectorAll(".tab-btn");
+
+tabs.forEach(tab => {
+
+  tab.addEventListener("click", () => {
+
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const filter = tab.dataset.filter;
+
+    cards.forEach(card => {
+
+      const cat = card.dataset.category;
+
+      card.style.display =
+        filter === "all" || cat === filter
+          ? "block"
+          : "none";
+
+    });
+
+  });
+
+});
+
+</script>
+
+</body>
 </html>

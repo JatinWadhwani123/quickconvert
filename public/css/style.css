@@ -9,12 +9,21 @@
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
+/* =================================
+   BACKGROUND — PREMIUM CANVAS
+================================= */
+
 body {
-  background: #f5f6f8;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,60,60,0.08), transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(255,140,0,0.06), transparent 40%),
+    linear-gradient(to bottom,#f8f9fc,#ffffff);
+
   color: #222;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
 /* =================================
@@ -47,9 +56,7 @@ body {
   transition: 0.2s;
 }
 
-.navbar nav a:hover {
-  background: #eee;
-}
+.navbar nav a:hover { background: #eee; }
 
 .navbar nav a.active {
   background: #e53935;
@@ -57,7 +64,7 @@ body {
 }
 
 /* =================================
-   DASHBOARD HERO
+   HERO
 ================================= */
 
 .dashboard-hero {
@@ -65,6 +72,7 @@ body {
   padding: 50px 20px 30px;
   max-width: 900px;
   margin: auto;
+  position: relative;
 }
 
 .dashboard-hero h1 {
@@ -72,8 +80,19 @@ body {
   margin-bottom: 10px;
 }
 
-.dashboard-hero p {
-  color: #666;
+.dashboard-hero p { color: #666; }
+
+.dashboard-hero::after {
+  content: "";
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle,rgba(255,60,60,0.12),transparent 60%);
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: blur(60px);
+  z-index: -1;
 }
 
 .hero-badges {
@@ -94,6 +113,51 @@ body {
 }
 
 /* =================================
+   SEARCH
+================================= */
+
+.search-bar {
+  max-width: 400px;
+  margin: 25px auto 0;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+/* =================================
+   CATEGORY TABS
+================================= */
+
+.tool-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.tab-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tab-btn:hover { background: #eee; }
+
+.tab-btn.active {
+  background: #e53935;
+  color: white;
+  border-color: #e53935;
+}
+
+/* =================================
    TOOL GRID
 ================================= */
 
@@ -102,29 +166,52 @@ body {
   margin: 40px auto;
   padding: 0 20px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
   gap: 20px;
 }
 
+/* =================================
+   TOOL CARD — PREMIUM
+================================= */
+
 .tool-card {
+
+  position: relative;
   background: white;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 22px;
   text-decoration: none;
   color: #222;
-  transition: 0.25s ease;
+  overflow: hidden;
+
+  transition: all 0.35s ease;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+.tool-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+  opacity: 0;
+  transition: 0.4s;
 }
 
 .tool-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.12);
 }
 
-.tool-icon {
-  font-size: 26px;
-  margin-bottom: 10px;
+.tool-card:hover::before { opacity: 1; }
+
+.tool-card h3,
+.tool-card p {
+  transition: transform 0.3s ease;
 }
+
+.tool-card:hover h3 { transform: translateY(-2px); }
+.tool-card:hover p { transform: translateY(-1px); }
 
 .tool-card p {
   font-size: 14px;
@@ -132,7 +219,89 @@ body {
 }
 
 /* =================================
-   TOOL PAGE CARD
+   ICON SYSTEM
+================================= */
+
+.modern-icon {
+
+  width: 56px;
+  height: 56px;
+
+  border-radius: 16px;
+
+  margin-bottom: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 26px;
+  color: white;
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.3),
+    0 8px 18px rgba(0,0,0,0.12);
+
+  transition: all 0.25s ease;
+}
+
+.tool-card:hover .modern-icon {
+  transform: scale(1.15) rotate(6deg);
+}
+
+/* category colors */
+
+.convert-icon { background: linear-gradient(135deg,#ff6a6a,#e53935); }
+.compress-icon { background: linear-gradient(135deg,#7e9cff,#4a67ff); }
+.merge-icon { background: linear-gradient(135deg,#9b6dff,#7b3cff); }
+
+.tool-card.convert { border-top: 4px solid #e53935; }
+.tool-card.compress { border-top: 4px solid #4a67ff; }
+.tool-card.merge { border-top: 4px solid #7b3cff; }
+
+/* =================================
+   LABELS
+================================= */
+
+.tool-category {
+  font-size: 12px;
+  font-weight: 600;
+  color: #e53935;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.popular-tag {
+  background: #e53935;
+  color: white;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+}
+
+/* =================================
+   SEO / INFO
+================================= */
+
+.tool-info,
+.intro-section,
+.seo-section {
+  max-width: 900px;
+  margin: 60px auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.tool-info p,
+.intro-section p,
+.seo-section p {
+  color: #555;
+  margin-top: 8px;
+}
+
+/* =================================
+   TOOL PAGE
 ================================= */
 
 .tool-wrapper {
@@ -152,20 +321,12 @@ body {
   box-shadow: 0 10px 35px rgba(0,0,0,0.12);
 }
 
-.tool-card-main h1 {
-  margin-bottom: 10px;
-}
-
-.tool-card-main p {
-  margin-bottom: 20px;
-  color: #555;
-}
-
 /* =================================
    UPLOAD AREA
 ================================= */
 
 .upload-area {
+
   border: 2px dashed #bbb;
   border-radius: 12px;
   padding: 35px;
@@ -174,14 +335,13 @@ body {
   cursor: pointer;
   transition: all 0.25s ease;
 
-  /* 🔥 FIX */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   min-height: 90px;
 }
-
 
 .upload-area:hover {
   border-color: #e53935;
@@ -192,10 +352,8 @@ body {
   background: #f0f0f0;
   border-color: #e53935;
 }
-/* 🔥 CRITICAL FIX */
-.upload-area input {
-  display: none;
-}
+
+.upload-area input { display: none; }
 
 /* =================================
    BUTTON
@@ -213,39 +371,10 @@ body {
   transition: 0.2s;
 }
 
-.primary-btn:hover {
-  background: #c62828;
-}
+.primary-btn:hover { background: #c62828; }
 
 /* =================================
-   FEATURES / INFO
-================================= */
-
-.features {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 20px 0;
-}
-
-.feature {
-  background: white;
-  border: 1px solid #ddd;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.tool-info {
-  max-width: 650px;
-  text-align: center;
-  margin-top: 35px;
-  color: #555;
-}
-
-/* =================================
-   PROGRESS + LOADER
+   LOADER + PROGRESS
 ================================= */
 
 .loader {
@@ -258,9 +387,7 @@ body {
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .progress {
   width: 100%;
@@ -278,99 +405,7 @@ body {
   transition: width 0.2s ease;
 }
 
-.hidden {
-  display: none !important;
-}
-
-/* =================================
-   FILE LIST (MERGER)
-================================= */
-
-.file-list-wrapper {
-  margin: 18px 0;
-  max-height: 180px;
-  overflow-y: auto;
-}
-
-.file-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.file-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f7f7f7;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 14px;
-}
-
-.file-item:hover {
-  background: #ececec;
-}
-
-.remove-btn {
-  cursor: pointer;
-  font-size: 16px;
-  color: #999;
-}
-
-.remove-btn:hover {
-  color: #e53935;
-  transform: scale(1.2);
-}
-
-/* =================================
-   TOAST
-================================= */
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #2e7d32;
-  color: white;
-  padding: 10px 14px;
-  border-radius: 6px;
-}
-
-/* =================================
-   MODAL
-================================= */
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-.modal.show {
-  display: flex;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  position: relative;
-}
-
-.close {
-  position: absolute;
-  right: 10px;
-  top: 6px;
-  cursor: pointer;
-  font-size: 20px;
-}
+.hidden { display: none !important; }
 
 /* =================================
    FOOTER
@@ -392,9 +427,7 @@ body {
   color: #e53935;
 }
 
-.footer-links a:hover {
-  text-decoration: underline;
-}
+.footer-links a:hover { text-decoration: underline; }
 
 /* =================================
    MOBILE
@@ -409,5 +442,298 @@ body {
   .tool-grid {
     grid-template-columns: 1fr;
   }
+}
+/* =================================
+   COMPATIBILITY FIX — FEATURES + HOW
+================================= */
+
+/* Features container */
+
+.features {
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* Feature cards */
+
+.feature {
+
+  background: white;
+
+  border-radius: 16px;
+  padding: 22px;
+
+  text-align: center;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+
+  transition: all 0.25s ease;
+}
+
+.feature:hover {
+
+  transform: translateY(-6px);
+
+  box-shadow: 0 14px 35px rgba(0,0,0,0.08);
+}
+
+/* Steps container */
+
+.steps {
+
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+
+  margin: 40px auto;
+  max-width: 1000px;
+}
+
+/* Step cards */
+
+.step {
+
+  background: white;
+
+  padding: 22px 28px;
+
+  border-radius: 50px;
+
+  min-width: 220px;
+
+  text-align: center;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+
+  transition: all 0.25s ease;
+}
+
+.step:hover {
+
+  transform: scale(1.05);
+}
+/* ===============================
+   TOOL HERO
+=============================== */
+
+.tool-hero {
+
+  text-align: center;
+  padding: 70px 20px 40px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.tool-hero h1 {
+
+  font-size: 32px;
+  margin: 10px 0;
+}
+
+.tool-hero p {
+
+  color: #666;
+}
+
+.convert-hero::before {
+
+  content: "";
+  position: absolute;
+  inset: -50px;
+
+  background: radial-gradient(
+    circle,
+    rgba(229,57,53,0.12),
+    transparent 70%
+  );
+
+  filter: blur(60px);
+  z-index: -1;
+}
+/* ===============================
+   LAYOUT FIX — CENTER SECTIONS
+=============================== */
+
+.features-section,
+.how-section,
+.seo-section {
+
+  max-width: 1100px;
+  margin: 80px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.features-grid {
+
+  justify-items: center;
+}
+
+.steps {
+
+  justify-content: center;
+}
+
+section::before {
+
+  inset: -20px;
+}
+/* ===============================
+   TRUST SECTION — PREMIUM UI
+=============================== */
+
+.trust-section {
+
+  max-width: 1000px;
+  margin: 90px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.trust-section h2 {
+
+  margin-bottom: 40px;
+}
+
+.trust-grid {
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+.trust-card {
+
+  background: linear-gradient(145deg,#ffffff,#f5f5f5);
+
+  padding: 28px;
+  border-radius: 18px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+  transition: 0.25s ease;
+}
+
+.trust-card:hover {
+
+  transform: translateY(-8px);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.12);
+}
+
+.trust-icon {
+
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.trust-card h3 {
+
+  margin-bottom: 6px;
+}
+
+.trust-card p {
+
+  font-size: 14px;
+  color: #666;
+}
+/* ================================
+   PREMIUM FEATURES SECTION
+================================ */
+
+.premium-features {
+
+  margin: 120px auto;
+  max-width: 1100px;
+  text-align: center;
+}
+
+.premium-feature-grid {
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.premium-feature {
+
+  background: white;
+  padding: 32px;
+
+  border-radius: 20px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+
+  transition: all 0.25s ease;
+}
+
+.premium-feature:hover {
+
+  transform: translateY(-8px);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+
+  font-size: 28px;
+  margin-bottom: 12px;
+
+  background: rgba(229,57,53,0.1);
+  width: 56px;
+  height: 56px;
+
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-inline: auto;
+}
+
+.premium-feature p {
+
+  color: #666;
+  margin-top: 6px;
+  font-size: 14px;
+}
+/* FEATURE ICON BUBBLE */
+
+.feature-icon {
+
+  width: 50px;
+  height: 50px;
+
+  margin: 0 auto 12px;
+
+  border-radius: 14px;
+
+  background: linear-gradient(135deg,#ff6a6a,#e53935);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 22px;
+
+  color: white;
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.4),
+    0 6px 14px rgba(0,0,0,0.15);
+
+}
+
+.feature-box h3 {
+
+  font-size: 16px;
+  margin-bottom: 6px;
 
 }

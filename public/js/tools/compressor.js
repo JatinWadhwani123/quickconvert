@@ -1,121 +1,63 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const uploadArea = document.getElementById("uploadArea");
-  const fileInput = document.getElementById("fileInput");
-  const form = document.getElementById("compressForm");
+const form = document.getElementById("compressForm");
+const input = document.getElementById("fileInput");
+const uploadText = document.getElementById("uploadText");
+const loader = document.getElementById("loader");
+const progress = document.getElementById("progress");
+const bar = document.getElementById("progressBar");
 
-  const uploadText = document.getElementById("uploadText");
-  const uploadSub = document.getElementById("uploadSub");
+if (!form || !input) return;
 
-  let selectedFile = null;
+// ✅ show selected filename
 
-  // CLICK → open picker
-  uploadArea.addEventListener("click", () => fileInput.click());
+input.addEventListener("change", () => {
 
-  // FILE SELECT
-  fileInput.addEventListener("change", () => {
+if (input.files.length > 0) {
+uploadText.textContent = input.files[0].name;
+}
 
-    if (!fileInput.files.length) return;
+});
 
-    selectedFile = fileInput.files[0];
+// ✅ form submit simulation
 
-    showFile(selectedFile);
+form.addEventListener("submit", e => {
 
-  });
+e.preventDefault();
 
-  // DRAG OVER
-  uploadArea.addEventListener("dragover", e => {
-    e.preventDefault();
-    uploadArea.classList.add("drag-active");
-  });
+if (!input.files.length) {
+alert("Please select an image first");
+return;
+}
 
-  uploadArea.addEventListener("dragleave", () => {
-    uploadArea.classList.remove("drag-active");
-  });
+loader.classList.remove("hidden");
+progress.classList.remove("hidden");
 
-  // DROP
-  uploadArea.addEventListener("drop", e => {
+let percent = 0;
 
-    e.preventDefault();
-    uploadArea.classList.remove("drag-active");
+const interval = setInterval(() => {
 
-    const file = e.dataTransfer.files[0];
+percent += 10;
+bar.style.width = percent + "%";
 
-    if (!file || !file.type.startsWith("image/")) {
-      alert("Please drop a valid image file.");
-      return;
-    }
+if (percent >= 100) {
 
-    selectedFile = file;
-    fileInput.files = e.dataTransfer.files;
+clearInterval(interval);
 
-    showFile(file);
+loader.classList.add("hidden");
 
-  });
+setTimeout(() => {
 
-  // SHOW FILE
-  function showFile(file) {
+progress.classList.add("hidden");
+bar.style.width = "0%";
 
-    uploadText.textContent = file.name;
-    uploadSub.textContent = "Click to change file";
+alert("Compression complete!");
 
-  }
-  const progress = document.getElementById("compressProgress");
-const bar = document.getElementById("compressBar");
+}, 500);
 
+}
 
-  // SUBMIT
-  form.addEventListener("submit", async e => {
-
-  e.preventDefault();
-
-  if (!selectedFile) {
-    alert("Please upload an image first.");
-    return;
-  }
-
-  progress.classList.remove("hidden");
-
-  let p = 0;
-  const anim = setInterval(() => {
-    p += 6;
-    bar.style.width = p + "%";
-    if (p >= 90) clearInterval(anim);
-  }, 120);
-
-  const formData = new FormData();
-  formData.append("file", selectedFile);
-
-  try {
-
-    const res = await fetch("/compress", {
-      method: "POST",
-      body: formData
-    });
-
-    if (!res.ok) throw new Error("Compression failed");
-
-    const blob = await res.blob();
-
-    bar.style.width = "100%";
-
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "compressed.jpg";
-    a.click();
-
-  } catch (err) {
-
-    alert(err.message);
-
-  }
-
-  setTimeout(() => {
-
-    progress.classList.add("hidden");
-    bar.style.width = "0%";
-
-  }, 1200);
+}, 120);
 
 });
 

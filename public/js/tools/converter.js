@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+  // ======================
+  // ELEMENTS
+  // ======================
+
   const uploadArea = document.getElementById("uploadArea");
   const fileInput = document.getElementById("fileInput");
   const form = document.getElementById("convertForm");
@@ -7,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const progress = document.getElementById("convertProgress");
   const bar = document.getElementById("convertBar");
 
-  const uploadTitle = document.getElementById("uploadTitle");
-  const uploadSubtitle = document.getElementById("uploadSubtitle");
+  const uploadText = document.getElementById("uploadText");
+  const uploadSub = document.getElementById("uploadSub");
 
   if (!uploadArea || !fileInput || !form) {
     console.error("Converter UI elements missing");
@@ -18,13 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let selectedFile = null;
 
   // ======================
-  // Click upload
-  // ======================
-
-  uploadArea.addEventListener("click", () => fileInput.click());
-
-  // ======================
-  // File picker
+  // FILE PICKER
   // ======================
 
   fileInput.addEventListener("change", () => {
@@ -40,18 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     selectedFile = file;
 
-    // UI feedback
-    if (uploadTitle && uploadSubtitle) {
-      uploadTitle.textContent = "Selected file:";
-      uploadSubtitle.textContent = file.name;
-    }
-
-    uploadArea.classList.add("has-file");
+    uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
+    uploadSub.textContent = "Click to change file";
 
   });
 
   // ======================
-  // Drag & drop
+  // DRAG & DROP
   // ======================
 
   uploadArea.addEventListener("dragover", e => {
@@ -59,9 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadArea.classList.add("drag-active");
   });
 
-  uploadArea.addEventListener("dragleave", () =>
-    uploadArea.classList.remove("drag-active")
-  );
+  uploadArea.addEventListener("dragleave", () => {
+    uploadArea.classList.remove("drag-active");
+  });
 
   uploadArea.addEventListener("drop", e => {
 
@@ -77,23 +70,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     selectedFile = file;
 
-    // sync input element
+    // Sync with input
     const dt = new DataTransfer();
     dt.items.add(file);
     fileInput.files = dt.files;
 
-    // UI feedback
-    if (uploadTitle && uploadSubtitle) {
-      uploadTitle.textContent = "Selected file:";
-      uploadSubtitle.textContent = file.name;
-    }
-
-    uploadArea.classList.add("has-file");
+    uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
+    uploadSub.textContent = "Click to change file";
 
   });
 
   // ======================
-  // Submit conversion
+  // FORM SUBMIT
   // ======================
 
   form.addEventListener("submit", async e => {
@@ -108,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    // show progress UI
+    // Show progress
     progress.classList.remove("hidden");
 
     let p = 0;
@@ -139,16 +127,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     catch {
+
       alert("Conversion failed");
+
     }
 
     finally {
 
       setTimeout(() => {
-
         progress.classList.add("hidden");
         bar.style.width = "0%";
-
       }, 1200);
 
     }

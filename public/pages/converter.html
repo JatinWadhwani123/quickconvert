@@ -2,14 +2,12 @@
 <html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Free Image → PDF Converter | QuickConvert</title>
+<title>Image → PDF Converter | QuickConvert</title>
 
 <link rel="stylesheet" href="../css/style.css">
-
 </head>
 
 <body>
@@ -23,73 +21,159 @@
     <a href="/">Dashboard</a>
     <a href="/converter" class="active">Converter</a>
     <a href="/compressor">Compressor</a>
+    <a href="/merger">Merger</a>
   </nav>
 </header>
 
-<!-- TOOL WRAPPER -->
+<!-- HERO -->
 
-<div class="tool-wrapper">
+<section class="tool-hero convert-hero">
+
+  <div class="hero-icon modern-icon convert-icon">📄</div>
+
+  <h1>Image → PDF Converter</h1>
+
+  <p>
+    Convert JPG or PNG images into high-quality PDFs instantly —
+    secure, fast, and fully browser-based.
+  </p>
+
+</section>
+
+<!-- TOOL CARD -->
+
+<section class="tool-wrapper">
 
   <div class="tool-card-main">
 
-    <h1>Free Image → PDF Converter</h1>
-
-    <p>
-      Convert JPG or PNG images instantly into a PDF using our secure online converter.
-      No uploads stored. Fast drag-and-drop conversion.
-    </p>
-
-    <!-- CONVERTER FORM -->
-
+    <!-- FORM REQUIRED BY JS -->
     <form id="convertForm">
 
-     <label id="uploadArea" class="upload-area">
+      <!-- UPLOAD AREA — IDs MUST MATCH JS -->
 
-  <strong id="uploadTitle">Drag & drop image here</strong>
-  <span id="uploadSubtitle">or click to upload</span>
+      <label class="upload-area" id="uploadArea">
 
-  <input type="file" id="fileInput" accept="image/*">
+        <strong id="uploadText">
+          Drag & drop image here
+        </strong>
 
-</label>
+        <span id="uploadSub">
+          or click to upload
+        </span>
 
+        <input type="file" id="fileInput" accept="image/*">
+
+      </label>
+
+      <!-- BUTTON -->
 
       <button type="submit" class="primary-btn">
         Convert to PDF
       </button>
 
+      <!-- LOADER -->
+
+      <div id="loader" class="loader hidden"></div>
+
+      <!-- PROGRESS -->
+
+      <div id="convertProgress" class="progress hidden">
+        <div id="convertBar"></div>
+      </div>
+
     </form>
-
-    <!-- PROGRESS BAR -->
-
-    <div id="convertProgress" class="progress hidden">
-      <div id="convertBar"></div>
-    </div>
 
   </div>
 
-  <!-- INFO SECTION -->
+</section>
 
-  <div class="tool-info">
+<!-- PREMIUM FEATURES -->
 
-    <h2>Why use our converter?</h2>
+<section class="premium-features">
 
-    <p>
-      QuickConvert allows instant image → PDF transformation directly in your browser.
-      No software installation required. Files are processed securely and never stored.
-    </p>
+<h2>Why creators choose QuickConvert</h2>
 
+<div class="premium-feature-grid">
+
+  <div class="premium-feature">
+    <div class="feature-icon">⚡</div>
+    <h3>Lightning fast</h3>
+    <p>Instant browser conversion</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🔒</div>
+    <h3>Private & secure</h3>
+    <p>No files are stored</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🌍</div>
+    <h3>Works anywhere</h3>
+    <p>Desktop or mobile</p>
   </div>
 
 </div>
 
+</section>
+
+<!-- HOW IT WORKS -->
+
+<section class="how-section">
+
+<h2>How it works</h2>
+
+<div class="steps">
+
+  <div class="step">
+    📤 Upload
+    <p>Select your image</p>
+  </div>
+
+  <div class="step">
+    ⚙ Process
+    <p>Instant conversion</p>
+  </div>
+
+  <div class="step">
+    📥 Download
+    <p>Get your PDF</p>
+  </div>
+
+</div>
+
+</section>
+
+<!-- SEO TEXT -->
+
+<section class="seo-section">
+
+<h2>Free online image to PDF converter</h2>
+
+<p>
+QuickConvert lets you transform images into professional PDFs instantly.
+No installation required. Everything runs securely inside your browser.
+</p>
+
+</section>
+
 <!-- FOOTER -->
 
 <footer class="footer">
-  ⚡ QuickConvert — Fast & Secure File Conversion
+
+⚡ QuickConvert — Fast & Secure File Tools
+
+<div class="footer-links">
+<a href="/privacy">Privacy</a>
+<a href="/terms">Terms</a>
+<a href="/contact">Contact</a>
+</div>
+
 </footer>
+
+<!-- JS -->
 
 <script src="../js/tools/converter.js"></script>
 
 </body>
-
 </html>
