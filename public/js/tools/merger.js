@@ -1,3 +1,7 @@
+// ======================
+// DOM references
+// ======================
+
 const dropArea = document.getElementById("dropArea");
 const fileInput = document.getElementById("fileInput");
 const form = document.getElementById("mergeForm");
@@ -10,6 +14,8 @@ const fileListUI = document.getElementById("fileList");
 const toast = document.getElementById("toast");
 
 let fileArray = [];
+let progressAnim = null;
+
 
 // ======================
 // Upload handlers
@@ -18,81 +24,99 @@ let fileArray = [];
 dropArea.addEventListener("click", () => fileInput.click());
 
 dropArea.addEventListener("dragover", e => {
-e.preventDefault();
-dropArea.classList.add("drag-active");
+  e.preventDefault();
+  dropArea.classList.add("drag-active");
 });
 
 dropArea.addEventListener("dragleave", () =>
-dropArea.classList.remove("drag-active")
+  dropArea.classList.remove("drag-active")
 );
 
 dropArea.addEventListener("drop", e => {
-e.preventDefault();
-dropArea.classList.remove("drag-active");
-addFiles(e.dataTransfer.files);
+  e.preventDefault();
+  dropArea.classList.remove("drag-active");
+  addFiles(e.dataTransfer.files);
 });
 
 fileInput.addEventListener("change", () => {
-addFiles(fileInput.files);
-fileInput.value = ""; // allow re-upload
+  addFiles(fileInput.files);
+
+  // allow same file re-upload
+  fileInput.value = "";
 });
 
+
 // ======================
-// Add files
+// Add files safely
 // ======================
 
 function addFiles(files) {
 
-Array.from(files).forEach(file => {
+  Array.from(files).forEach(file => {
 
-```
-if (file.type !== "application/pdf") {
-  glowInvalid();
-  return;
+    if (file.type !== "application/pdf") {
+      glowInvalid();
+      return;
+    }
+
+    // prevent duplicates
+    const exists = fileArray.some(f =>
+      f.name === file.name &&
+      f.size === file.size
+    );
+
+    if (!exists)
+      fileArray.push(file);
+
+  });
+
+  renderList();
 }
 
-fileArray.push(file);
-```
-
-});
-
-renderList();
-}
-
-function glowInvalid() {
-dropArea.style.boxShadow = "0 0 15px red";
-setTimeout(() => dropArea.style.boxShadow = "", 600);
-}
 
 // ======================
-// Render list
+// Invalid glow feedback
+// ======================
+
+function glowInvalid() {
+
+  dropArea.style.boxShadow = "0 0 15px red";
+
+  setTimeout(() =>
+    dropArea.style.boxShadow = "",
+    600
+  );
+}
+
+
+// ======================
+// Render file list
 // ======================
 
 function renderList() {
 
-fileListUI.innerHTML = "";
+  fileListUI.innerHTML = "";
 
-fileArray.forEach((file, index) => {
+  fileArray.forEach((file, index) => {
 
-```
-const item = document.createElement("div");
-item.className = "file-item";
+    const item = document.createElement("div");
+    item.className = "file-item";
 
-item.innerHTML = `
-  <span>${file.name}</span>
-  <span class="remove-btn">✖</span>
-`;
+    item.innerHTML = `
+      <span>${file.name}</span>
+      <span class="remove-btn">✖</span>
+    `;
 
-item.querySelector(".remove-btn").onclick = () => {
-  fileArray.splice(index, 1);
-  renderList();
-};
+    item.querySelector(".remove-btn").onclick = () => {
+      fileArray.splice(index, 1);
+      renderList();
+    };
 
-fileListUI.appendChild(item);
-```
+    fileListUI.appendChild(item);
 
-});
+  });
 }
+
 
 // ======================
 // Submit merge
@@ -100,84 +124,89 @@ fileListUI.appendChild(item);
 
 form.addEventListener("submit", async e => {
 
-e.preventDefault();
+  e.preventDefault();
 
-if (fileArray.length < 2) {
-glowInvalid();
-return;
-}
+  if (fileArray.length < 2) {
+    glowInvalid();
+    return;
+  }
 
-btn.disabled = true;
-btn.textContent = "Merging…";
+  btn.disabled = true;
+  btn.textContent = "Merging…";
 
-progress.classList.remove("hidden");
+  progress.classList.remove("hidden");
 
-let p = 0;
-const anim = setInterval(() => {
-p += 5;
-bar.style.width = p + "%";
-if (p >= 95) clearInterval(anim);
-}, 120);
+  let p = 0;
 
-try {
+  clearInterval(progressAnim);
 
-```
-const formData = new FormData();
-fileArray.forEach(file =>
-  formData.append("files", file)
-);
+  progressAnim = setInterval(() => {
+    p += 5;
+    bar.style.width = p + "%";
 
-const res = await fetch("/merge", {
-  method: "POST",
-  body: formData
+    if (p >= 95)
+      clearInterval(progressAnim);
+
+  }, 120);
+
+  try {
+
+    const formData = new FormData();
+
+    fileArray.forEach(file =>
+      formData.append("files", file)
+    );
+
+    const res = await fetch("/merge", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok)
+      throw new Error();
+
+    const blob = await res.blob();
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "merged.pdf";
+    a.click();
+
+    bar.style.width = "100%";
+
+    showToast();
+
+  }
+
+  catch {
+
+    alert("Merge failed");
+
+  }
+
+  setTimeout(() => {
+
+    btn.disabled = false;
+    btn.textContent = "Merge PDFs";
+
+    progress.classList.add("hidden");
+    bar.style.width = "0%";
+
+  }, 2000);
+
 });
 
-if (!res.ok) throw new Error();
-
-const blob = await res.blob();
-
-const a = document.createElement("a");
-a.href = URL.createObjectURL(blob);
-a.download = "merged.pdf";
-a.click();
-
-bar.style.width = "100%";
-
-showToast();
-```
-
-} catch {
-
-```
-alert("Merge failed");
-```
-
-}
-
-setTimeout(() => {
-
-```
-btn.disabled = false;
-btn.textContent = "Merge PDFs";
-
-progress.classList.add("hidden");
-bar.style.width = "0%";
-```
-
-}, 2000);
-
-});
 
 // ======================
-// Toast
+// Toast popup
 // ======================
 
 function showToast() {
 
-toast.classList.add("show");
+  toast.classList.add("show");
 
-setTimeout(() =>
-toast.classList.remove("show"),
-2500
-);
+  setTimeout(() =>
+    toast.classList.remove("show"),
+    2500
+  );
 }
