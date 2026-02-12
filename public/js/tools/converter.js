@@ -1,63 +1,61 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  const form = document.getElementById("convertForm");
+  const uploadArea = document.getElementById("uploadArea");
   const fileInput = document.getElementById("fileInput");
-  const uploadArea = document.querySelector(".upload-area");
+  const form = document.getElementById("convertForm");
+  const spinner = document.getElementById("spinner");
 
-  const loader = document.getElementById("loader");
-  const toast = document.getElementById("toast");
+  let selectedFile = null;
 
-  const errorModal = document.getElementById("errorModal");
-  const errorText = document.getElementById("errorText");
-  const closeError = document.getElementById("closeError");
+  const allowedTypes = ["image/jpeg", "image/png"];
 
-  let selectedFile = null; // 🔥 real file storage
 
-  // =========================
-  // UI reset
-  // =========================
-
-  loader?.classList.add("hidden");
-  toast?.classList.add("hidden");
-  errorModal?.classList.remove("show");
-
-  // =========================
-  // Show filename
-  // =========================
-
-  function showFile(file) {
-
-    selectedFile = file;
-
-    uploadArea.innerHTML = `
-      <strong>📄 ${file.name}</strong>
-      <small>Click to change file</small>
-    `;
-
-  }
-
-  // =========================
-  // Click upload
-  // =========================
+  // =====================
+  // Click → file picker
+  // =====================
 
   uploadArea.addEventListener("click", () => fileInput.click());
 
+
+  // =====================
+  // File selection
+  // =====================
+
   fileInput.addEventListener("change", () => {
-    if (fileInput.files.length) showFile(fileInput.files[0]);
+
+    const file = fileInput.files[0];
+
+    if (!file) return;
+
+    if (!allowedTypes.includes(file.type)) {
+
+      alert("Only JPG or PNG images are allowed!");
+
+      fileInput.value = "";
+      selectedFile = null;
+      resetUploadArea();
+
+      return;
+    }
+
+    selectedFile = file;
+    showFile(file);
+
   });
 
-  // =========================
+
+  // =====================
   // Drag & drop
-  // =========================
+  // =====================
 
   uploadArea.addEventListener("dragover", e => {
     e.preventDefault();
     uploadArea.classList.add("drag-active");
   });
 
-  uploadArea.addEventListener("dragleave", () => {
-    uploadArea.classList.remove("drag-active");
-  });
+  uploadArea.addEventListener("dragleave", () =>
+    uploadArea.classList.remove("drag-active")
+  );
 
   uploadArea.addEventListener("drop", e => {
 
@@ -66,101 +64,92 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const file = e.dataTransfer.files[0];
 
-    if (file) showFile(file);
+    if (!file || !allowedTypes.includes(file.type)) {
+
+      alert("Only JPG or PNG images are allowed!");
+
+      resetUploadArea();
+      return;
+    }
+
+    selectedFile = file;
+    fileInput.files = e.dataTransfer.files;
+
+    showFile(file);
 
   });
 
-  // =========================
-  // Submit
-  // =========================
+
+  // =====================
+  // UI helpers
+  // =====================
+
+  function showFile(file) {
+
+    uploadArea.innerHTML = `
+      📄 <strong>${file.name}</strong>
+      <br><span>Click to change file</span>
+    `;
+
+  }
+
+  function resetUploadArea() {
+
+    uploadArea.innerHTML = `
+      <strong>Drag & drop image here</strong>
+      <span>or click to upload</span>
+    `;
+
+  }
+
+
+  // =====================
+  // Submit conversion
+  // =====================
 
   form.addEventListener("submit", async e => {
 
     e.preventDefault();
 
     if (!selectedFile) {
-      showError("Please select an image first.");
+      alert("Please upload an image first.");
       return;
     }
 
-    loader.classList.remove("hidden");
+    spinner.classList.remove("hidden");
 
     try {
 
       const formData = new FormData();
-      formData.append("file", selectedFile); // 🔥 FIX
+      formData.append("file", selectedFile);
 
       const res = await fetch("/convert", {
         method: "POST",
-         body: formData
+        body: formData
       });
 
-if (!res.ok) {
-  throw new Error("Invalid image..");
-}
-
-      const type = res.headers.get("content-type") || "";
-
-      if (!res.ok || type.includes("text")) {
-        throw new Error(await res.text());
-      }
+      if (!res.ok)
+        throw new Error("Conversion failed");
 
       const blob = await res.blob();
 
-      const url = window.URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
 
       const a = document.createElement("a");
       a.href = url;
       a.download = "converted.pdf";
-      document.body.appendChild(a);
       a.click();
-      a.remove();
-
-      showToast();
 
     }
 
     catch (err) {
 
-      console.error(err);
-      showError(err.message || "Conversion failed");
+      alert(err.message);
 
     }
 
-    finally {
+    spinner.classList.add("hidden");
 
-      loader.classList.add("hidden");
-
-    }
-
-  });
-
-  // =========================
-  // UI helpers
-  // =========================
-
-  function showToast() {
-
-    toast.classList.remove("hidden");
-
-    setTimeout(() => toast.classList.add("hidden"), 3000);
-
-  }
-
-  function showError(msg) {
-
-    errorText.textContent = msg;
-    errorModal.classList.add("show");
-
-  }
-
-  closeError.addEventListener("click", () =>
-    errorModal.classList.remove("show")
-  );
-
-  errorModal.addEventListener("click", e => {
-    if (e.target === errorModal)
-      errorModal.classList.remove("show");
   });
 
 });
