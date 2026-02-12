@@ -44,23 +44,19 @@ No uploads stored. Fast drag-and-drop conversion.
 
 <form id="convertForm">
 
-<label class="upload-area">
+  <div class="upload-area" id="uploadArea">
+    Drag & drop image here
+    <br>or click to upload
 
-<input type="file" id="fileInput" accept="image/jpeg,image/png">
+    <input type="file" id="fileInput" name="file" hidden>
+  </div>
 
-
-<span>Drag & drop image here</span>
-<small>or click to upload</small>
-
-</label>
-
-<input type="hidden" name="mode" value="img2pdf">
-
-<button class="primary-btn">
-Convert to PDF
-</button>
+  <button type="submit" class="primary-btn">
+    Convert to PDF
+  </button>
 
 </form>
+
 
 <div id="loader" class="loader hidden"></div>
 

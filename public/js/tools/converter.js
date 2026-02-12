@@ -3,23 +3,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const uploadArea = document.getElementById("uploadArea");
   const fileInput = document.getElementById("fileInput");
   const form = document.getElementById("convertForm");
-  const spinner = document.getElementById("spinner");
+
+  if (!uploadArea || !fileInput || !form) {
+    console.error("Converter UI elements missing");
+    return;
+  }
 
   let selectedFile = null;
 
-  const allowedTypes = ["image/jpeg", "image/png"];
-
-
-  // =====================
-  // Click → file picker
-  // =====================
+  // ======================
+  // Click upload
+  // ======================
 
   uploadArea.addEventListener("click", () => fileInput.click());
 
-
-  // =====================
-  // File selection
-  // =====================
+  // ======================
+  // File picker
+  // ======================
 
   fileInput.addEventListener("change", () => {
 
@@ -27,26 +27,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!file) return;
 
-    if (!allowedTypes.includes(file.type)) {
-
-      alert("Only JPG or PNG images are allowed!");
-
+    if (!file.type.startsWith("image/")) {
+      alert("Only JPG or PNG images allowed");
       fileInput.value = "";
-      selectedFile = null;
-      resetUploadArea();
-
       return;
     }
 
     selectedFile = file;
-    showFile(file);
+
+    uploadArea.innerHTML = `
+      📄 <strong>${file.name}</strong>
+      <br><span>Click to change file</span>
+      <input type="file" id="fileInput" name="file" hidden>
+    `;
 
   });
 
-
-  // =====================
+  // ======================
   // Drag & drop
-  // =====================
+  // ======================
 
   uploadArea.addEventListener("dragover", e => {
     e.preventDefault();
@@ -64,91 +63,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const file = e.dataTransfer.files[0];
 
-    if (!file || !allowedTypes.includes(file.type)) {
-
-      alert("Only JPG or PNG images are allowed!");
-
-      resetUploadArea();
+    if (!file || !file.type.startsWith("image/")) {
+      alert("Only JPG or PNG images allowed");
       return;
     }
 
     selectedFile = file;
-    fileInput.files = e.dataTransfer.files;
 
-    showFile(file);
-
-  });
-
-
-  // =====================
-  // UI helpers
-  // =====================
-
-  function showFile(file) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    fileInput.files = dt.files;
 
     uploadArea.innerHTML = `
       📄 <strong>${file.name}</strong>
       <br><span>Click to change file</span>
+      <input type="file" id="fileInput" name="file" hidden>
     `;
 
-  }
+  });
 
-  function resetUploadArea() {
-
-    uploadArea.innerHTML = `
-      <strong>Drag & drop image here</strong>
-      <span>or click to upload</span>
-    `;
-
-  }
-
-
-  // =====================
+  // ======================
   // Submit conversion
-  // =====================
+  // ======================
 
   form.addEventListener("submit", async e => {
 
     e.preventDefault();
 
     if (!selectedFile) {
-      alert("Please upload an image first.");
+      alert("Please upload an image first");
       return;
     }
 
-    spinner.classList.remove("hidden");
+    const formData = new FormData();
+    formData.append("file", selectedFile);
 
     try {
-
-      const formData = new FormData();
-      formData.append("file", selectedFile);
 
       const res = await fetch("/convert", {
         method: "POST",
         body: formData
       });
 
-      if (!res.ok)
-        throw new Error("Conversion failed");
+      if (!res.ok) throw new Error();
 
       const blob = await res.blob();
 
-      const url = URL.createObjectURL(blob);
-
       const a = document.createElement("a");
-      a.href = url;
+      a.href = URL.createObjectURL(blob);
       a.download = "converted.pdf";
       a.click();
 
-    }
+    } catch {
 
-    catch (err) {
-
-      alert(err.message);
+      alert("Conversion failed");
 
     }
-
-    spinner.classList.add("hidden");
 
   });
 
