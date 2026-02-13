@@ -1,37 +1,21 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
 const router = express.Router();
 const User = require("../models/user");
 
-// ================= OTP MEMORY STORE =================
+const resend = new Resend(process.env.RESEND_API_KEY);
 
+// ===== OTP MEMORY STORE =====
 const otpStore = new Map();
 
-// ================= MAIL TRANSPORT =================
-
-const transporter = nodemailer.createTransport({
-
-  service: "gmail",
-
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS
-  }
-
-});
-
 // ================= SEND OTP =================
-
 router.post("/send-otp", async (req, res) => {
-
   try {
-
     const { email } = req.body;
 
     const user = await User.findOne({ email });
-
     if (!user)
       return res.status(400).json({ msg: "Email not found" });
 
@@ -39,47 +23,31 @@ router.post("/send-otp", async (req, res) => {
 
     otpStore.set(email, otp);
 
-    // ===== EMAIL CONTENT =====
-
-    await transporter.sendMail({
-
-      from: `"QuickConvert Support" <${process.env.MAIL_USER}>`,
-
+    await resend.emails.send({
+      from: `QuickConvert Support <${process.env.MAIL_FROM}>`,
       to: email,
-
-      subject: "QuickConvert Password Reset OTP",
-
+      subject: "Password Reset OTP",
       html: `
         <h2>Password Reset</h2>
         <p>Your OTP is:</p>
         <h1 style="color:#ff4d4d">${otp}</h1>
         <p>This OTP expires soon.</p>
       `
-
     });
 
-    console.log("✅ OTP emailed to:", email);
+    console.log("✅ OTP sent:", email);
 
-    res.json({ msg: "OTP sent to email" });
+    res.json({ msg: "OTP sent successfully" });
 
+  } catch (err) {
+    console.error("EMAIL ERROR:", err);
+    res.status(500).json({ msg: "Failed to send OTP" });
   }
-
-  catch (err) {
-
-    console.error("MAIL ERROR:", err);
-
-    res.status(500).json({ msg: "Failed to send OTP email" });
-
-  }
-
 });
 
-// ================= VERIFY OTP + RESET =================
-
+// ================= VERIFY OTP =================
 router.post("/verify-reset", async (req, res) => {
-
   try {
-
     const { email, otp, newPassword } = req.body;
 
     if (otpStore.get(email) != otp)
@@ -96,14 +64,9 @@ router.post("/verify-reset", async (req, res) => {
 
     res.json({ msg: "Password reset success" });
 
-  }
-
-  catch {
-
+  } catch {
     res.status(500).json({ msg: "Reset failed" });
-
   }
-
 });
 
 module.exports = router;
