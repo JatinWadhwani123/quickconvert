@@ -1,24 +1,28 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+
 const router = express.Router();
 const User = require("../models/user");
 
-// ===== OTP STORAGE =====
+// ================= OTP MEMORY STORE =================
 
 const otpStore = new Map();
 
-// ===== MAIL TRANSPORT =====
+// ================= MAIL TRANSPORT =================
 
 const transporter = nodemailer.createTransport({
+
   service: "gmail",
+
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS
   }
+
 });
 
-// ===== SEND OTP =====
+// ================= SEND OTP =================
 
 router.post("/send-otp", async (req, res) => {
 
@@ -29,31 +33,38 @@ router.post("/send-otp", async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user)
-      return res.json({ msg: "Email not found" });
+      return res.status(400).json({ msg: "Email not found" });
 
     const otp = Math.floor(100000 + Math.random() * 900000);
 
     otpStore.set(email, otp);
 
-    // ===== SEND EMAIL =====
+    // ===== EMAIL CONTENT =====
 
     await transporter.sendMail({
+
       from: `"QuickConvert Support" <${process.env.MAIL_USER}>`,
+
       to: email,
+
       subject: "QuickConvert Password Reset OTP",
+
       html: `
         <h2>Password Reset</h2>
         <p>Your OTP is:</p>
         <h1 style="color:#ff4d4d">${otp}</h1>
         <p>This OTP expires soon.</p>
       `
+
     });
 
     console.log("✅ OTP emailed to:", email);
 
     res.json({ msg: "OTP sent to email" });
 
-  } catch (err) {
+  }
+
+  catch (err) {
 
     console.error("MAIL ERROR:", err);
 
@@ -63,7 +74,7 @@ router.post("/send-otp", async (req, res) => {
 
 });
 
-// ===== VERIFY OTP + RESET =====
+// ================= VERIFY OTP + RESET =================
 
 router.post("/verify-reset", async (req, res) => {
 
@@ -72,7 +83,7 @@ router.post("/verify-reset", async (req, res) => {
     const { email, otp, newPassword } = req.body;
 
     if (otpStore.get(email) != otp)
-      return res.json({ msg: "Invalid OTP" });
+      return res.status(400).json({ msg: "Invalid OTP" });
 
     const hashed = await bcrypt.hash(newPassword, 10);
 
@@ -85,7 +96,9 @@ router.post("/verify-reset", async (req, res) => {
 
     res.json({ msg: "Password reset success" });
 
-  } catch {
+  }
+
+  catch {
 
     res.status(500).json({ msg: "Reset failed" });
 
