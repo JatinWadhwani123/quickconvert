@@ -30,52 +30,7 @@ body {
    NAVBAR
 ================================= */
 
-/* .navbar {
-  background: white;
-  border-bottom: 1px solid #e5e5e5;
-  padding: 14px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  position: sticky;
-  z-index: 1000;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
 
-.logo {
-  font-weight: 700;
-  font-size: 18px;
-}
-
-.navbar nav a {
-  margin-left: 12px;
-  padding: 8px 14px;
-  text-decoration: none;
-  color: #333;
-  border-radius: 6px;
-  transition: 0.2s;
-}
-
-.navbar nav a:hover { background: #eee; }
-
-.navbar nav a.active {
-  background: #e53935;
-  color: white;
-}
-.nav-links a {
-  margin: 0 10px;
-  text-decoration: none;
-  color: #444;
-  font-weight: 500;
-}
-
-.nav-links a:hover {
-  color: #ff4d4d;
-} */
-/* ===== MODERN NAVBAR ===== */
 
 .navbar {
   position: sticky;
@@ -1082,4 +1037,518 @@ cursor: pointer;
   max-width: 1100px;
   margin: auto;
   padding: 0 20px;
+}
+/* NAVBAR */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 40px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-search {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+}
+
+/* Buttons */
+
+.nav-btn {
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login {
+  color: #333;
+}
+
+.signup {
+  background: #ff4d4d;
+  color: white;
+}
+
+/* App launcher */
+
+.app-launcher {
+  position: relative;
+}
+
+.dots {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 6px;
+}
+
+.launcher-menu {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  width: 260px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.15);
+  padding: 15px;
+  display: none;
+}
+
+.menu-section {
+  margin-bottom: 12px;
+}
+
+.menu-section h4 {
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #888;
+}
+
+.menu-section a {
+  display: block;
+  padding: 6px 0;
+  text-decoration: none;
+  color: #333;
+}
+
+.menu-section a:hover {
+  color: #ff4d4d;
+}
+/* ===============================
+SAFE NAVBAR ENHANCEMENT
+(Does NOT override existing layout)
+=============================== */
+
+.nav-login {
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #333;
+  transition: .2s;
+}
+
+.nav-login:hover {
+  background: #f3f3f3;
+}
+
+.nav-signup {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #ff4d4d;
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  transition: .2s;
+}
+
+.nav-signup:hover {
+  background: #e33c3c;
+}
+
+/* launcher dropdown polish */
+
+.launcher-menu {
+  border-radius: 14px;
+  box-shadow: 0 15px 35px rgba(0,0,0,.12);
+  animation: fadeIn .2s ease;
+}
+
+.launcher-menu a {
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.launcher-menu a:hover {
+  background: #f3f3f3;
+}
+
+@keyframes fadeIn {
+  from { opacity:0; transform: translateY(-5px); }
+  to { opacity:1; transform: translateY(0); }
+}
+/* ===============================
+   APP LAUNCHER — PREMIUM UI FIX
+=============================== */
+
+.launcher-menu {
+
+  position: absolute;
+  right: 0;
+  top: 42px;
+
+  width: 260px;
+  padding: 16px;
+
+  background: white;
+  border-radius: 16px;
+
+  box-shadow: 0 18px 45px rgba(0,0,0,.12);
+
+  display: none;
+
+  animation: launcherFade .18s ease;
+}
+
+@keyframes launcherFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* section titles */
+
+.menu-section-title {
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+
+  margin: 8px 4px 6px;
+}
+
+
+/* divider */
+
+.menu-divider {
+
+  height: 1px;
+  background: #eee;
+
+  margin: 10px 0;
+}
+
+
+/* links */
+
+.launcher-menu a {
+
+  display: block;
+
+  padding: 10px 12px;
+  margin: 4px 0;
+
+  border-radius: 10px;
+
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+
+  transition: all .18s ease;
+}
+
+
+/* hover */
+
+.launcher-menu a:hover {
+
+  background: #ffecec;
+  color: #e53935;
+
+  transform: translateX(2px);
+}
+
+
+/* logout emphasis */
+
+#menuLogout {
+
+  color: #e53935;
+  font-weight: 600;
+}
+/* ===============================
+   NAV AUTH BUTTON — MODERN STYLE
+=============================== */
+
+.nav-login,
+.nav-signup,
+.nav-logout {
+
+  border: none;
+  outline: none;
+
+  padding: 8px 16px;
+
+  border-radius: 999px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  text-decoration: none;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all .18s ease;
+}
+
+
+/* login — subtle */
+
+.nav-login {
+
+  background: transparent;
+  color: #333;
+}
+
+.nav-login:hover {
+
+  background: #f3f3f3;
+}
+
+
+/* signup — primary */
+
+.nav-signup {
+
+  background: #ff4d4d;
+  color: white;
+}
+
+.nav-signup:hover {
+
+  background: #e53935;
+  transform: translateY(-1px);
+}
+
+
+/* logout — premium neutral */
+
+.nav-logout {
+
+  background: #f5f5f5;
+  color: #333;
+}
+
+.nav-logout:hover {
+
+  background: #ffecec;
+  color: #e53935;
+}
+/* ===========================
+   NAVBAR — MODERN UI POLISH
+=========================== */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 36px;
+
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+
+  border-bottom: 1px solid #eee;
+}
+
+/* RIGHT SIDE */
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* SEARCH */
+
+.nav-search {
+  padding: 8px 14px;
+  border-radius: 22px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.nav-search:focus {
+  outline: none;
+  border-color: #ff4d4d;
+  background: white;
+}
+
+/* AUTH BUTTONS */
+
+.nav-login,
+.nav-signup,
+.nav-logout {
+
+  padding: 8px 16px;
+  border-radius: 22px;
+
+  font-weight: 600;
+  font-size: 14px;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+/* Login (ghost button) */
+
+.nav-login {
+  color: #444;
+}
+
+.nav-login:hover {
+  background: #f3f3f3;
+}
+
+/* Signup / Logout (primary button) */
+
+.nav-signup,
+.nav-logout {
+
+  background: #ff4d4d;
+  color: white;
+  border: none;
+}
+
+.nav-signup:hover,
+.nav-logout:hover {
+  background: #e53935;
+  transform: translateY(-1px);
+}
+
+/* DOTS BUTTON */
+
+.dots-btn {
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 10px;
+  border: none;
+
+  background: #f4f4f4;
+
+  font-size: 18px;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.dots-btn:hover {
+  background: #eaeaea;
+  transform: scale(1.05);
+}
+
+/* LAUNCHER MENU */
+
+.launcher-menu {
+
+  position: absolute;
+  right: 0;
+  top: 44px;
+
+  width: 260px;
+
+  background: white;
+  border-radius: 16px;
+
+  box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+
+  padding: 14px;
+
+  display: none;
+
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.menu-section-title {
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #999;
+
+  margin: 6px 0;
+}
+
+.launcher-menu a {
+
+  display: block;
+
+  padding: 8px 10px;
+  border-radius: 8px;
+
+  color: #333;
+  text-decoration: none;
+
+  transition: 0.15s;
+}
+
+.launcher-menu a:hover {
+  background: #ffecec;
+  color: #ff4d4d;
+}
+
+.menu-divider {
+
+  height: 1px;
+  background: #eee;
+
+  margin: 8px 0;
+}
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  animation: fadeIn 0.3s ease;
+}
+
+.toast.success {
+  background: #4caf50;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%,20px); }
+  to { opacity: 1; transform: translate(-50%,0); }
 }

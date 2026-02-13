@@ -11,14 +11,17 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cloudconvert": "^3.0.0",
     "cors": "^2.8.6",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.1",
     "multer": "^2.0.2",
+    "nodemailer": "^8.0.1",
     "pdf-lib": "^1.17.1",
     "pdf-poppler": "^0.2.3",
     "sharp": "^0.34.5"

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -12,87 +11,135 @@
 
 <style>
 
-/* ===== PAGE BACKGROUND ===== */
+/* ===== PAGE LAYOUT ===== */
 
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: linear-gradient(135deg,#f6f7fb,#e9ecf5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+body{
+margin:0;
+font-family:system-ui;
+background:linear-gradient(135deg,#f6f7fb,#e9ecf5);
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
 }
 
-/* ===== LOGIN CARD ===== */
+/* CARD */
 
-.login-card {
-  width: 360px;
-  background: white;
-  padding: 40px;
-  border-radius: 18px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+.card{
+width:380px;
+background:white;
+padding:36px;
+border-radius:18px;
+box-shadow:0 12px 40px rgba(0,0,0,.08);
 }
 
-/* ===== BRANDING ===== */
+.title{font-size:22px;font-weight:700;margin-bottom:4px}
+.sub{color:#666;margin-bottom:22px;font-size:14px}
 
-.login-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 6px;
+/* INPUT */
+
+.input-wrap{position:relative}
+
+.card input{
+width:100%;
+padding:12px;
+margin-bottom:14px;
+border-radius:10px;
+border:1px solid #ddd;
+font-size:14px;
 }
 
-.login-sub {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 24px;
+.card input:focus{
+outline:none;
+border-color:#ff4d4d;
 }
 
-/* ===== INPUTS ===== */
-
-.login-card input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 14px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 14px;
+.eye{
+position:absolute;
+right:10px;
+top:12px;
+cursor:pointer;
+opacity:.6;
 }
 
-.login-card input:focus {
-  outline: none;
-  border-color: #ff4d4f;
+/* BUTTON */
+
+.btn{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+background:#ff4d4d;
+color:white;
+font-size:15px;
+cursor:pointer;
+transition:.2s;
 }
 
-/* ===== BUTTON ===== */
+.btn:hover{background:#e23d3d}
 
-.login-btn-main {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background: #ff4d4f;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
-  transition: 0.2s;
+/* ERROR */
+
+.error{
+color:#e53935;
+font-size:14px;
+margin-top:6px;
+display:none;
 }
 
-.login-btn-main:hover {
-  background: #e43d3f;
+/* LINK */
+
+.link{
+font-size:14px;
+color:#ff4d4d;
+cursor:pointer;
+margin-top:8px;
+display:inline-block;
 }
 
-/* ===== FOOTER ===== */
+/* OTP PANEL */
 
-.login-footer {
-  text-align: center;
-  margin-top: 16px;
-  font-size: 14px;
+.otp-panel{
+margin-top:16px;
+padding:14px;
+border-radius:10px;
+background:#fafafa;
+border:1px solid #eee;
+display:none;
 }
 
-.login-footer a {
-  color: #ff4d4f;
-  text-decoration: none;
+/* TOAST */
+
+.toast{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#333;
+color:white;
+padding:10px 16px;
+border-radius:8px;
+opacity:.95;
+animation:fade 2.5s forwards;
+}
+
+.toast.success{background:#2e7d32}
+
+@keyframes fade{
+0%{opacity:1}
+80%{opacity:1}
+100%{opacity:0}
+}
+
+.footer{
+margin-top:14px;
+font-size:14px;
+text-align:center;
+}
+
+.footer a{
+color:#ff4d4d;
+text-decoration:none;
 }
 
 </style>
@@ -101,51 +148,197 @@ body {
 
 <body>
 
-<div class="login-card">
+<div class="card">
 
-  <div class="login-title">⚡ QuickConvert</div>
-  <div class="login-sub">Login to continue</div>
+<div class="title">⚡ QuickConvert</div>
+<div class="sub">Login to continue</div>
 
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+<input id="email" placeholder="Email">
 
-  <button class="login-btn-main" onclick="login()">
-    Login
-  </button>
+<div class="input-wrap">
+<input id="password" type="password" placeholder="Password">
+<span class="eye" onclick="togglePass()">👁</span>
+</div>
 
-  <div class="login-footer">
-    New here? <a href="/pages/register.html">Create account</a>
-  </div>
+<button class="btn" onclick="login()">Login</button>
+
+<div id="errorBox" class="error"></div>
+
+<div class="link" onclick="openOTP()">Forgot password?</div>
+
+<!-- OTP PANEL -->
+
+<div id="otpPanel" class="otp-panel">
+
+<b>Password Reset</b>
+
+<input id="otpEmail" placeholder="Email">
+
+<button class="btn" onclick="requestOTP()">Send OTP</button>
+
+<input id="otpCode" placeholder="Enter OTP">
+
+<input id="newPass" placeholder="New password">
+
+<button class="btn" onclick="verifyOTP()">Reset Password</button>
+
+</div>
+
+<div class="footer">
+New here? <a href="/register">Create account</a>
+</div>
 
 </div>
 
 <script>
 
-async function login() {
+/* ===== TOAST ===== */
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+function toast(msg, ok=false){
+const t=document.createElement("div");
+t.className="toast"+(ok?" success":"");
+t.innerText=msg;
+document.body.appendChild(t);
+setTimeout(()=>t.remove(),2500);
+}
 
-  const res = await fetch("/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+/* PASSWORD TOGGLE */
 
-  const data = await res.json();
+function togglePass(){
+const p=document.getElementById("password");
+p.type=p.type==="password"?"text":"password";
+}
 
-  if (data.token) {
+/* ERROR UI */
 
-    localStorage.setItem("token", data.token);
+function showError(msg){
+const box=document.getElementById("errorBox");
+box.innerText=msg;
+box.style.display="block";
+}
 
-    window.location.href = "/";
+/* LOGIN */
 
-  } else {
+async function login(){
 
-    alert(data.message ||"Login failed");
+document.getElementById("errorBox").style.display="none";
 
-  }
+const email=emailVal("email");
+const password=emailVal("password");
 
+if(!email||!password){
+showError("Fill all fields");
+return;
+}
+
+try{
+
+const res=await fetch("/api/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email,password})
+});
+
+const data=await res.json();
+
+if(res.ok && data.token){
+
+localStorage.setItem("token",data.token);
+toast("Login successful!",true);
+
+setTimeout(()=>location.href="/",900);
+
+}else{
+showError(data.message||"Login failed");
+}
+
+}catch{
+showError("Server error");
+}
+
+}
+
+/* OTP PANEL */
+
+function openOTP(){
+document.getElementById("otpPanel").style.display="block";
+}
+
+/* REQUEST OTP */
+
+async function requestOTP(){
+
+const email=emailVal("otpEmail");
+
+if(!email){
+toast("Enter email");
+return;
+}
+
+try{
+
+const res=await fetch("/api/reset/send-otp",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email})
+});
+
+const data=await res.json();
+
+toast(data.msg||"OTP sent",res.ok);
+
+}catch{
+toast("Failed to send OTP");
+}
+
+}
+
+/* VERIFY OTP */
+
+async function verifyOTP(){
+
+const email=emailVal("otpEmail");
+const otp=emailVal("otpCode");
+const pass=emailVal("newPass");
+
+if(!email||!otp||!pass){
+toast("Fill all OTP fields");
+return;
+}
+
+try{
+
+const res=await fetch("/api/reset/verify-reset",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email,
+otp,
+newPassword:pass
+})
+});
+
+const data=await res.json();
+
+if(res.ok){
+
+toast(data.msg||"Password reset",true);
+document.getElementById("otpPanel").style.display="none";
+
+}else{
+toast(data.msg||"Invalid OTP");
+}
+
+}catch{
+toast("Reset failed");
+}
+
+}
+
+/* HELPER */
+
+function emailVal(id){
+return document.getElementById(id).value.trim();
 }
 
 </script>

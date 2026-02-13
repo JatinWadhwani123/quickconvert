@@ -13,37 +13,67 @@
 <body>
 
 <!-- ================= NAVBAR ================= -->
-
 <header class="navbar">
 
+  <!-- LEFT -->
   <div class="nav-left">
+
     <div class="logo">⚡ QuickConvert</div>
 
     <nav class="nav-links">
-      <a href="/" class="active">Dashboard</a>
+      <a href="/">Dashboard</a>
       <a href="/converter">Convert</a>
       <a href="/compressor">Compress</a>
       <a href="/merger">Merge</a>
     </nav>
+
   </div>
 
+
+  <!-- RIGHT -->
   <div class="nav-right">
 
-    <input id="navSearch" placeholder="Search tools…" />
+    <!-- Search -->
+    <input class="nav-search" placeholder="Search tools…" />
 
-    <a href="/pages/login.html" id="loginBtn" class="login-btn">
-      Login
-    </a>
 
-    <button id="logoutBtn" class="login-btn" style="display:none;">
+    <!-- AUTH (dynamic) -->
+    <a href="/login" id="loginBtn" class="nav-login">Login</a>
+    <a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
+    <button id="logoutBtn" class="nav-logout" style="display:none">
       Logout
     </button>
 
-    <button class="menu-toggle">☰</button>
+
+    <!-- APP LAUNCHER -->
+    <div class="app-launcher">
+
+      <button id="dotsBtn" class="dots-btn">⋮⋮</button>
+
+      <div id="launcherMenu" class="launcher-menu">
+
+        <div class="menu-section-title">Tools</div>
+
+        <a href="/converter">Image → PDF</a>
+        <a href="/compressor">Compressor</a>
+        <a href="/merger">Merge PDF</a>
+
+        <div class="menu-divider"></div>
+
+        <div class="menu-section-title">Account</div>
+
+        <a href="/login" id="menuLogin">Login</a>
+        <a href="/register" id="menuSignup">Sign up</a>
+        <a href="#" id="menuLogout" style="display:none">Logout</a>
+
+      </div>
+
+    </div>
 
   </div>
 
 </header>
+
 
 <!-- ================= HERO ================= -->
 
@@ -245,36 +275,64 @@ inside your browser.
 <!-- ================= SCRIPT ================= -->
 
 <script>
-
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ===== LOGIN UI MODE =====
+  /* =========================
+     AUTH UI CONTROLLER
+  ========================== */
 
   const token = localStorage.getItem("token");
+
   const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
   const logoutBtn = document.getElementById("logoutBtn");
 
-  if (token) {
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "inline-block";
-  } else {
-    loginBtn.style.display = "inline-block";
-    logoutBtn.style.display = "none";
+  const menuLogin = document.getElementById("menuLogin");
+  const menuSignup = document.getElementById("menuSignup");
+  const menuLogout = document.getElementById("menuLogout");
+
+  function updateAuthUI() {
+
+    if (token) {
+
+      loginBtn && (loginBtn.style.display = "none");
+      signupBtn && (signupBtn.style.display = "none");
+      logoutBtn && (logoutBtn.style.display = "inline-block");
+
+      menuLogin && (menuLogin.style.display = "none");
+      menuSignup && (menuSignup.style.display = "none");
+      menuLogout && (menuLogout.style.display = "block");
+
+    } else {
+
+      loginBtn && (loginBtn.style.display = "inline-block");
+      signupBtn && (signupBtn.style.display = "inline-block");
+      logoutBtn && (logoutBtn.style.display = "none");
+
+      menuLogin && (menuLogin.style.display = "block");
+      menuSignup && (menuSignup.style.display = "block");
+      menuLogout && (menuLogout.style.display = "none");
+    }
   }
-logoutBtn.addEventListener("click", () => {
 
-  localStorage.removeItem("token");
+  updateAuthUI();
 
-  window.location.href = "/";
+  function logout(e) {
+    e?.preventDefault();
+    localStorage.removeItem("token");
+    window.location.reload();
+  }
 
-});
+  logoutBtn && logoutBtn.addEventListener("click", logout);
+  menuLogout && menuLogout.addEventListener("click", logout);
 
 
-
-  // ===== SEARCH SYSTEM =====
+  /* =========================
+     TOOL SEARCH
+  ========================== */
 
   const toolSearch = document.getElementById("toolSearch");
-  const navSearch = document.getElementById("navSearch");
+  const navSearch = document.querySelector(".nav-search");
   const cards = document.querySelectorAll(".tool-card");
 
   function filterCards(value) {
@@ -289,7 +347,6 @@ logoutBtn.addEventListener("click", () => {
         name.includes(term) ? "block" : "none";
 
     });
-
   }
 
   toolSearch?.addEventListener("input", e =>
@@ -301,7 +358,9 @@ logoutBtn.addEventListener("click", () => {
   );
 
 
-  // ===== CATEGORY FILTER =====
+  /* =========================
+     CATEGORY FILTER
+  ========================== */
 
   const tabs = document.querySelectorAll(".tab-btn");
 
@@ -322,16 +381,40 @@ logoutBtn.addEventListener("click", () => {
           filter === "all" || cat === filter
             ? "block"
             : "none";
-
       });
-
     });
+  });
 
+
+  /* =========================
+     APP LAUNCHER
+  ========================== */
+
+  const dotsBtn = document.getElementById("dotsBtn");
+  const launcherMenu = document.getElementById("launcherMenu");
+
+  dotsBtn?.addEventListener("click", e => {
+
+    e.stopPropagation();
+
+    launcherMenu.style.display =
+      launcherMenu.style.display === "block"
+        ? "none"
+        : "block";
+  });
+
+  document.addEventListener("click", () => {
+
+    launcherMenu.style.display = "none";
   });
 
 });
-
 </script>
+
+
+
+
+
 
 <script src="/js/core/app.js"></script>
 

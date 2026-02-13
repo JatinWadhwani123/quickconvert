@@ -3,18 +3,20 @@
 // ===============================
 
 require("dotenv").config();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const User = require("./models/user");
 
 const express = require("express");
-const multer = require("multer");
-const { PDFDocument } = require("pdf-lib");
-const sharp = require("sharp");
-const path = require("path");
-
 const mongoose = require("mongoose");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const sharp = require("sharp");
+const { PDFDocument } = require("pdf-lib");
+const path = require("path");
+
+const User = require("./models/user");
+const otpRoutes = require("./routes/otp");
+const resetRoutes = require("./routes/reset");
 
 // ===============================
 // APP SETUP
@@ -27,26 +29,19 @@ app.use(cors());
 app.use(express.json());
 
 // ===============================
-// MONGODB CONNECTION
+// DATABASE
 // ===============================
 
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("✅ MongoDB connected"))
-.catch(err => console.error("Mongo error:", err));
-
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("Mongo error:", err));
 
 // ===============================
-// USER MODEL
+// ROUTES
 // ===============================
 
-// const User = mongoose.model("User", new mongoose.Schema({
-
-//   email: { type: String, unique: true, required: true },
-//   password: { type: String, required: true },
-//   createdAt: { type: Date, default: Date.now }
-
-// }));
-
+app.use("/api", otpRoutes);
+app.use("/api/reset", resetRoutes);
 
 // ===============================
 // AUTH MIDDLEWARE
@@ -63,7 +58,7 @@ function auth(req, res, next) {
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET || "secret"
     );
 
     req.user = decoded;
@@ -77,52 +72,51 @@ function auth(req, res, next) {
 
 }
 
-
 // ===============================
 // AUTH ROUTES
 // ===============================
 
 // REGISTER
-app.post("/api/register", express.json(), async (req, res) => {
+app.post("/api/register", async (req, res) => {
 
   try {
 
     const { email, password } = req.body;
 
     if (!email || !password)
-      return res.status(400).json({ msg: "Missing fields" });
+      return res.status(400).json({ message: "Missing fields" });
 
     const exists = await User.findOne({ email });
 
     if (exists)
-      return res.status(400).json({ msg: "User already exists" });
+      return res.status(400).json({ message: "User exists" });
 
     const hashed = await bcrypt.hash(password, 10);
 
-    const user = new User({
+    const user = await User.create({
       email,
       password: hashed
     });
 
-    await user.save();
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: "7d" }
+    );
 
-    res.json({ msg: "Account created ✅" });
+    res.json({ token });
 
-  }
-
-  catch (err) {
+  } catch (err) {
 
     console.error(err);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Server error" });
 
   }
 
 });
 
-
-
 // LOGIN
-app.post("/api/login", express.json(), async (req, res) => {
+app.post("/api/login", async (req, res) => {
 
   try {
 
@@ -131,43 +125,31 @@ app.post("/api/login", express.json(), async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user)
-      return res.status(400).json({ msg: "User not found" });
+      return res.status(400).json({ message: "User not found" });
 
     const match = await bcrypt.compare(password, user.password);
 
     if (!match)
-      return res.status(400).json({ msg: "Wrong password" });
+      return res.status(400).json({ message: "Wrong password" });
 
     const token = jwt.sign(
-
       { id: user._id },
-
-      process.env.JWT_SECRET,
-
+      process.env.JWT_SECRET || "secret",
       { expiresIn: "2h" }
-
     );
 
-    res.json({
+    res.json({ token });
 
-      msg: "Login success ✅",
-      token
-
-    });
-
-  }
-
-  catch (err) {
+  } catch (err) {
 
     console.error(err);
-    res.status(500).json({ msg: "Server error" });
+    res.status(500).json({ message: "Server error" });
 
   }
 
 });
 
-
-// PROTECTED TEST ROUTE
+// PROTECTED TEST
 app.get("/api/protected", auth, (req, res) => {
 
   res.json({
@@ -177,45 +159,17 @@ app.get("/api/protected", auth, (req, res) => {
 
 });
 
-
 // ===============================
-// MULTER CONFIG
-// ===============================
-
-const storage = multer.memoryStorage();
-
-const upload = multer({
-
-  storage,
-
-  limits: {
-    fileSize: 50 * 1024 * 1024,
-    files: 20
-  },
-
-  fileFilter: (req, file, cb) => {
-
-    if (
-      file.mimetype === "application/pdf" ||
-      file.mimetype.startsWith("image/")
-    ) cb(null, true);
-    else cb(new Error("Invalid file"), false);
-
-  }
-
-});
-
-
-// ===============================
-// STATIC FRONTEND
+// CLEAN PAGE ROUTES
 // ===============================
 
-app.use(express.static("public"));
+app.get("/login", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/login.html"))
+);
 
-
-// ===============================
-// PAGE ROUTES
-// ===============================
+app.get("/register", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/register.html"))
+);
 
 app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/index.html"))
@@ -233,77 +187,14 @@ app.get("/merger", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merger.html"))
 );
 
-//SIGNUP route
+// ===============================
+// MULTER CONFIG
+// ===============================
 
-app.post("/signup", express.json(), async (req, res) => {
-
-  try {
-
-    const { email, password } = req.body;
-
-    if (!email || !password)
-      return res.status(400).json({ msg: "Missing fields" });
-
-    const exists = await User.findOne({ email });
-
-    if (exists)
-      return res.status(400).json({ msg: "User already exists" });
-
-    const hash = await bcrypt.hash(password, 10);
-
-    const user = new User({ email, password: hash });
-
-    await user.save();
-
-    res.json({ msg: "Signup successful" });
-
-  }
-
-  catch (err) {
-
-    console.error(err);
-    res.status(500).json({ msg: "Signup failed" });
-
-  }
-
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 }
 });
-
-// Login Route 
-app.post("/login", express.json(), async (req, res) => {
-
-  try {
-
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-
-    if (!user)
-      return res.status(400).json({ msg: "Invalid credentials" });
-
-    const match = await bcrypt.compare(password, user.password);
-
-    if (!match)
-      return res.status(400).json({ msg: "Invalid credentials" });
-
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    res.json({ token });
-
-  }
-
-  catch (err) {
-
-    console.error(err);
-    res.status(500).json({ msg: "Login failed" });
-
-  }
-
-});
-
 
 // ===============================
 // IMAGE → PDF
@@ -313,19 +204,12 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
   try {
 
-    if (!req.file)
-      return res.status(400).send("No file");
-
-    const buffer = req.file.buffer;
-
-    await sharp(buffer).metadata();
-
     const pdfDoc = await PDFDocument.create();
 
-    let image =
+    const image =
       req.file.mimetype === "image/jpeg"
-      ? await pdfDoc.embedJpg(buffer)
-      : await pdfDoc.embedPng(buffer);
+        ? await pdfDoc.embedJpg(req.file.buffer)
+        : await pdfDoc.embedPng(req.file.buffer);
 
     const page = pdfDoc.addPage([
       image.width,
@@ -334,26 +218,22 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 
     page.drawImage(image, { x: 0, y: 0 });
 
-    const pdfBytes = await pdfDoc.save();
+    const bytes = await pdfDoc.save();
 
     res.set({
       "Content-Type": "application/pdf",
       "Content-Disposition": "attachment"
     });
 
-    res.end(Buffer.from(pdfBytes));
+    res.end(Buffer.from(bytes));
 
-  }
+  } catch {
 
-  catch (err) {
-
-    console.error(err);
     res.status(500).send("Conversion failed");
 
   }
 
 });
-
 
 // ===============================
 // COMPRESS
@@ -363,7 +243,7 @@ app.post("/compress", upload.single("file"), async (req, res) => {
 
   try {
 
-    const compressed = await sharp(req.file.buffer)
+    const out = await sharp(req.file.buffer)
       .jpeg({ quality: 60 })
       .toBuffer();
 
@@ -372,62 +252,64 @@ app.post("/compress", upload.single("file"), async (req, res) => {
       "Content-Disposition": "attachment"
     });
 
-    res.end(compressed);
+    res.end(out);
 
-  }
+  } catch {
 
-  catch {
     res.status(500).send("Compression failed");
+
   }
 
 });
 
-
 // ===============================
-// MERGE
+// MERGE PDFs
 // ===============================
 
 app.post("/merge", upload.array("files"), async (req, res) => {
 
   try {
 
-    const mergedPdf = await PDFDocument.create();
+    const merged = await PDFDocument.create();
 
-    for (const file of req.files) {
+    for (const f of req.files) {
 
-      const pdf = await PDFDocument.load(file.buffer);
+      const pdf = await PDFDocument.load(f.buffer);
 
-      const pages = await mergedPdf.copyPages(
+      const pages = await merged.copyPages(
         pdf,
         pdf.getPageIndices()
       );
 
-      pages.forEach(p =>
-        mergedPdf.addPage(p)
-      );
+      pages.forEach(p => merged.addPage(p));
 
     }
 
-    const mergedBytes = await mergedPdf.save();
+    const bytes = await merged.save();
 
     res.set({
       "Content-Type": "application/pdf",
       "Content-Disposition": "attachment"
     });
 
-    res.end(Buffer.from(mergedBytes));
+    res.end(Buffer.from(bytes));
 
-  }
+  } catch {
 
-  catch {
     res.status(500).send("Merge failed");
+
   }
 
 });
 
+// ===============================
+// STATIC FILES
+// ===============================
+
+app.use(express.static("public"));
 
 // ===============================
-// SERVER START
+// START SERVER
 // ===============================
 
 app.listen(PORT, () =>
