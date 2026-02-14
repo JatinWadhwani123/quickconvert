@@ -1552,3 +1552,106 @@ SAFE NAVBAR ENHANCEMENT
   from { opacity: 0; transform: translate(-50%,20px); }
   to { opacity: 1; transform: translate(-50%,0); }
 }
+/* PROFESSIONAL TOOL CARDS */
+
+/* TOOL GRID */
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+  padding: 40px 0;
+}
+
+/* CARD */
+
+.tool-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  transition: all 0.35s ease;
+  position: relative;
+  border: 1px solid #f0f0f0;
+}
+
+.tool-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+}
+
+/* ICON BOX */
+
+.tool-icon-box {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 18px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-icon-box svg {
+  width: 36px;
+  height: 36px;
+  fill: none;
+  stroke-width: 2.5;
+}
+
+/* ICON COLORS */
+
+.red { background:#ffeaea; }
+.red svg { stroke:#ff5a5f; }
+
+.green { background:#eafaf2; }
+.green svg { stroke:#00b894; }
+
+.blue { background:#eaf2ff; }
+.blue svg { stroke:#0984e3; }
+
+/* TEXT */
+
+.tool-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.tool-card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+
+/* POPULAR TAG */
+
+.popular-tag {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #ff5a5f;
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* CTA BUTTON */
+
+.tool-cta {
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #f5f6fa;
+  color: #444;
+  transition: all 0.25s ease;
+}
+
+.tool-card:hover .tool-cta {
+  background: #ff5a5f;
+  color: #fff;
+}
