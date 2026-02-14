@@ -11,9 +11,9 @@
 
 <style>
 
-/* ===== PAGE LAYOUT ===== */
+/* ===== PAGE LAYOUT (ISOLATED ONLY TO LOGIN PAGE) ===== */
 
-body{
+body.login-page{
 margin:0;
 font-family:system-ui;
 background:linear-gradient(135deg,#f6f7fb,#e9ecf5);
@@ -146,7 +146,7 @@ text-decoration:none;
 
 </head>
 
-<body>
+<body class="login-page">
 
 <div class="card">
 
@@ -166,18 +166,14 @@ text-decoration:none;
 
 <div class="link" onclick="openOTP()">Forgot password?</div>
 
-<!-- OTP PANEL -->
-
 <div id="otpPanel" class="otp-panel">
 
 <b>Password Reset</b>
 
 <input id="otpEmail" placeholder="Email">
-
 <button class="btn" onclick="requestOTP()">Send OTP</button>
 
 <input id="otpCode" placeholder="Enter OTP">
-
 <input id="newPass" placeholder="New password">
 
 <button class="btn" onclick="verifyOTP()">Reset Password</button>
@@ -191,6 +187,12 @@ New here? <a href="/register">Create account</a>
 </div>
 
 <script>
+
+/* ===== REDIRECT IF ALREADY LOGGED IN ===== */
+
+if(localStorage.getItem("token")){
+  window.location.href="/";
+}
 
 /* ===== TOAST ===== */
 
@@ -223,8 +225,8 @@ async function login(){
 
 document.getElementById("errorBox").style.display="none";
 
-const email=emailVal("email");
-const password=emailVal("password");
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value.trim();
 
 if(!email||!password){
 showError("Fill all fields");
@@ -246,7 +248,7 @@ if(res.ok && data.token){
 localStorage.setItem("token",data.token);
 toast("Login successful!",true);
 
-setTimeout(()=>location.href="/",900);
+setTimeout(()=>window.location.href="/",800);
 
 }else{
 showError(data.message||"Login failed");
@@ -258,24 +260,16 @@ showError("Server error");
 
 }
 
-/* OTP PANEL */
+/* OTP FUNCTIONS */
 
 function openOTP(){
 document.getElementById("otpPanel").style.display="block";
 }
 
-/* REQUEST OTP */
-
 async function requestOTP(){
 
-const email=emailVal("otpEmail");
-
-if(!email){
-toast("Enter email");
-return;
-}
-
-try{
+const email=document.getElementById("otpEmail").value.trim();
+if(!email){toast("Enter email");return;}
 
 const res=await fetch("/api/reset/send-otp",{
 method:"POST",
@@ -284,61 +278,31 @@ body:JSON.stringify({email})
 });
 
 const data=await res.json();
-
 toast(data.msg||"OTP sent",res.ok);
-
-}catch{
-toast("Failed to send OTP");
 }
-
-}
-
-/* VERIFY OTP */
 
 async function verifyOTP(){
 
-const email=emailVal("otpEmail");
-const otp=emailVal("otpCode");
-const pass=emailVal("newPass");
+const email=document.getElementById("otpEmail").value.trim();
+const otp=document.getElementById("otpCode").value.trim();
+const pass=document.getElementById("newPass").value.trim();
 
-if(!email||!otp||!pass){
-toast("Fill all OTP fields");
-return;
-}
-
-try{
+if(!email||!otp||!pass){toast("Fill all OTP fields");return;}
 
 const res=await fetch("/api/reset/verify-reset",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-email,
-otp,
-newPassword:pass
-})
+body:JSON.stringify({email,otp,newPassword:pass})
 });
 
 const data=await res.json();
 
 if(res.ok){
-
 toast(data.msg||"Password reset",true);
 document.getElementById("otpPanel").style.display="none";
-
 }else{
 toast(data.msg||"Invalid OTP");
 }
-
-}catch{
-toast("Reset failed");
-}
-
-}
-
-/* HELPER */
-
-function emailVal(id){
-return document.getElementById(id).value.trim();
 }
 
 </script>

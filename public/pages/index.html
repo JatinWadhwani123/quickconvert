@@ -5,48 +5,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>QuickConvert — Free Online File Tools</title>
+<title>QuickConvert - Free Online File Converter, Compressor & Merger</title>
+
+<meta name="description" content="QuickConvert offers free online tools to convert images to PDF, compress files, and merge documents instantly. Secure, fast, and easy to use.">
+
+<meta name="keywords" content="file converter, image to pdf, compress images, merge pdf, online file tools">
+
+<link rel="canonical" href="https://quickconvert.online/">
 
 <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
 <header class="navbar">
+<div class="nav-left">
+<div class="logo">⚡ QuickConvert</div>
 
-  <!-- LEFT -->
-  <div class="nav-left">
+<nav class="nav-links">
+<a href="/">Dashboard</a>
+<a href="/converter">Convert</a>
+<a href="/compressor">Compress</a>
+<a href="/merger">Merge</a>
+</nav>
+</div>
 
-    <div class="logo">⚡ QuickConvert</div>
-
-    <nav class="nav-links">
-      <a href="/">Dashboard</a>
-      <a href="/converter">Convert</a>
-      <a href="/compressor">Compress</a>
-      <a href="/merger">Merge</a>
-    </nav>
-
-  </div>
-
-
-  <!-- RIGHT -->
-  <div class="nav-right">
-
-    <!-- Search -->
-    <input class="nav-search" placeholder="Search tools…" />
+<div class="nav-right">
+<input class="nav-search" placeholder="Search tools…" />
 
 
-    <!-- AUTH (dynamic) -->
-    <a href="/login" id="loginBtn" class="nav-login">Login</a>
-    <a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
-    <button id="logoutBtn" class="nav-logout" style="display:none">
-      Logout
-    </button>
+<a href="/login" id="loginBtn" class="nav-login">Login</a>
+<a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
+<button id="logoutBtn" class="nav-logout" style="display:none">Logout</button>
 
-
-    <!-- APP LAUNCHER -->
-    <div class="app-launcher">
+<div class="app-launcher">
 
       <button id="dotsBtn" class="dots-btn">⋮⋮</button>
 
@@ -68,230 +60,88 @@
 
       </div>
 
-    </div>
-
-  </div>
-
+</div>
 </header>
 
 
-<!-- ================= HERO ================= -->
-
 <section class="dashboard-hero">
+<h1>All-in-one Online File Tools</h1>
+<p>Convert, compress, and merge files instantly — secure, browser-based, and lightning fast.</p>
 
-  <h1>All-in-one Online File Tools</h1>
+<div class="hero-badges">
+<span>⚡ Fast processing</span>
+<span>🔒 Secure uploads</span>
+<span>🌍 Works anywhere</span>
+</div>
 
-  <p>
-    Convert, compress, and merge files instantly —
-    secure, browser-based, and lightning fast.
-  </p>
-
-  <div class="hero-badges">
-    <span>⚡ Fast processing</span>
-    <span>🔒 Secure uploads</span>
-    <span>🌍 Works anywhere</span>
-  </div>
-
-  <div class="search-bar">
-    <input id="toolSearch" placeholder="Search tools…">
-  </div>
-
+<div class="search-bar">
+<input id="toolSearch" placeholder="Search tools…">
+</div>
 </section>
-
-<!-- ================= FILTER ================= -->
-
-<section class="tool-tabs">
-
-  <button class="tab-btn active" data-filter="all">All</button>
-  <button class="tab-btn" data-filter="convert">Convert</button>
-  <button class="tab-btn" data-filter="compress">Compress</button>
-  <button class="tab-btn" data-filter="merge">Merge</button>
-
-</section>
-
-<!-- ================= TOOL GRID ================= -->
 
 <section class="tool-grid">
 
-  <!-- IMAGE TO PDF -->
-  <a href="/converter" class="tool-card convert"
-     data-category="convert"
-     data-name="image pdf convert">
+<a href="/converter"
+   class="tool-card convert"
+   data-name="image pdf convert"
+   data-category="convert">
 
-    <span class="popular-tag">Popular</span>
+<h3>Image → PDF</h3>
+<p>Convert images into professional PDF files instantly.</p>
 
-    <div class="tool-icon-box red">
-      <svg viewBox="0 0 24 24">
-        <path d="M4 4h12l4 4v12H4z"/>
-        <path d="M14 4v4h4"/>
-      </svg>
-    </div>
-
-    <h3>Image → PDF</h3>
-    <p>Convert images into professional PDF files instantly.</p>
-
-    <div class="tool-cta">Convert</div>
-
-  </a>
+</a>
 
 
-  <!-- IMAGE COMPRESSOR -->
-  <a href="/compressor" class="tool-card compress"
-     data-category="compress"
-     data-name="compress image">
+<a href="/compressor"
+   class="tool-card compress"
+   data-name="compress image reduce size"
+   data-category="compress">
 
-    <div class="tool-icon-box green">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 3v18M3 12h18"/>
-      </svg>
-    </div>
+<h3>Image Compressor</h3>
+<p>Reduce image file size while keeping high quality.</p>
 
-    <h3>Image Compressor</h3>
-    <p>Reduce image file size while keeping high quality.</p>
-
-    <div class="tool-cta">Compress</div>
-
-  </a>
+</a>
 
 
-  <!-- PDF MERGER -->
-  <a href="/merger" class="tool-card merge"
-     data-category="merge"
-     data-name="merge pdf">
+<a href="/merger"
+   class="tool-card merge"
+   data-name="merge pdf combine"
+   data-category="merge">
 
-    <div class="tool-icon-box blue">
-      <svg viewBox="0 0 24 24">
-        <path d="M8 4h8v16H8z"/>
-      </svg>
-    </div>
+<h3>PDF Merger</h3>
+<p>Combine multiple PDF files into one document.</p>
 
-    <h3>PDF Merger</h3>
-    <p>Combine multiple PDF files into one document.</p>
-
-    <div class="tool-cta">Merge</div>
-
-  </a>
+</a>
 
 </section>
 
 
-<!-- ================= FEATURES ================= -->
-
-<section class="features">
-<div class="container">
-
-<h2>Why people choose QuickConvert</h2>
-
-<div class="feature-list">
-
-  <div class="feature-item">
-    ⚡ <div>
-      <strong>Fast processing</strong>
-      <p>Instant browser conversion</p>
-    </div>
-  </div>
-
-  <div class="feature-item">
-    🔒 <div>
-      <strong>Privacy first</strong>
-      <p>Files are never stored</p>
-    </div>
-  </div>
-
-  <div class="feature-item">
-    🌍 <div>
-      <strong>Works anywhere</strong>
-      <p>Desktop & mobile support</p>
-    </div>
-  </div>
-
-  <div class="feature-item">
-    🚀 <div>
-      <strong>No installs</strong>
-      <p>100% online tools</p>
-    </div>
-  </div>
-
-  <div class="feature-item">
-    📂 <div>
-      <strong>Multiple tools</strong>
-      <p>Convert • Compress • Merge</p>
-    </div>
-  </div>
-
-  <div class="feature-item">
-    💡 <div>
-      <strong>Free to use</strong>
-      <p>No hidden costs</p>
-    </div>
-  </div>
-
-</div>
-
-</div>
-</section>
-
-
-
-<!-- ================= HOW IT WORKS ================= -->
-
-<section class="steps">
-<div class="container">
-
-<h2>How QuickConvert works</h2>
-
-<div class="steps-grid">
-
-<div class="step">
-📤 Upload file
-<p>Select or drag your file</p>
-</div>
-
-<div class="step">
-⚙ Process instantly
-<p>Fast browser conversion</p>
-</div>
-
-<div class="step">
-📥 Download result
-<p>Get results immediately</p>
-</div>
-
-</div>
-
-</div>
-</section>
-
-
-<!-- ================= SEO ================= -->
 
 <section class="seo-section">
-
 <h2>Free Online File Converter Tools</h2>
-
 <p>
-QuickConvert lets you convert images to PDF,
-compress files, and merge documents instantly —
-no installation required. Everything runs securely
-inside your browser.
+QuickConvert lets you convert images to PDF, compress files, and merge documents instantly. 
+Our platform is fast, secure, and requires no installation.
 </p>
-
 </section>
 
-<!-- ================= FOOTER ================= -->
 
 <footer class="footer">
 
-⚡ QuickConvert — Fast & Secure File Tools
+<h3>⚡ QuickConvert</h3>
+<p>Fast, Secure & Free Online File Tools</p>
 
 <div class="footer-links">
-<a href="/privacy">Privacy</a>
-<a href="/terms">Terms</a>
-<a href="/contact">Contact</a>
+<a href="/pages/about.html">About Us</a>
+<a href="/pages/contact.html">Contact</a>
+<a href="/pages/disclaimer.html">Disclaimer</a>
+<a href="/pages/privacy.html">Privacy Policy</a>
+<a href="/pages/terms.html">Terms & Conditions</a>
 </div>
 
-</footer>
+<p>© 2026 QuickConvert.online — All Rights Reserved</p>
 
+</footer>
 <!-- ================= SCRIPT ================= -->
 
 <script>
@@ -357,17 +207,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function filterCards(value) {
 
-    const term = value.toLowerCase();
+  const words = value
+    .toLowerCase()
+    .trim()
+    .split(" ")
+    .filter(w => w.length > 0);
 
-    cards.forEach(card => {
+  cards.forEach(card => {
 
-      const name = card.dataset.name || "";
+    const name = (card.dataset.name || "").toLowerCase();
 
-      card.style.display =
-        name.includes(term) ? "block" : "none";
+    const match = words.every(word =>
+      name.includes(word)
+    );
 
-    });
-  }
+    card.style.display = match ? "block" : "none";
+
+  });
+
+}
+
 
   toolSearch?.addEventListener("input", e =>
     filterCards(e.target.value)
@@ -430,7 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
-
 
 
 

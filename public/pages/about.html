@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>About Us - QuickConvert</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+<div class="nav-left">
+<div class="logo">⚡ QuickConvert</div>
+<nav class="nav-links">
+<a href="/">Dashboard</a>
+<a href="/converter">Convert</a>
+<a href="/compressor">Compress</a>
+<a href="/merger">Merge</a>
+</nav>
+</div>
+</header>
+
+
+<!-- HERO -->
+<section class="page-hero">
+<h1>Making File Conversion Simple for Everyone</h1>
+<p>
+QuickConvert is a fast, secure, and modern online platform designed to simplify file management for individuals, students, and businesses worldwide.
+</p>
+</section>
+
+
+<!-- ABOUT CARD -->
+<div class="page-container">
+
+<h2>Our Mission</h2>
+<p>
+Our mission is to provide powerful yet simple online tools that allow users to convert, compress, and manage files effortlessly without installing software.
+</p>
+
+<h2>What We Offer</h2>
+
+<div class="feature-grid">
+
+<div class="feature-card">
+<h3>⚡ Fast Processing</h3>
+<p>Instant file conversion using optimized cloud technology.</p>
+</div>
+
+<div class="feature-card">
+<h3>🔒 Secure & Private</h3>
+<p>Files are encrypted and automatically deleted after processing.</p>
+</div>
+
+<div class="feature-card">
+<h3>🌍 Global Access</h3>
+<p>Works seamlessly across devices anywhere in the world.</p>
+</div>
+
+</div>
+
+
+<h2>Our Vision</h2>
+<p>
+We aim to become a globally trusted platform for online file tools by continuously improving performance, security, and user experience.
+</p>
+
+</div>
+<section class="founder-section">
+
+  <div class="founder-image reveal-left">
+    <img src="../images/founder.jpeg" alt="Founder">
+  </div>
+
+  <div class="founder-content">
+
+    <h2 class="reveal-right delay-1">Meet the Founder</h2>
+
+    <h4 class="founder-role reveal-right delay-2">
+      Founder & Developer
+    </h4>
+
+    <p class="reveal-right delay-3">
+      QuickConvert was independently created and developed by a passionate software developer with a vision to make file tools simple, fast, and accessible for everyone worldwide.
+    </p>
+
+    <p class="reveal-right delay-4">
+      The platform focuses on user privacy, performance, and delivering high-quality online utilities without unnecessary complexity.
+    </p>
+
+  </div>
+
+</section>
+
+
+
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("reveal-active");
+    }
+  });
+}, { threshold: 0.35 });
+
+document.querySelectorAll(".reveal-left, .reveal-right")
+  .forEach(el => observer.observe(el));
+</script>
+
+
+
+<footer class="footer">
+<p>© 2026 QuickConvert.online — All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
