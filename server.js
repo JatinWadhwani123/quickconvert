@@ -18,6 +18,9 @@ const User = require("./models/user");
 const otpRoutes = require("./routes/otp");
 const resetRoutes = require("./routes/reset");
 const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 
 // ===============================
 // APP SETUP
@@ -57,37 +60,56 @@ app.post("/contact", async (req, res) => {
       return res.status(400).json({ message: "All fields required" });
     }
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
+    // =========================
+    // PRODUCTION → USE RESEND
+    // =========================
+    if (process.env.RESEND_API_KEY) {
 
-    await transporter.sendMail({
-      from: `"QuickConvert Contact" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
-      subject: `Contact: ${subject}`,
-      html: `
-        <h3>New Message</h3>
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Message:</b><br>${message}</p>
-      `
-    });
+      await resend.emails.send({
+        from: "QuickConvert <noreply@quickconvert.online>",
+        to: process.env.EMAIL_USER,
+        subject: `Contact: ${subject}`,
+        html: `
+          <h3>New Contact Message</h3>
+          <p><b>Name:</b> ${name}</p>
+          <p><b>Email:</b> ${email}</p>
+          <p><b>Message:</b><br>${message}</p>
+        `
+      });
+
+    } else {
+      // =========================
+      // LOCAL → USE NODEMAILER
+      // =========================
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS
+        }
+      });
+
+      await transporter.sendMail({
+        from: `"QuickConvert Contact" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER,
+        subject: `Contact: ${subject}`,
+        html: `
+          <h3>New Message</h3>
+          <p><b>Name:</b> ${name}</p>
+          <p><b>Email:</b> ${email}</p>
+          <p><b>Message:</b><br>${message}</p>
+        `
+      });
+    }
 
     res.json({ message: "Message sent successfully!" });
 
   } catch (err) {
-  console.error("EMAIL ERROR:", err.message);
-  res.status(500).json({
-    message: "Failed to send",
-    error: err.message
-  });
-}
-
+    console.error("CONTACT ERROR:", err);
+    res.status(500).json({ message: "Failed to send" });
+  }
 });
+
 
 // ===============================
 // AUTH MIDDLEWARE
