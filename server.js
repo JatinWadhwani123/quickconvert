@@ -61,10 +61,11 @@ app.post("/contact", async (req, res) => {
       return res.status(400).json({ message: "All fields required" });
     }
 
-    console.log("RESEND KEY:", process.env.RESEND_API_KEY ? "FOUND" : "MISSING");
-    console.log("EMAIL USER:", process.env.EMAIL_USER);
+    /* =========================
+       1️⃣ SEND TO ADMIN (YOU)
+    ========================== */
 
-    const result = await resend.emails.send({
+    const adminMail = await resend.emails.send({
       from: "QuickConvert <noreply@quickconvert.online>",
       to: process.env.EMAIL_USER,
       subject: `Contact: ${subject}`,
@@ -76,12 +77,47 @@ app.post("/contact", async (req, res) => {
       `
     });
 
-    console.log("RESEND RESPONSE:", result);
+    console.log("ADMIN MAIL SENT:", adminMail);
+
+    /* =========================
+       2️⃣ AUTO-REPLY TO USER
+    ========================== */
+
+    const autoReply = await resend.emails.send({
+      from: "QuickConvert <noreply@quickconvert.online>",
+      to: email,
+      subject: "We received your message — QuickConvert",
+      html: `
+        <div style="font-family:Arial;padding:20px">
+          <h2>Hi ${name} 👋</h2>
+
+          <p>Thanks for contacting <b>QuickConvert</b>.</p>
+
+          <p>We have received your message and will respond within <b>24 hours</b>.</p>
+
+          <hr>
+
+          <p style="color:#555">
+            Your Message:<br>
+            "${message}"
+          </p>
+
+          <br>
+
+          <p>
+            — QuickConvert Team<br>
+            https://quickconvert.online
+          </p>
+        </div>
+      `
+    });
+
+    console.log("AUTO REPLY SENT:", autoReply);
 
     res.json({ message: "Message sent successfully!" });
 
   } catch (err) {
-    console.error("CONTACT ERROR FULL:", err);
+    console.error("CONTACT ERROR:", err);
     res.status(500).json({ message: "Failed to send" });
   }
 });
