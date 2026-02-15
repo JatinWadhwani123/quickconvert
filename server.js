@@ -80,9 +80,13 @@ app.post("/contact", async (req, res) => {
     res.json({ message: "Message sent successfully!" });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to send" });
-  }
+  console.error("EMAIL ERROR:", err.message);
+  res.status(500).json({
+    message: "Failed to send",
+    error: err.message
+  });
+}
+
 });
 
 // ===============================
