@@ -269,6 +269,11 @@ app.get("/merger", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merger.html"))
 );
 
+app.get("/disclaimer", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/disclaimer.html"))
+);
+
+
 // ===============================
 // MULTER CONFIG
 // ===============================
