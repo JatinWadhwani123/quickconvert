@@ -17,6 +17,7 @@ const path = require("path");
 const User = require("./models/user");
 const otpRoutes = require("./routes/otp");
 const resetRoutes = require("./routes/reset");
+const nodemailer = require("nodemailer");
 
 // ===============================
 // APP SETUP
@@ -27,6 +28,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+
+
 
 // ===============================
 // DATABASE
@@ -42,6 +45,45 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use("/api", otpRoutes);
 app.use("/api/reset", resetRoutes);
+
+
+
+
+app.post("/contact", async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"QuickConvert Contact" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: `Contact: ${subject}`,
+      html: `
+        <h3>New Message</h3>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Message:</b><br>${message}</p>
+      `
+    });
+
+    res.json({ message: "Message sent successfully!" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to send" });
+  }
+});
 
 // ===============================
 // AUTH MIDDLEWARE

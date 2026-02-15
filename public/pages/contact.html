@@ -4,6 +4,52 @@
 <meta charset="UTF-8">
 <title>Contact - QuickConvert</title>
 <link rel="stylesheet" href="../css/style.css">
+
+<style>
+
+/* ================= TOAST ================= */
+
+#toast{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:14px 24px;
+  border-radius:8px;
+  color:white;
+  font-size:14px;
+  opacity:0;
+  transition:.4s;
+  box-shadow:0 10px 30px rgba(0,0,0,.2);
+  z-index:9999;
+}
+#toast.show{opacity:1}
+
+/* ================= BUTTON LOADER ================= */
+
+.btn-loading{
+  position:relative;
+  pointer-events:none;
+  opacity:.7;
+}
+
+.spinner{
+  width:18px;
+  height:18px;
+  border:2px solid white;
+  border-top:2px solid transparent;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:inline-block;
+  vertical-align:middle;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+</style>
+
 </head>
 
 <body>
@@ -20,47 +66,119 @@
 </div>
 </header>
 
-
 <section class="contact-section">
 
-  <div class="contact-left">
-    <h1>Contact</h1>
-    <p>
-      Contact us to report a problem, clarify any doubts about QuickConvert,
-      or just find out more about our services.
-    </p>
-  </div>
+<div class="contact-left">
+<h1>Contact</h1>
+<p>
+Contact us to report a problem, clarify any doubts about QuickConvert,
+or just find out more about our services.
+</p>
+</div>
 
-  <div class="contact-form-card">
+<div class="contact-form-card">
 
-    <form>
+<form id="contactForm">
 
-      <div class="form-row">
-        <input type="text" placeholder="Your Name">
-        <input type="email" placeholder="Your Email">
-      </div>
+<div class="form-row">
+<input type="text" name="name" placeholder="Your Name" required>
+<input type="email" name="email" placeholder="Your Email" required>
+</div>
 
-      <select>
-        <option>Choose a subject...</option>
-        <option>Bug Report</option>
-        <option>Support</option>
-        <option>General Query</option>
-      </select>
+<select name="subject" required>
+<option value="">Choose a subject...</option>
+<option>Bug Report</option>
+<option>Support</option>
+<option>General Query</option>
+</select>
 
-      <textarea placeholder="Write a message"></textarea>
+<textarea name="message" placeholder="Write a message" required></textarea>
 
-      <button type="submit">Send Message</button>
+<button id="sendBtn" type="submit">Send Message</button>
 
-    </form>
+</form>
 
-  </div>
+</div>
 
 </section>
-
 
 <footer class="footer">
 <p>© 2026 QuickConvert.online — All Rights Reserved</p>
 </footer>
+
+<div id="toast"></div>
+
+<script>
+
+const form = document.getElementById("contactForm");
+const btn = document.getElementById("sendBtn");
+const toast = document.getElementById("toast");
+
+/* ===== TOAST FUNCTION ===== */
+
+function showToast(msg, success=true){
+  toast.textContent = msg;
+  toast.style.background = success ? "#2e7d32" : "#e53935";
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"),3000);
+}
+
+/* ===== BUTTON LOADING ===== */
+
+function setLoading(state){
+  if(state){
+    btn.classList.add("btn-loading");
+    btn.innerHTML = '<span class="spinner"></span> Sending...';
+  }else{
+    btn.classList.remove("btn-loading");
+    btn.innerHTML = "Send Message";
+  }
+}
+
+/* ===== SUBMIT HANDLER ===== */
+
+form.addEventListener("submit", async e => {
+
+  e.preventDefault();
+
+  const formData = new FormData(form);
+
+  const data = {
+    name: formData.get("name"),
+    email: formData.get("email"),
+    subject: formData.get("subject"),
+    message: formData.get("message")
+  };
+
+  setLoading(true);
+
+  try{
+
+    const res = await fetch("/contact",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(data)
+    });
+
+    const result = await res.json();
+
+    setLoading(false);
+
+    if(res.ok){
+      showToast("✅ Message sent successfully!");
+      form.reset();
+    }else{
+      showToast("❌ "+result.message,false);
+    }
+
+  }catch{
+    setLoading(false);
+    showToast("⚠️ Network error. Try again.",false);
+  }
+
+});
+
+</script>
 
 </body>
 </html>
