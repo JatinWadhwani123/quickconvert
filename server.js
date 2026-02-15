@@ -58,6 +58,11 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use("/api", otpRoutes);
 app.use("/api/reset", resetRoutes);
+const contactRoutes = require("./routes/contact");
+app.use("/api/contact", contactRoutes);
+
+
+
 
 /* ================= ROUTES ================= */
 

@@ -1,27 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const sendMail = require("../utils/sendMail");
+const { sendContactMail } = require("../utils/sendMail");
 
 router.post("/", async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
-    await sendMail({
-      to: process.env.EMAIL_USER,
-      subject: `Contact Form: ${subject}`,
-      text: `
-Name: ${name}
-Email: ${email}
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ message: "All fields required" });
+    }
 
-Message:
-${message}
-      `
-    });
+    const html = `
+      <h2>New Contact Message</h2>
+      <p><b>Name:</b> ${name}</p>
+      <p><b>Email:</b> ${email}</p>
+      <p><b>Subject:</b> ${subject}</p>
+      <p><b>Message:</b></p>
+      <p>${message}</p>
+    `;
 
-    res.json({ message: "Message sent successfully!" });
+    await sendContactMail(`Contact: ${subject}`, html);
+
+    res.json({ message: "Message sent successfully" });
 
   } catch (err) {
-    res.status(500).json({ message: "Failed to send message." });
+    console.error("CONTACT ERROR:", err);
+    res.status(500).json({ message: "Email failed" });
   }
 });
 
