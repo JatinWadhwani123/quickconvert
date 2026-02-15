@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>PDF to JPG Converter Online Free – QuickConvert</title>
+
+<meta name="description"
+content="Convert PDF pages to JPG images online for free. Extract each page as an image instantly using QuickConvert.">
+
+<meta name="keywords"
+content="pdf to jpg, convert pdf to image, pdf to png, extract images from pdf">
+
+<link rel="canonical" href="https://quickconvert.online/pdf-to-jpg">
+
+
+
+<link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+  <div class="nav-left">
+
+    <div class="logo">⚡ QuickConvert</div>
+
+    <nav class="nav-links">
+<a href="/">Dashboard</a>
+<a href="/image-to-pdf">Convert</a>
+<a href="/compress-pdf">Compress</a>
+<a href="/merge-pdf">Merge</a>
+</nav>
+
+  </div>
+
+  <div class="nav-right">
+
+    <input class="nav-search" placeholder="Search tools…">
+
+    <!-- Auth buttons -->
+    <a href="/login" id="loginBtn" class="nav-login">Login</a>
+    <a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
+
+    <button id="logoutBtn" class="nav-logout" style="display:none">
+      Logout
+    </button>
+
+    <!-- Launcher -->
+    <div class="app-launcher">
+
+      <button id="dotsBtn" class="dots-btn">⋮⋮</button>
+
+      <div id="launcherMenu" class="launcher-menu">
+
+        <div class="menu-section-title">Tools</div>
+
+        <a href="/converter">Image → PDF</a>
+        <a href="/compressor">Compressor</a>
+        <a href="/merger">Merge PDF</a>
+
+        <div class="menu-divider"></div>
+
+        <div class="menu-section-title">Account</div>
+
+        <a href="/login" id="menuLogin">Login</a>
+        <a href="/register" id="menuSignup">Sign up</a>
+        <a href="#" id="menuLogout" style="display:none">Logout</a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="tool-hero convert-hero">
+
+  <div class="hero-icon modern-icon convert-icon">📄</div>
+
+<h1>Free Online PDF to JPG Converter</h1>
+
+
+  <p>
+Convert each page of your PDF into high-quality images instantly — fast, secure, and fully browser-based.
+</p>
+
+
+</section>
+
+<!-- TOOL CARD -->
+
+<section class="tool-wrapper">
+
+  <div class="tool-card-main">
+
+    <!-- FORM REQUIRED BY JS -->
+    <form id="convertForm">
+
+      <!-- UPLOAD AREA — IDs MUST MATCH JS -->
+
+      <label class="upload-area" id="uploadArea">
+
+        <strong id="uploadText">
+          Drag & drop PDF here
+
+        </strong>
+
+        <span id="uploadSub">
+          or click to upload
+        </span>
+
+<input type="file" id="fileInput" accept="application/pdf">
+
+
+
+      </label>
+
+      <!-- BUTTON -->
+
+      <button type="submit" class="primary-btn">
+        Convert to PDF
+      </button>
+
+      <!-- LOADER -->
+
+      <div id="loader" class="loader hidden"></div>
+
+      <!-- PROGRESS -->
+
+      <div id="convertProgress" class="progress hidden">
+        <div id="convertBar"></div>
+      </div>
+
+    </form>
+
+  </div>
+
+</section>
+
+<!-- PREMIUM FEATURES -->
+
+<section class="premium-features">
+
+<h2>Why creators choose QuickConvert</h2>
+
+<div class="premium-feature-grid">
+
+  <div class="premium-feature">
+    <div class="feature-icon">⚡</div>
+    <h3>Lightning fast</h3>
+    <p>Instant browser conversion</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🔒</div>
+    <h3>Private & secure</h3>
+    <p>No files are stored</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🌍</div>
+    <h3>Works anywhere</h3>
+    <p>Desktop or mobile</p>
+  </div>
+
+</div>
+
+</section>
+
+<!-- HOW IT WORKS -->
+
+<section class="how-section">
+
+<h2>How it works</h2>
+
+<div class="steps">
+
+  <div class="step">
+    📤 Upload
+    <p>Select your image</p>
+  </div>
+
+  <div class="step">
+    ⚙ Process
+    <p>Instant conversion</p>
+  </div>
+
+  <div class="step">
+    📥 Download
+    <p>Get your PDF</p>
+  </div>
+
+</div>
+
+</section>
+
+<!-- SEO TEXT -->
+
+<section class="seo-section">
+
+<h2>Free Online Image to PDF Converter</h2>
+
+<p>
+QuickConvert is a powerful online tool that allows you to convert multiple images into a single PDF instantly. Whether you have JPG, PNG, or other image formats, you can combine them into a high-quality PDF file without installing any software.
+</p>
+
+<h3>Convert Multiple Images to PDF Easily</h3>
+<p>
+Unlike many basic converters, QuickConvert supports converting multiple images into one PDF file in a single click. Simply upload your images, arrange them automatically, and download a professional PDF document within seconds.
+</p>
+
+<h3>Why Choose QuickConvert?</h3>
+
+<div class="feature-grid">
+
+  <div class="feature-card">
+    <div class="icon">📂</div>
+    <h4>Multiple Upload</h4>
+    <p>Convert many images into one PDF at once.</p>
+  </div>
+
+  <div class="feature-card">
+    <div class="icon">⚡</div>
+    <h4>Fast Processing</h4>
+    <p>Instant conversion directly in your browser.</p>
+  </div>
+
+  <div class="feature-card">
+    <div class="icon">🔒</div>
+    <h4>Secure & Private</h4>
+    <p>Your files are never stored on our servers.</p>
+  </div>
+
+  <div class="feature-card">
+    <div class="icon">📱</div>
+    <h4>Works Everywhere</h4>
+    <p>Use on mobile, tablet, or desktop easily.</p>
+  </div>
+
+</div>
+
+
+<h3>How to Convert Images to PDF</h3>
+<ol>
+  <li>Upload one or more image files</li>
+  <li>Click "Convert to PDF"</li>
+  <li>Download your combined PDF instantly</li>
+</ol>
+
+<h3>Is This Tool Safe?</h3>
+<p>
+Yes. All files are processed securely in your browser and automatically removed after conversion. Your data remains private and protected at all times.
+</p>
+
+</section>
+<section class="related-tools">
+
+  <h2>Related PDF Tools</h2>
+
+  <div class="tools-links">
+
+    <a href="/compressor">Compress PDF</a>
+    <a href="/merger">Merge PDF</a>
+    <a href="/converter">Convert Image to PDF</a>
+
+  </div>
+
+</section>
+
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+<h3>⚡ QuickConvert</h3>
+<p>Fast, Secure & Free Online File Tools</p>
+
+<div class="footer-links">
+<a href="/pages/about.html">About Us</a>
+<a href="/pages/contact.html">Contact</a>
+<a href="/pages/disclaimer.html">Disclaimer</a>
+<a href="/pages/privacy.html">Privacy Policy</a>
+<a href="/pages/terms.html">Terms & Conditions</a>
+</div>
+
+<p>© 2026 QuickConvert.online — All Rights Reserved</p>
+
+</footer>
+
+<!-- JS -->
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const token = localStorage.getItem("token");
+
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const menuLogin = document.getElementById("menuLogin");
+  const menuSignup = document.getElementById("menuSignup");
+  const menuLogout = document.getElementById("menuLogout");
+
+  // Auth UI
+  if (token) {
+
+    loginBtn.style.display = "none";
+    signupBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+
+    menuLogin.style.display = "none";
+    menuSignup.style.display = "none";
+    menuLogout.style.display = "block";
+
+  }
+
+  logoutBtn.onclick = () => {
+    localStorage.removeItem("token");
+    location.reload();
+  };
+
+  menuLogout.onclick = e => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    location.reload();
+  };
+
+  // launcher toggle
+  const btn = document.getElementById("dotsBtn");
+  const menu = document.getElementById("launcherMenu");
+
+  btn.onclick = e => {
+    e.stopPropagation();
+    menu.style.display =
+      menu.style.display === "block" ? "none" : "block";
+  };
+
+  document.addEventListener("click", () => {
+    menu.style.display = "none";
+  });
+
+});
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../js/tools/pdfToJpg.js"></script>
+
+<!-- SUCCESS POPUP -->
+<div id="successPopup" class="popup hidden">
+
+  <div class="popup-box">
+
+    <h2>✅ Conversion Complete</h2>
+
+    <p>Your PDF has been downloaded successfully.</p>
+
+    <button onclick="closePopup()" class="primary-btn">
+      Convert Another File
+    </button>
+
+  </div>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+</body>
+</html>

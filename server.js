@@ -20,6 +20,23 @@ const resetRoutes = require("./routes/reset");
 const nodemailer = require("nodemailer");
 const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
+const archiver = require("archiver");
+const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
+
+
+
+
+class NodeCanvasFactory {
+  create(width, height) {
+    const Canvas = require("canvas");
+    const canvas = Canvas.createCanvas(width, height);
+    const context = canvas.getContext("2d");
+    return { canvas, context };
+  }
+}
+pdfjsLib.NodeCanvasFactory = NodeCanvasFactory;
+
+
 
 // ===============================
 // APP SETUP
@@ -76,6 +93,13 @@ app.get("/compress-pdf", (req, res) =>
 app.get("/merge-pdf", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merge-pdf.html"))
 );
+app.get("/split-pdf", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/split-pdf.html"))
+);
+app.get("/pdf-to-jpg", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/pdf-to-jpg.html"))
+);
+
 
 
 app.get("/compressor", (req, res) =>
@@ -187,6 +211,93 @@ app.post("/merge", upload.array("files"), async (req, res) => {
     res.status(500).send("Merge failed");
   }
 });
+
+
+// ===============================
+// SPLIT PDF
+// ===============================
+
+app.post("/split", upload.single("file"), async (req, res) => {
+
+  try {
+
+    const pdf = await PDFDocument.load(req.file.buffer);
+
+    const newPdf = await PDFDocument.create();
+
+    const pageIndex = 0; // first page only for now
+
+    const [page] = await newPdf.copyPages(pdf, [pageIndex]);
+    newPdf.addPage(page);
+
+    const bytes = await newPdf.save();
+
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment"
+    });
+
+    res.end(Buffer.from(bytes));
+
+  } catch {
+
+    res.status(500).send("Split failed");
+
+  }
+
+});
+
+// ===============================
+// PDF → JPG CONVERTER (PDFJS FINAL)
+// ===============================
+
+
+
+app.post("/pdf-to-jpg", upload.single("file"), async (req, res) => {
+
+  try {
+
+    const pdfData = new Uint8Array(req.file.buffer);
+    const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader("Content-Disposition", "attachment; filename=images.zip");
+
+    const archive = archiver("zip", { zlib: { level: 9 } });
+    archive.pipe(res);
+
+    const Canvas = require("canvas");
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 2 });
+
+      const canvas = Canvas.createCanvas(viewport.width, viewport.height);
+      const context = canvas.getContext("2d");
+
+      await page.render({
+        canvasContext: context,
+        viewport: viewport
+      }).promise;
+
+      const buffer = canvas.toBuffer("image/png");
+
+      archive.append(buffer, { name: `page-${i}.png` });
+    }
+
+    await archive.finalize();
+
+  } catch (err) {
+
+    console.error("PDF to JPG ERROR:", err);
+    res.status(500).send("Conversion failed");
+
+  }
+
+});
+
+
 
 // ===============================
 // STATIC FILES
