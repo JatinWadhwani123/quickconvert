@@ -66,7 +66,8 @@ app.post("/contact", async (req, res) => {
     if (process.env.RESEND_API_KEY) {
 
       await resend.emails.send({
-        from: "QuickConvert <noreply@quickconvert.online>",
+        from: "QuickConvert <onboarding@resend.dev>",
+
         to: process.env.EMAIL_USER,
         subject: `Contact: ${subject}`,
         html: `
