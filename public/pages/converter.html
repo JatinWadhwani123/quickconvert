@@ -22,11 +22,11 @@
     <div class="logo">⚡ QuickConvert</div>
 
     <nav class="nav-links">
-      <a href="/">Dashboard</a>
-      <a href="/converter">Convert</a>
-      <a href="/compressor">Compress</a>
-      <a href="/merger">Merge</a>
-    </nav>
+<a href="/">Dashboard</a>
+<a href="/image-to-pdf">Convert</a>
+<a href="/compress-pdf">Compress</a>
+<a href="/merge-pdf">Merge</a>
+</nav>
 
   </div>
 
@@ -108,7 +108,8 @@
           or click to upload
         </span>
 
-        <input type="file" id="fileInput" accept="image/*">
+        <input type="file" id="fileInput" accept="image/*" multiple>
+
 
       </label>
 
@@ -208,13 +209,18 @@ No installation required. Everything runs securely inside your browser.
 
 <footer class="footer">
 
-⚡ QuickConvert — Fast & Secure File Tools
+<h3>⚡ QuickConvert</h3>
+<p>Fast, Secure & Free Online File Tools</p>
 
 <div class="footer-links">
-<a href="/privacy">Privacy</a>
-<a href="/terms">Terms</a>
-<a href="/contact">Contact</a>
+<a href="/pages/about.html">About Us</a>
+<a href="/pages/contact.html">Contact</a>
+<a href="/pages/disclaimer.html">Disclaimer</a>
+<a href="/pages/privacy.html">Privacy Policy</a>
+<a href="/pages/terms.html">Terms & Conditions</a>
 </div>
+
+<p>© 2026 QuickConvert.online — All Rights Reserved</p>
 
 </footer>
 
@@ -274,7 +280,25 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="../js/tools/converter.js"></script>
+
+<!-- SUCCESS POPUP -->
+<div id="successPopup" class="popup hidden">
+
+  <div class="popup-box">
+
+    <h2>✅ Conversion Complete</h2>
+
+    <p>Your PDF has been downloaded successfully.</p>
+
+    <button onclick="closePopup()" class="primary-btn">
+      Convert Another File
+    </button>
+
+  </div>
+
+</div>
 
 </body>
 </html>

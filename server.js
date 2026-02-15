@@ -21,7 +21,6 @@ const nodemailer = require("nodemailer");
 const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-
 // ===============================
 // APP SETUP
 // ===============================
@@ -31,8 +30,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-
-
 
 // ===============================
 // DATABASE
@@ -48,198 +45,6 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use("/api", otpRoutes);
 app.use("/api/reset", resetRoutes);
-
-
-
-app.post("/contact", async (req, res) => {
-  try {
-    const { name, email, subject, message } = req.body;
-
-    console.log("CONTACT REQUEST:", req.body);
-
-    if (!name || !email || !message) {
-      return res.status(400).json({ message: "All fields required" });
-    }
-
-    /* =========================
-       1️⃣ SEND TO ADMIN (YOU)
-    ========================== */
-
-    const adminMail = await resend.emails.send({
-      from: "QuickConvert <noreply@quickconvert.online>",
-      to: process.env.EMAIL_USER,
-      subject: `Contact: ${subject}`,
-      html: `
-        <h3>New Contact Message</h3>
-        <p><b>Name:</b> ${name}</p>
-        <p><b>Email:</b> ${email}</p>
-        <p><b>Message:</b><br>${message}</p>
-      `
-    });
-
-    console.log("ADMIN MAIL SENT:", adminMail);
-
-    /* =========================
-       2️⃣ AUTO-REPLY TO USER
-    ========================== */
-
-    const autoReply = await resend.emails.send({
-      from: "QuickConvert <noreply@quickconvert.online>",
-      to: email,
-      subject: "We received your message — QuickConvert",
-      html: `
-        <div style="font-family:Arial;padding:20px">
-          <h2>Hi ${name} 👋</h2>
-
-          <p>Thanks for contacting <b>QuickConvert</b>.</p>
-
-          <p>We have received your message and will respond within <b>24 hours</b>.</p>
-
-          <hr>
-
-          <p style="color:#555">
-            Your Message:<br>
-            "${message}"
-          </p>
-
-          <br>
-
-          <p>
-            — QuickConvert Team<br>
-            https://quickconvert.online
-          </p>
-        </div>
-      `
-    });
-
-    console.log("AUTO REPLY SENT:", autoReply);
-
-    res.json({ message: "Message sent successfully!" });
-
-  } catch (err) {
-    console.error("CONTACT ERROR:", err);
-    res.status(500).json({ message: "Failed to send" });
-  }
-});
-
-
-
-
-// ===============================
-// AUTH MIDDLEWARE
-// ===============================
-
-function auth(req, res, next) {
-
-  const token = req.header("Authorization");
-
-  if (!token)
-    return res.status(401).json({ msg: "No token" });
-
-  try {
-
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "secret"
-    );
-
-    req.user = decoded;
-    next();
-
-  } catch {
-
-    res.status(401).json({ msg: "Invalid token" });
-
-  }
-
-}
-
-// ===============================
-// AUTH ROUTES
-// ===============================
-
-// REGISTER
-app.post("/api/register", async (req, res) => {
-
-  try {
-
-    const { email, password } = req.body;
-
-    if (!email || !password)
-      return res.status(400).json({ message: "Missing fields" });
-
-    const exists = await User.findOne({ email });
-
-    if (exists)
-      return res.status(400).json({ message: "User exists" });
-
-    const hashed = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      email,
-      password: hashed
-    });
-
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET || "secret",
-      { expiresIn: "7d" }
-    );
-
-    res.json({ token });
-
-  } catch (err) {
-
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-
-  }
-
-});
-
-// LOGIN
-app.post("/api/login", async (req, res) => {
-
-  try {
-
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-
-    if (!user)
-      return res.status(400).json({ message: "User not found" });
-
-    const match = await bcrypt.compare(password, user.password);
-
-    if (!match)
-      return res.status(400).json({ message: "Wrong password" });
-
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET || "secret",
-      { expiresIn: "2h" }
-    );
-
-    res.json({ token });
-
-  } catch (err) {
-
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-
-  }
-
-});
-
-// PROTECTED TEST
-app.get("/api/protected", auth, (req, res) => {
-
-  res.json({
-    msg: "Protected route success",
-    user: req.user
-  });
-
-});
 
 // ===============================
 // CLEAN PAGE ROUTES
@@ -261,6 +66,18 @@ app.get("/converter", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/converter.html"))
 );
 
+/* ⭐⭐⭐ THIS IS THE NEW SEO ROUTE ⭐⭐⭐ */
+app.get("/image-to-pdf", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/image-to-pdf.html"))
+);
+app.get("/compress-pdf", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/compress-pdf.html"))
+);
+app.get("/merge-pdf", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/merge-pdf.html"))
+);
+
+
 app.get("/compressor", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/compressor.html"))
 );
@@ -272,7 +89,6 @@ app.get("/merger", (req, res) =>
 app.get("/disclaimer", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/disclaimer.html"))
 );
-
 
 // ===============================
 // MULTER CONFIG
@@ -288,9 +104,7 @@ const upload = multer({
 // ===============================
 
 app.post("/convert", upload.single("file"), async (req, res) => {
-
   try {
-
     const pdfDoc = await PDFDocument.create();
 
     const image =
@@ -315,11 +129,8 @@ app.post("/convert", upload.single("file"), async (req, res) => {
     res.end(Buffer.from(bytes));
 
   } catch {
-
     res.status(500).send("Conversion failed");
-
   }
-
 });
 
 // ===============================
@@ -327,9 +138,7 @@ app.post("/convert", upload.single("file"), async (req, res) => {
 // ===============================
 
 app.post("/compress", upload.single("file"), async (req, res) => {
-
   try {
-
     const out = await sharp(req.file.buffer)
       .jpeg({ quality: 60 })
       .toBuffer();
@@ -342,11 +151,8 @@ app.post("/compress", upload.single("file"), async (req, res) => {
     res.end(out);
 
   } catch {
-
     res.status(500).send("Compression failed");
-
   }
-
 });
 
 // ===============================
@@ -354,13 +160,10 @@ app.post("/compress", upload.single("file"), async (req, res) => {
 // ===============================
 
 app.post("/merge", upload.array("files"), async (req, res) => {
-
   try {
-
     const merged = await PDFDocument.create();
 
     for (const f of req.files) {
-
       const pdf = await PDFDocument.load(f.buffer);
 
       const pages = await merged.copyPages(
@@ -369,7 +172,6 @@ app.post("/merge", upload.array("files"), async (req, res) => {
       );
 
       pages.forEach(p => merged.addPage(p));
-
     }
 
     const bytes = await merged.save();
@@ -382,11 +184,8 @@ app.post("/merge", upload.array("files"), async (req, res) => {
     res.end(Buffer.from(bytes));
 
   } catch {
-
     res.status(500).send("Merge failed");
-
   }
-
 });
 
 // ===============================
