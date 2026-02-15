@@ -225,40 +225,8 @@ Our tool extracts text accurately while maintaining structure, making it ideal f
 
 <!-- ================= JS ================= -->
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+<script src="../js/tools/pdfToWord.js"></script>
 
-  const fileInput = document.getElementById("fileInput");
-  const form = document.getElementById("convertForm");
-  const progress = document.getElementById("convertProgress");
-  const bar = document.getElementById("convertBar");
-
-  form.addEventListener("submit", async e => {
-    e.preventDefault();
-
-    if (!fileInput.files[0]) {
-      alert("Upload PDF first");
-      return;
-    }
-
-    const fd = new FormData();
-    fd.append("file", fileInput.files[0]);
-
-    progress.classList.remove("hidden");
-
-    const res = await fetch("/pdf-to-word", { method:"POST", body:fd });
-    const blob = await res.blob();
-
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "converted.docx";
-    a.click();
-
-    progress.classList.add("hidden");
-  });
-
-});
-</script>
 
 </body>
 </html>

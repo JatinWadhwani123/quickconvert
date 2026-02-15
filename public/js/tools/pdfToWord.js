@@ -1,82 +1,109 @@
-document.addEventListener("DOMContentLoaded", () => {
+const form = document.getElementById("convertForm");
+const fileInput = document.getElementById("fileInput");
+const uploadText = document.getElementById("uploadText");
+const uploadSub = document.getElementById("uploadSub");
+const loader = document.getElementById("loader");
+const progress = document.getElementById("convertProgress");
+const bar = document.getElementById("convertBar");
 
-  const fileInput = document.getElementById("fileInput");
-  const form = document.getElementById("convertForm");
+let selectedFile = null;
+let isProcessing = false;
 
-  const progress = document.getElementById("convertProgress");
-  const bar = document.getElementById("convertBar");
+/* ================= FILE SELECT ================= */
 
-  const uploadText = document.getElementById("uploadText");
-  const uploadSub = document.getElementById("uploadSub");
+fileInput.addEventListener("change", () => {
+  selectedFile = fileInput.files[0];
 
-  let selectedFile = null;
+  if (!selectedFile) return;
 
-  fileInput.addEventListener("change", () => {
+  uploadText.innerText = selectedFile.name;
+  uploadSub.innerText = "Click to change file";
+});
 
-    const file = fileInput.files[0];
-    if (!file) return;
+/* ================= FORM SUBMIT ================= */
 
-    if (file.type !== "application/pdf") {
-      alert("Only PDF files allowed");
-      return;
-    }
+form.addEventListener("submit", async e => {
+  e.preventDefault();
 
-    selectedFile = file;
-    uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
-    uploadSub.textContent = "Ready to convert";
-  });
+  if (isProcessing) return;
 
+  if (!selectedFile) {
+    alert("Please upload a PDF file");
+    return;
+  }
 
-  form.addEventListener("submit", async e => {
+  isProcessing = true;
 
-    e.preventDefault();
+  loader.classList.remove("hidden");
+  progress.classList.remove("hidden");
+  bar.style.width = "0%";
 
-    if (!selectedFile) {
-      alert("Upload a PDF first");
-      return;
-    }
+  const data = new FormData();
+  data.append("file", selectedFile);
 
-    const formData = new FormData();
-    formData.append("file", selectedFile);
+  try {
+    const res = await fetch("/api/pdf-to-word", {
+      method: "POST",
+      body: data
+    });
 
-    progress.classList.remove("hidden");
+    const blob = await res.blob();
 
-    let p = 0;
-    const anim = setInterval(() => {
-      p += 6;
-      bar.style.width = p + "%";
-      if (p >= 90) clearInterval(anim);
-    }, 120);
+    /* ================= PROGRESS ANIMATION ================= */
 
-    try {
+    let width = 0;
+    const interval = setInterval(() => {
+      width += 8;
+      bar.style.width = width + "%";
+      if (width >= 100) clearInterval(interval);
+    }, 100);
 
-      const res = await fetch("/pdf-to-word", {
-        method: "POST",
-        body: formData
-      });
+    /* ================= DOWNLOAD FIX ================= */
 
-      const blob = await res.blob();
+    setTimeout(() => {
 
-      bar.style.width = "100%";
+      const url = window.URL.createObjectURL(blob);
 
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "converted.doc";
+      a.href = url;
+      a.download = "converted.docx";
+
+      document.body.appendChild(a);
       a.click();
 
-    } catch {
-
-      alert("Conversion failed");
-
-    } finally {
-
       setTimeout(() => {
-        progress.classList.add("hidden");
-        bar.style.width = "0%";
-      }, 1500);
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 100);
 
-    }
+      loader.classList.add("hidden");
+      progress.classList.add("hidden");
 
-  });
+      showSuccessPopup();
 
+      isProcessing = false;
+
+    }, 1200);
+
+  } catch (err) {
+    alert("Conversion failed");
+    loader.classList.add("hidden");
+    progress.classList.add("hidden");
+    isProcessing = false;
+  }
 });
+
+/* ================= SUCCESS POPUP ================= */
+
+function showSuccessPopup() {
+  document.getElementById("successPopup").classList.remove("hidden");
+}
+
+function closePopup() {
+  document.getElementById("successPopup").classList.add("hidden");
+
+  uploadText.innerText = "Drag & drop PDF here";
+  uploadSub.innerText = "or click to upload";
+  fileInput.value = "";
+  selectedFile = null;
+}

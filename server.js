@@ -254,47 +254,32 @@ app.post("/split", upload.single("file"), async (req, res) => {
 // PDF → WORD (REAL DOCX)
 // ===============================
 
-const pdfParse = require("pdf-parse");
-const { Document, Packer, Paragraph, TextRun } = require("docx");
+const pdf = require("pdf-parse");
+const { Document, Packer, Paragraph } = require("docx");
 
-app.post("/pdf-to-word", upload.single("file"), async (req, res) => {
-
+app.post("/api/pdf-to-word", upload.single("file"), async (req, res) => {
   try {
+    const pdfBuffer = req.file.buffer;
 
-    if (!req.file)
-      return res.status(400).send("No file uploaded");
+    /* Extract text from PDF */
+    const data = await pdf(pdfBuffer);
 
-    // Extract text from PDF
-    const data = await pdfParse(req.file.buffer);
+    const text = data.text || "No readable text found.";
 
-    const text = data.text || "No text found in PDF.";
-
-    // Split into paragraphs
-    const lines = text.split("\n");
-
-    // Create Word document
+    /* Create real DOCX file */
     const doc = new Document({
       sections: [
         {
-          children: lines.map(line =>
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: line,
-                  size: 22
-                })
-              ],
-              spacing: { after: 200 }
-            })
+          properties: {},
+          children: text.split("\n").map(line =>
+            new Paragraph(line)
           )
         }
       ]
     });
 
-    // Convert to buffer
     const buffer = await Packer.toBuffer(doc);
 
-    // Send download
     res.set({
       "Content-Type":
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -304,12 +289,9 @@ app.post("/pdf-to-word", upload.single("file"), async (req, res) => {
     res.end(buffer);
 
   } catch (err) {
-
-    console.error("PDF TO WORD ERROR:", err);
+    console.error("PDF → Word error:", err);
     res.status(500).send("Conversion failed");
-
   }
-
 });
 
 
