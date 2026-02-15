@@ -99,6 +99,10 @@ app.get("/split-pdf", (req, res) =>
 app.get("/pdf-to-jpg", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/pdf-to-jpg.html"))
 );
+app.get("/pdf-to-word", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/pdf-to-word.html"))
+);
+
 
 
 
@@ -246,56 +250,69 @@ app.post("/split", upload.single("file"), async (req, res) => {
   }
 
 });
-
 // ===============================
-// PDF → JPG CONVERTER (PDFJS FINAL)
+// PDF → WORD (REAL DOCX)
 // ===============================
 
+const pdfParse = require("pdf-parse");
+const { Document, Packer, Paragraph, TextRun } = require("docx");
 
-
-app.post("/pdf-to-jpg", upload.single("file"), async (req, res) => {
+app.post("/pdf-to-word", upload.single("file"), async (req, res) => {
 
   try {
 
-    const pdfData = new Uint8Array(req.file.buffer);
-    const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+    if (!req.file)
+      return res.status(400).send("No file uploaded");
 
-    res.setHeader("Content-Type", "application/zip");
-    res.setHeader("Content-Disposition", "attachment; filename=images.zip");
+    // Extract text from PDF
+    const data = await pdfParse(req.file.buffer);
 
-    const archive = archiver("zip", { zlib: { level: 9 } });
-    archive.pipe(res);
+    const text = data.text || "No text found in PDF.";
 
-    const Canvas = require("canvas");
+    // Split into paragraphs
+    const lines = text.split("\n");
 
-    for (let i = 1; i <= pdf.numPages; i++) {
+    // Create Word document
+    const doc = new Document({
+      sections: [
+        {
+          children: lines.map(line =>
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: line,
+                  size: 22
+                })
+              ],
+              spacing: { after: 200 }
+            })
+          )
+        }
+      ]
+    });
 
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: 2 });
+    // Convert to buffer
+    const buffer = await Packer.toBuffer(doc);
 
-      const canvas = Canvas.createCanvas(viewport.width, viewport.height);
-      const context = canvas.getContext("2d");
+    // Send download
+    res.set({
+      "Content-Type":
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "Content-Disposition": "attachment; filename=converted.docx"
+    });
 
-      await page.render({
-        canvasContext: context,
-        viewport: viewport
-      }).promise;
-
-      const buffer = canvas.toBuffer("image/png");
-
-      archive.append(buffer, { name: `page-${i}.png` });
-    }
-
-    await archive.finalize();
+    res.end(buffer);
 
   } catch (err) {
 
-    console.error("PDF to JPG ERROR:", err);
+    console.error("PDF TO WORD ERROR:", err);
     res.status(500).send("Conversion failed");
 
   }
 
 });
+
+
 
 
 
