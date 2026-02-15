@@ -126,6 +126,11 @@ app.get("/disclaimer", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/disclaimer.html"))
 );
 
+app.get("/pdf-compressor", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/pdf-compressor.html"))
+);
+
+
 /* ================= IMAGE → PDF ================= */
 
 app.post("/convert", upload.single("file"), async (req, res) => {
@@ -178,6 +183,37 @@ app.post("/compress", upload.single("file"), async (req, res) => {
     res.status(500).send("Compression failed");
   }
 });
+
+/* ================= PDF COMPRESS ================= */
+
+app.post("/compress-pdf-file", upload.single("file"), async (req, res) => {
+  try {
+    const inputBytes = fs.readFileSync(req.file.path);
+
+    const pdfDoc = await PDFDocument.load(inputBytes);
+
+    // Basic optimization/compression
+    const compressedBytes = await pdfDoc.save({
+      useObjectStreams: true,
+      compress: true
+    });
+
+    fs.unlinkSync(req.file.path);
+
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment; filename=compressed.pdf"
+    });
+
+    res.end(Buffer.from(compressedBytes));
+
+  } catch (err) {
+    console.error("PDF Compression error:", err);
+    res.status(500).send("PDF Compression failed");
+  }
+});
+
+
 
 /* ================= MERGE ================= */
 

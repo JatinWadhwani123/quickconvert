@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Compress PDF Online Free – QuickConvert</title>
+
+<meta name="description"
+content="Reduce PDF file size online instantly. Compress PDFs for email, forms, and uploads using QuickConvert.">
+
+<link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+  <div class="nav-left">
+
+    <div class="logo">⚡ QuickConvert</div>
+
+    <nav class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/image-to-pdf">Convert</a>
+      <a href="/compressor">Compress</a>
+      <a href="/merger">Merge</a>
+    </nav>
+
+  </div>
+
+  <div class="nav-right">
+
+    <input class="nav-search" placeholder="Search tools…">
+
+    <a href="/login" id="loginBtn" class="nav-login">Login</a>
+    <a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
+
+    <button id="logoutBtn" class="nav-logout" style="display:none">
+      Logout
+    </button>
+
+    <div class="app-launcher">
+
+      <button id="dotsBtn" class="dots-btn">⋮⋮</button>
+
+      <div id="launcherMenu" class="launcher-menu">
+
+        <div class="menu-section-title">Tools</div>
+
+        <a href="/image-to-pdf">Image → PDF</a>
+        <a href="/compressor">Compressor</a>
+        <a href="/merger">Merge PDF</a>
+        <a href="/split-pdf">Split PDF</a>
+        <a href="/pdf-to-jpg">PDF → JPG</a>
+        <a href="/pdf-to-word">PDF → Word</a>
+        <a href="/word-to-pdf">Word → PDF</a>
+        <a href="/pdf-compressor">PDF Compressor</a>
+
+        <div class="menu-divider"></div>
+
+        <div class="menu-section-title">Account</div>
+
+        <a href="/login" id="menuLogin">Login</a>
+        <a href="/register" id="menuSignup">Sign up</a>
+        <a href="#" id="menuLogout" style="display:none">Logout</a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="tool-hero convert-hero">
+
+  <div class="hero-icon modern-icon convert-icon">📉</div>
+
+  <h1>Free Online PDF Compressor</h1>
+
+  <p>
+Reduce PDF file size instantly while keeping quality high — fast, secure, and completely free.
+  </p>
+
+</section>
+
+<!-- TOOL CARD -->
+
+<section class="tool-wrapper">
+
+  <div class="tool-card-main">
+
+    <form id="compressForm">
+
+      <label class="upload-area" id="uploadArea">
+
+        <strong id="uploadText">
+          Drag & drop PDF file here
+        </strong>
+
+        <span id="uploadSub">
+          or click to upload
+        </span>
+
+        <input type="file" id="fileInput" accept="application/pdf">
+
+      </label>
+
+      <button type="submit" class="primary-btn">
+        Compress PDF
+      </button>
+
+      <div id="compressProgress" class="progress hidden">
+        <div id="compressBar"></div>
+      </div>
+
+    </form>
+
+  </div>
+
+</section>
+
+<!-- FEATURES -->
+
+<section class="premium-features">
+
+<h2>Why use QuickConvert</h2>
+
+<div class="premium-feature-grid">
+
+  <div class="premium-feature">
+    <div class="feature-icon">⚡</div>
+    <h3>Fast compression</h3>
+    <p>Reduce file size in seconds</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🔒</div>
+    <h3>Secure processing</h3>
+    <p>Your files are never stored</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🌍</div>
+    <h3>Works anywhere</h3>
+    <p>Mobile, tablet, desktop</p>
+  </div>
+
+</div>
+
+</section>
+
+<!-- HOW IT WORKS -->
+
+<section class="how-section">
+
+<h2>How it works</h2>
+
+<div class="steps">
+
+  <div class="step">📤 Upload<p>Select your PDF file</p></div>
+  <div class="step">⚙ Compress<p>Instant optimization</p></div>
+  <div class="step">📥 Download<p>Get smaller PDF</p></div>
+
+</div>
+
+</section>
+
+<!-- SEO SECTION -->
+
+<section class="seo-section">
+
+<h2>Compress PDF Online Free</h2>
+
+<p>
+QuickConvert allows you to reduce PDF file size instantly without losing quality. This tool is perfect for email attachments, online form uploads, and storage optimization.
+</p>
+
+<h3>Why Compress PDF Files?</h3>
+
+<p>
+Large PDF files can be difficult to share and upload. Compressing your PDF makes it easier to send via email, upload to websites, and store efficiently.
+</p>
+
+</section>
+
+<!-- RELATED TOOLS -->
+
+<section class="related-tools">
+
+  <h2>Related PDF Tools</h2>
+
+  <div class="tools-links">
+    <a href="/image-to-pdf">Image to PDF</a>
+    <a href="/pdf-to-word">PDF to Word</a>
+    <a href="/merge-pdf">Merge PDF</a>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+<h3>⚡ QuickConvert</h3>
+<p>Fast, Secure & Free Online File Tools</p>
+
+<p>© 2026 QuickConvert.online — All Rights Reserved</p>
+
+</footer>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const token = localStorage.getItem("token");
+
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const menuLogin = document.getElementById("menuLogin");
+  const menuSignup = document.getElementById("menuSignup");
+  const menuLogout = document.getElementById("menuLogout");
+
+  // Auth UI toggle
+  if (token) {
+    loginBtn.style.display = "none";
+    signupBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+
+    menuLogin.style.display = "none";
+    menuSignup.style.display = "none";
+    menuLogout.style.display = "block";
+  }
+
+  logoutBtn.onclick = () => {
+    localStorage.removeItem("token");
+    location.reload();
+  };
+
+  menuLogout.onclick = e => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    location.reload();
+  };
+
+  // Launcher toggle
+  const btn = document.getElementById("dotsBtn");
+  const menu = document.getElementById("launcherMenu");
+
+  btn.onclick = e => {
+    e.stopPropagation();
+    menu.style.display =
+      menu.style.display === "block" ? "none" : "block";
+  };
+
+  document.addEventListener("click", () => {
+    menu.style.display = "none";
+  });
+
+});
+</script>
+
+<script src="../js/tools/pdfCompressor.js"></script>
+
+</body>
+</html>
