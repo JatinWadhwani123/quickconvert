@@ -1,7 +1,3 @@
-// ===============================
-// IMPORTS
-// ===============================
-
 require("dotenv").config();
 
 const express = require("express");
@@ -10,21 +6,33 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+
+/* ================= MULTER STORAGE ================= */
+
+const storage = multer.diskStorage({
+  destination: "uploads/",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
+
 const sharp = require("sharp");
-const { PDFDocument } = require("pdf-lib");
 const path = require("path");
+const fs = require("fs");
 
 const User = require("./models/user");
 const otpRoutes = require("./routes/otp");
 const resetRoutes = require("./routes/reset");
-const nodemailer = require("nodemailer");
+
 const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
+
 const archiver = require("archiver");
 const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
-
-
-
+const mammoth = require("mammoth");
+const { PDFDocument, StandardFonts } = require("pdf-lib");
 
 class NodeCanvasFactory {
   create(width, height) {
@@ -36,11 +44,7 @@ class NodeCanvasFactory {
 }
 pdfjsLib.NodeCanvasFactory = NodeCanvasFactory;
 
-
-
-// ===============================
-// APP SETUP
-// ===============================
+/* ================= APP ================= */
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -48,24 +52,14 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ===============================
-// DATABASE
-// ===============================
-
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch(err => console.error("Mongo error:", err));
 
-// ===============================
-// ROUTES
-// ===============================
-
 app.use("/api", otpRoutes);
 app.use("/api/reset", resetRoutes);
 
-// ===============================
-// CLEAN PAGE ROUTES
-// ===============================
+/* ================= ROUTES ================= */
 
 app.get("/login", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/login.html"))
@@ -83,28 +77,33 @@ app.get("/converter", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/converter.html"))
 );
 
-/* ⭐⭐⭐ THIS IS THE NEW SEO ROUTE ⭐⭐⭐ */
 app.get("/image-to-pdf", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/image-to-pdf.html"))
 );
+
 app.get("/compress-pdf", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/compress-pdf.html"))
 );
+
 app.get("/merge-pdf", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/merge-pdf.html"))
 );
+
 app.get("/split-pdf", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/split-pdf.html"))
 );
+
 app.get("/pdf-to-jpg", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/pdf-to-jpg.html"))
 );
+
 app.get("/pdf-to-word", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/pdf-to-word.html"))
 );
 
-
-
+app.get("/word-to-pdf", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/word-to-pdf.html"))
+);
 
 app.get("/compressor", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/compressor.html"))
@@ -118,18 +117,7 @@ app.get("/disclaimer", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/disclaimer.html"))
 );
 
-// ===============================
-// MULTER CONFIG
-// ===============================
-
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 50 * 1024 * 1024 }
-});
-
-// ===============================
-// IMAGE → PDF
-// ===============================
+/* ================= IMAGE → PDF ================= */
 
 app.post("/convert", upload.single("file"), async (req, res) => {
   try {
@@ -140,11 +128,7 @@ app.post("/convert", upload.single("file"), async (req, res) => {
         ? await pdfDoc.embedJpg(req.file.buffer)
         : await pdfDoc.embedPng(req.file.buffer);
 
-    const page = pdfDoc.addPage([
-      image.width,
-      image.height
-    ]);
-
+    const page = pdfDoc.addPage([image.width, image.height]);
     page.drawImage(image, { x: 0, y: 0 });
 
     const bytes = await pdfDoc.save();
@@ -161,128 +145,125 @@ app.post("/convert", upload.single("file"), async (req, res) => {
   }
 });
 
-// ===============================
-// COMPRESS
-// ===============================
+/* ================= COMPRESS ================= */
 
 app.post("/compress", upload.single("file"), async (req, res) => {
   try {
-    const out = await sharp(req.file.buffer)
+    const inputPath = req.file.path;
+
+    const compressedBuffer = await sharp(inputPath)
       .jpeg({ quality: 60 })
       .toBuffer();
 
+    fs.unlinkSync(inputPath);
+
     res.set({
       "Content-Type": "image/jpeg",
-      "Content-Disposition": "attachment"
+      "Content-Disposition": "attachment; filename=compressed.jpg"
     });
 
-    res.end(out);
+    res.send(compressedBuffer);
 
-  } catch {
+  } catch (err) {
+    console.error("Compression error:", err);
     res.status(500).send("Compression failed");
   }
 });
 
-// ===============================
-// MERGE PDFs
-// ===============================
+/* ================= MERGE ================= */
 
 app.post("/merge", upload.array("files"), async (req, res) => {
   try {
     const merged = await PDFDocument.create();
 
     for (const f of req.files) {
-      const pdf = await PDFDocument.load(f.buffer);
+      const fileBytes = fs.readFileSync(f.path);
+      const pdf = await PDFDocument.load(fileBytes);
 
-      const pages = await merged.copyPages(
-        pdf,
-        pdf.getPageIndices()
-      );
-
+      const pages = await merged.copyPages(pdf, pdf.getPageIndices());
       pages.forEach(p => merged.addPage(p));
+
+      fs.unlinkSync(f.path);
     }
 
     const bytes = await merged.save();
 
     res.set({
       "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment"
+      "Content-Disposition": "attachment; filename=merged.pdf"
     });
 
     res.end(Buffer.from(bytes));
 
-  } catch {
+  } catch (err) {
+    console.error("MERGE ERROR:", err);
     res.status(500).send("Merge failed");
   }
 });
 
-
-// ===============================
-// SPLIT PDF
-// ===============================
+/* ================= SPLIT (ONLY FIXED PART) ================= */
 
 app.post("/split", upload.single("file"), async (req, res) => {
-
   try {
+    const fileBytes = fs.readFileSync(req.file.path);
 
-    const pdf = await PDFDocument.load(req.file.buffer);
-
+    const pdf = await PDFDocument.load(fileBytes);
     const newPdf = await PDFDocument.create();
 
-    const pageIndex = 0; // first page only for now
-
-    const [page] = await newPdf.copyPages(pdf, [pageIndex]);
+    const [page] = await newPdf.copyPages(pdf, [0]);
     newPdf.addPage(page);
 
     const bytes = await newPdf.save();
 
+    fs.unlinkSync(req.file.path);
+
     res.set({
       "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment"
+      "Content-Disposition": "attachment; filename=split.pdf"
     });
 
     res.end(Buffer.from(bytes));
 
-  } catch {
-
+  } catch (err) {
+    console.error("SPLIT ERROR:", err);
     res.status(500).send("Split failed");
-
   }
-
 });
-// ===============================
-// PDF → WORD (REAL DOCX)
-// ===============================
 
-const pdf = require("pdf-parse");
-const { Document, Packer, Paragraph } = require("docx");
+
+// Pdf to word 
 
 app.post("/api/pdf-to-word", upload.single("file"), async (req, res) => {
   try {
-    const pdfBuffer = req.file.buffer;
+    const fs = require("fs");
+    const pdf = require("pdf-parse");
+    const { Document, Packer, Paragraph } = require("docx");
 
-    /* Extract text from PDF */
+    // READ FILE FROM DISK (because multer uses diskStorage)
+    const pdfBuffer = fs.readFileSync(req.file.path);
+
+    // EXTRACT TEXT
     const data = await pdf(pdfBuffer);
-
     const text = data.text || "No readable text found.";
 
-    /* Create real DOCX file */
+    // CREATE DOCX FILE
     const doc = new Document({
       sections: [
         {
           properties: {},
-          children: text.split("\n").map(line =>
-            new Paragraph(line)
-          )
+          children: text.split("\n").map(line => new Paragraph(line))
         }
       ]
     });
 
     const buffer = await Packer.toBuffer(doc);
 
+    // DELETE TEMP FILE
+    fs.unlinkSync(req.file.path);
+
+    // SEND DOCX
     res.set({
-      "Content-Type":
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "Content-Disposition": "attachment; filename=converted.docx"
     });
 
@@ -295,18 +276,11 @@ app.post("/api/pdf-to-word", upload.single("file"), async (req, res) => {
 });
 
 
-
-
-
-// ===============================
-// STATIC FILES
-// ===============================
+/* ================= STATIC ================= */
 
 app.use(express.static("public"));
 
-// ===============================
-// START SERVER
-// ===============================
+/* ================= START ================= */
 
 app.listen(PORT, () =>
   console.log(`🚀 QuickConvert running on ${PORT}`)
