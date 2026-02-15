@@ -133,6 +133,9 @@ app.get("/pdf-compressor", (req, res) =>
 app.get("/pdf-to-png", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/pdf-to-png.html"))
 );
+app.get("/image-resizer", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/image-resizer.html"))
+);
 
 
 
@@ -322,6 +325,30 @@ app.post("/api/pdf-to-word", upload.single("file"), async (req, res) => {
   } catch (err) {
     console.error("PDF → Word error:", err);
     res.status(500).send("Conversion failed");
+  }
+});
+/* ================= IMAGE RESIZER ================= */
+
+app.post("/resize-image", upload.single("file"), async (req, res) => {
+  try {
+    const { width, height } = req.body;
+
+    const resizedBuffer = await sharp(req.file.path)
+      .resize(parseInt(width), parseInt(height))
+      .toBuffer();
+
+    fs.unlinkSync(req.file.path);
+
+    res.set({
+      "Content-Type": "image/jpeg",
+      "Content-Disposition": "attachment; filename=resized.jpg"
+    });
+
+    res.send(resizedBuffer);
+
+  } catch (err) {
+    console.error("Resize error:", err);
+    res.status(500).send("Resize failed");
   }
 });
 

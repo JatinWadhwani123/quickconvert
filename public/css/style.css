@@ -2083,3 +2083,39 @@ SAFE NAVBAR ENHANCEMENT
   background: #ff4d4d;
   color: white;
 }
+/* IMAGE RESIZER CONTROLS */
+
+.resize-controls {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.resize-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.resize-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+
+.resize-field input {
+  width: 120px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.resize-field input:focus {
+  border-color: #ff4d4d;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
+}

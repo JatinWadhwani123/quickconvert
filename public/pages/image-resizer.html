@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Resize Image Online Free – QuickConvert</title>
+
+<meta name="description"
+content="Resize images instantly online by setting custom width and height. Fast, secure, and free image resizer.">
+
+<link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+  <div class="nav-left">
+
+    <div class="logo">⚡ QuickConvert</div>
+
+    <nav class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/image-to-pdf">Convert</a>
+      <a href="/compressor">Compress</a>
+      <a href="/merger">Merge</a>
+    </nav>
+
+  </div>
+
+  <div class="nav-right">
+
+    <input class="nav-search" placeholder="Search tools…">
+
+    <a href="/login" id="loginBtn" class="nav-login">Login</a>
+    <a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
+
+    <button id="logoutBtn" class="nav-logout" style="display:none">
+      Logout
+    </button>
+
+    <div class="app-launcher">
+
+      <button id="dotsBtn" class="dots-btn">⋮⋮</button>
+
+      <div id="launcherMenu" class="launcher-menu">
+
+        <div class="menu-section-title">Tools</div>
+
+        <a href="/image-to-pdf">Image → PDF</a>
+        <a href="/compressor">Compressor</a>
+        <a href="/merger">Merge PDF</a>
+        <a href="/split-pdf">Split PDF</a>
+        <a href="/pdf-to-jpg">PDF → JPG</a>
+        <a href="/pdf-to-word">PDF → Word</a>
+        <a href="/word-to-pdf">Word → PDF</a>
+        <a href="/pdf-compressor">PDF Compressor</a>
+        <a href="/pdf-to-png">PDF → PNG</a>
+
+        <div class="menu-divider"></div>
+
+        <div class="menu-section-title">Account</div>
+
+        <a href="/login" id="menuLogin">Login</a>
+        <a href="/register" id="menuSignup">Sign up</a>
+        <a href="#" id="menuLogout" style="display:none">Logout</a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+<!-- HERO -->
+
+<section class="tool-hero convert-hero">
+
+  <div class="hero-icon modern-icon convert-icon">🖼️</div>
+
+  <h1>Free Online Image Resizer</h1>
+
+  <p>
+Resize images instantly by setting custom width and height — fast, secure, and completely free.
+  </p>
+
+</section>
+
+<!-- TOOL CARD -->
+
+<section class="tool-wrapper">
+
+  <div class="tool-card-main">
+
+    <form id="resizeForm">
+
+      <label class="upload-area" id="uploadArea">
+
+        <strong id="uploadText">
+          Drag & drop image here
+        </strong>
+
+        <span id="uploadSub">
+          or click to upload
+        </span>
+
+        <input type="file" id="fileInput" accept="image/*">
+
+      </label>
+
+      <div class="resize-controls">
+
+  <div class="resize-field">
+    <label>Width (px)</label>
+    <input type="number" id="width" placeholder="e.g. 800">
+  </div>
+
+  <div class="resize-field">
+    <label>Height (px)</label>
+    <input type="number" id="height" placeholder="e.g. 600">
+  </div>
+
+</div>
+
+
+      <button type="submit" class="primary-btn">
+        Resize Image
+      </button>
+
+      <div id="resizeProgress" class="progress hidden">
+        <div id="resizeBar"></div>
+      </div>
+
+    </form>
+
+  </div>
+
+</section>
+
+<!-- FEATURES -->
+
+<section class="premium-features">
+
+<h2>Why use QuickConvert</h2>
+
+<div class="premium-feature-grid">
+
+  <div class="premium-feature">
+    <div class="feature-icon">⚡</div>
+    <h3>Instant resizing</h3>
+    <p>Change dimensions in seconds</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🔒</div>
+    <h3>Secure processing</h3>
+    <p>Your files are never stored</p>
+  </div>
+
+  <div class="premium-feature">
+    <div class="feature-icon">🌍</div>
+    <h3>Works anywhere</h3>
+    <p>Mobile, tablet, desktop</p>
+  </div>
+
+</div>
+
+</section>
+
+<!-- HOW IT WORKS -->
+
+<section class="how-section">
+
+<h2>How it works</h2>
+
+<div class="steps">
+
+  <div class="step">📤 Upload<p>Select your image</p></div>
+  <div class="step">⚙ Resize<p>Enter custom dimensions</p></div>
+  <div class="step">📥 Download<p>Get resized image</p></div>
+
+</div>
+
+</section>
+
+<!-- SEO SECTION -->
+
+<section class="seo-section">
+
+<h2>Resize Images Online Free</h2>
+
+<p>
+QuickConvert allows you to resize images instantly by specifying custom width and height values. This tool is perfect for website optimization, social media uploads, and document submissions.
+</p>
+
+<h3>Why Resize Images?</h3>
+
+<p>
+Large images can slow down websites and exceed upload limits. Resizing helps reduce file dimensions while maintaining visual quality.
+</p>
+
+</section>
+
+<!-- RELATED TOOLS -->
+
+<section class="related-tools">
+
+  <h2>Related Tools</h2>
+
+  <div class="tools-links">
+    <a href="/compressor">Image Compressor</a>
+    <a href="/image-to-pdf">Image to PDF</a>
+    <a href="/pdf-to-png">PDF → PNG</a>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+<h3>⚡ QuickConvert</h3>
+<p>Fast, Secure & Free Online File Tools</p>
+
+<p>© 2026 QuickConvert.online — All Rights Reserved</p>
+
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const token = localStorage.getItem("token");
+
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const menuLogin = document.getElementById("menuLogin");
+  const menuSignup = document.getElementById("menuSignup");
+  const menuLogout = document.getElementById("menuLogout");
+
+  if (token) {
+    loginBtn.style.display = "none";
+    signupBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+
+    menuLogin.style.display = "none";
+    menuSignup.style.display = "none";
+    menuLogout.style.display = "block";
+  }
+
+  logoutBtn.onclick = () => {
+    localStorage.removeItem("token");
+    location.reload();
+  };
+
+  menuLogout.onclick = e => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    location.reload();
+  };
+
+  const btn = document.getElementById("dotsBtn");
+  const menu = document.getElementById("launcherMenu");
+
+  btn.onclick = e => {
+    e.stopPropagation();
+    menu.style.display =
+      menu.style.display === "block" ? "none" : "block";
+  };
+
+  document.addEventListener("click", () => {
+    menu.style.display = "none";
+  });
+
+});
+</script>
+
+<script src="../js/tools/imageResizer.js"></script>
+
+</body>
+</html>
