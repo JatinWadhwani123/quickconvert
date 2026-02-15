@@ -26,14 +26,22 @@ async function sendOTP(email, otp) {
 
 /* ================= CONTACT MAIL ================= */
 
-async function sendContactMail(subject, html) {
+async function sendContactMail(name, email, subject, message) {
   await transporter.sendMail({
     from: `"QuickConvert Contact" <${process.env.MAIL_USER}>`,
-    to: process.env.MAIL_USER,   // ⭐ send to yourself
-    subject,
-    html
+    to: process.env.MAIL_USER,
+    subject: `Contact Form: ${subject}`,
+    html: `
+      <h2>New Contact Message</h2>
+      <p><b>Name:</b> ${name}</p>
+      <p><b>Email:</b> ${email}</p>
+      <p><b>Subject:</b> ${subject}</p>
+      <p><b>Message:</b><br>${message}</p>
+    `
   });
 }
+
+/* ================= EXPORT BOTH ================= */
 
 module.exports = {
   sendOTP,

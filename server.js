@@ -6,6 +6,8 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const authRoutes = require("./routes/auth");
+
 
 /* ================= MULTER STORAGE ================= */
 
@@ -60,6 +62,8 @@ app.use("/api", otpRoutes);
 app.use("/api/reset", resetRoutes);
 const contactRoutes = require("./routes/contact");
 app.use("/api/contact", contactRoutes);
+app.use("/api", authRoutes);
+
 
 
 
