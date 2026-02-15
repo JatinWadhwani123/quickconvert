@@ -91,7 +91,7 @@ app.post("/contact", async (req, res) => {
 
       await transporter.sendMail({
         from: `"QuickConvert Contact" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_USER,
+        to: ["jatinwadhwaniofficial@gmail.com"],
         subject: `Contact: ${subject}`,
         html: `
           <h3>New Message</h3>
