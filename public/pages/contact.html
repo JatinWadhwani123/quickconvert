@@ -114,6 +114,11 @@ const form = document.getElementById("contactForm");
 const btn = document.getElementById("sendBtn");
 const toast = document.getElementById("toast");
 
+/* ===== AUTO API URL DETECTION ===== */
+/* Works for LOCAL + RENDER automatically */
+
+const API_URL = window.location.origin + "/contact";
+
 /* ===== TOAST FUNCTION ===== */
 
 function showToast(msg, success=true){
@@ -154,7 +159,7 @@ form.addEventListener("submit", async e => {
 
   try{
 
-    const res = await fetch("/contact",{
+    const res = await fetch(API_URL,{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body:JSON.stringify(data)
@@ -171,7 +176,7 @@ form.addEventListener("submit", async e => {
       showToast("❌ "+result.message,false);
     }
 
-  }catch{
+  }catch(err){
     setLoading(false);
     showToast("⚠️ Network error. Try again.",false);
   }
