@@ -130,6 +130,11 @@ app.get("/pdf-compressor", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/pdf-compressor.html"))
 );
 
+app.get("/pdf-to-png", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/pdf-to-png.html"))
+);
+
+
 
 /* ================= IMAGE → PDF ================= */
 
