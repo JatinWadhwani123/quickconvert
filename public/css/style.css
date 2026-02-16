@@ -2240,3 +2240,18 @@ padding: 20px !important;
 }
 
 }
+@media (max-width: 768px) {
+
+.tools-grid {
+grid-template-columns: 1fr !important;
+gap: 16px !important;
+padding: 0 15px !important;
+}
+
+.tool-card {
+width: 100% !important;
+max-width: 100% !important;
+margin: 0 auto !important;
+}
+
+}
