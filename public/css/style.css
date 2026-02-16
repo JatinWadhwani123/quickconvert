@@ -2174,3 +2174,69 @@ padding: 20px 10px;
 }
 
 }
+/* =========================
+MOBILE RESPONSIVE FIX
+========================= */
+
+@media screen and (max-width: 768px) {
+
+/* Fix overall page width */
+body {
+overflow-x: hidden;
+}
+
+/* Container full width */
+.container {
+width: 100% !important;
+max-width: 100% !important;
+padding: 15px !important;
+margin: 0 auto !important;
+}
+
+/* TOOL GRID FIX (MOST IMPORTANT) */
+.tools-grid {
+display: grid !important;
+grid-template-columns: 1fr !important;
+gap: 15px !important;
+}
+
+.tool-card {
+width: 100% !important;
+}
+
+/* Navbar mobile layout */
+.navbar {
+flex-wrap: wrap !important;
+gap: 10px;
+padding: 10px !important;
+}
+
+.search-box {
+width: 100% !important;
+}
+
+/* Hero section */
+.hero {
+text-align: center !important;
+padding: 30px 15px !important;
+}
+
+.hero h1 {
+font-size: 26px !important;
+}
+
+.hero p {
+font-size: 16px !important;
+}
+
+/* Content sections */
+section {
+padding: 40px 15px !important;
+}
+
+/* About box */
+.about-box {
+padding: 20px !important;
+}
+
+}
