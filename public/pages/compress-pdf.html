@@ -33,22 +33,55 @@ content="compress image, reduce image size, jpg compressor, png compressor, imag
 <header class="navbar">
 
   <div class="nav-left">
+
     <div class="logo">⚡ QuickConvert</div>
 
     <nav class="nav-links">
-      <a href="/">Dashboard</a>
-      <a href="/image-to-pdf">Convert</a>
-      <a href="/compress-pdf">Compress</a>
-      <a href="/merge-pdf">Merge</a>
-    </nav>
+<a href="/">Dashboard</a>
+<a href="/image-to-pdf">Convert</a>
+<a href="/compress-pdf">Compress</a>
+<a href="/merge-pdf">Merge</a>
+</nav>
+
   </div>
 
   <div class="nav-right">
+
     <input class="nav-search" placeholder="Search tools…">
 
+    <!-- Auth buttons -->
     <a href="/login" id="loginBtn" class="nav-login">Login</a>
     <a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
-    <button id="logoutBtn" class="nav-logout" style="display:none">Logout</button>
+
+    <button id="logoutBtn" class="nav-logout" style="display:none">
+      Logout
+    </button>
+
+    <!-- Launcher -->
+    <div class="app-launcher">
+
+      <button id="dotsBtn" class="dots-btn">⋮⋮</button>
+
+      <div id="launcherMenu" class="launcher-menu">
+
+        <div class="menu-section-title">Tools</div>
+
+        <a href="/converter">Image → PDF</a>
+        <a href="/compressor">Compressor</a>
+        <a href="/merger">Merge PDF</a>
+
+        <div class="menu-divider"></div>
+
+        <div class="menu-section-title">Account</div>
+
+        <a href="/login" id="menuLogin">Login</a>
+        <a href="/register" id="menuSignup">Sign up</a>
+        <a href="#" id="menuLogout" style="display:none">Logout</a>
+
+      </div>
+
+    </div>
+
   </div>
 
 </header>
@@ -236,10 +269,57 @@ Yes. All files are processed securely and automatically removed after compressio
 </footer>
 
 <!-- AUTH SCRIPT -->
-<script>
+ <script>
 document.addEventListener("DOMContentLoaded", () => {
+
   const token = localStorage.getItem("token");
-  if (token) document.getElementById("logoutBtn").style.display="inline-block";
+
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const menuLogin = document.getElementById("menuLogin");
+  const menuSignup = document.getElementById("menuSignup");
+  const menuLogout = document.getElementById("menuLogout");
+
+  // Auth UI
+  if (token) {
+
+    loginBtn.style.display = "none";
+    signupBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+
+    menuLogin.style.display = "none";
+    menuSignup.style.display = "none";
+    menuLogout.style.display = "block";
+
+  }
+
+  logoutBtn.onclick = () => {
+    localStorage.removeItem("token");
+    location.reload();
+  };
+
+  menuLogout.onclick = e => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    location.reload();
+  };
+
+  // launcher toggle
+  const btn = document.getElementById("dotsBtn");
+  const menu = document.getElementById("launcherMenu");
+
+  btn.onclick = e => {
+    e.stopPropagation();
+    menu.style.display =
+      menu.style.display === "block" ? "none" : "block";
+  };
+
+  document.addEventListener("click", () => {
+    menu.style.display = "none";
+  });
+
 });
 </script>
 
