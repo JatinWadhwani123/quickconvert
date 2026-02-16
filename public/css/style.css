@@ -2127,3 +2127,50 @@ color: #555;
 text-align: center;
 line-height: 1.6;
 }
+/* ===== MOBILE RESPONSIVE FIX ===== */
+
+@media (max-width: 768px) {
+
+body {
+padding: 0 10px;
+}
+
+.container {
+width: 100% !important;
+max-width: 100% !important;
+padding: 10px;
+}
+
+.tools-grid {
+display: grid;
+grid-template-columns: 1fr !important;
+gap: 15px;
+}
+
+.tool-card {
+width: 100% !important;
+}
+
+.hero h1 {
+font-size: 24px !important;
+}
+
+.hero p {
+font-size: 16px !important;
+}
+
+.navbar {
+flex-direction: column;
+gap: 10px;
+}
+
+.search-box {
+width: 100% !important;
+}
+
+footer {
+text-align: center;
+padding: 20px 10px;
+}
+
+}
