@@ -2119,3 +2119,11 @@ SAFE NAVBAR ENHANCEMENT
   outline: none;
   box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.2);
 }
+.tool-description {
+max-width: 700px;
+margin: 10px auto 30px;
+font-size: 15px;
+color: #555;
+text-align: center;
+line-height: 1.6;
+}
