@@ -7,7 +7,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const authRoutes = require("./routes/auth");
-const { exec } = require("child_process");
 
 
 
@@ -139,9 +138,7 @@ app.get("/pdf-to-png", (req, res) =>
 app.get("/image-resizer", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/image-resizer.html"))
 );
-app.get("/lock-pdf", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/lock-pdf.html"))
-);
+
 
 
 
@@ -357,45 +354,6 @@ app.post("/resize-image", upload.single("file"), async (req, res) => {
     res.status(500).send("Resize failed");
   }
 });
-/* ================= LOCK PDF ================= */
-
-app.post("/lock-pdf", upload.single("file"), async (req, res) => {
-  try {
-    const password = String(req.body.password || "").trim();
-
-    console.log("Password received:", password);
-
-    if (!password) {
-      return res.status(400).send("Password required");
-    }
-
-    const inputPath = req.file.path;
-    const outputPath = inputPath + "-locked.pdf";
-
-    const cmd = `qpdf --encrypt ${password} ${password} 256 -- "${inputPath}" "${outputPath}"`;
-
-    exec(cmd, (err) => {
-      if (err) {
-        console.error("Lock PDF error:", err);
-        return res.status(500).send("Lock failed");
-      }
-
-      res.download(outputPath, "locked.pdf");
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
-});
-
-
-
-
-
-
-
-
 
 /* ================= STATIC ================= */
 
