@@ -2253,3 +2253,43 @@ margin-bottom: 20px !important;
 }
 
 }
+
+@media (max-width: 768px) {
+
+/* FIX TOOL GRID — MAIN ISSUE */
+.tool-grid {
+grid-template-columns: 1fr !important;
+gap: 20px !important;
+padding: 20px 15px !important;
+}
+
+/* FIX CARD SIZE */
+.tool-card {
+padding: 20px !important;
+border-radius: 14px !important;
+}
+
+/* FIX TEXT SIZE */
+.tool-card h3 {
+font-size: 16px !important;
+}
+
+.tool-card p {
+font-size: 13px !important;
+}
+
+/* CENTER HERO CONTENT */
+.dashboard-hero {
+padding: 40px 15px 20px !important;
+}
+
+.dashboard-hero h1 {
+font-size: 26px !important;
+}
+
+/* NAVBAR COMPACT */
+.navbar {
+padding: 10px 15px !important;
+}
+
+}
