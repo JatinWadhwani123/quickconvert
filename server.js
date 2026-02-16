@@ -358,7 +358,6 @@ app.post("/resize-image", upload.single("file"), async (req, res) => {
   }
 });
 /* ================= LOCK PDF ================= */
-const { exec } = require("child_process");
 
 app.post("/lock-pdf", upload.single("file"), async (req, res) => {
   try {
