@@ -1,49 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-<url>
-<loc>https://quickconvert.online/</loc>
-<priority>1.0</priority>
-</url>
+  <url>
+    <loc>https://quickconvert.online/</loc>
+    <priority>1.0</priority>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/image-to-pdf</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/image-to-pdf</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/compress-pdf</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/compress-pdf</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/merge-pdf</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/merge-pdf</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/split-pdf</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/split-pdf</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/pdf-to-jpg</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/pdf-to-jpg</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/pdf-to-word</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/pdf-to-png</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/word-to-pdf</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/word-to-pdf</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/pdf-compressor</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/resize-image</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/pdf-to-png</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/pages/about.html</loc>
+  </url>
 
-<url>
-<loc>https://quickconvert.online/image-resizer</loc>
-</url>
+  <url>
+    <loc>https://quickconvert.online/pages/contact.html</loc>
+  </url>
+
+  <url>
+    <loc>https://quickconvert.online/pages/privacy.html</loc>
+  </url>
+
+  <url>
+    <loc>https://quickconvert.online/pages/terms.html</loc>
+  </url>
+
+  <url>
+    <loc>https://quickconvert.online/pages/disclaimer.html</loc>
+  </url>
 
 </urlset>
