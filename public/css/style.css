@@ -2293,3 +2293,43 @@ padding: 10px 15px !important;
 }
 
 }
+
+/* ===== Pillar Page Styling ===== */
+
+.pillar-section {
+  max-width: 900px;
+  margin: 80px auto;
+  padding: 0 20px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.pillar-section h1 {
+  text-align: center;
+  font-size: 42px;
+  margin-bottom: 30px;
+}
+
+.pillar-section h2 {
+  font-size: 28px;
+  margin-top: 50px;
+  margin-bottom: 15px;
+}
+
+.pillar-section ul {
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.pillar-section p {
+  margin-bottom: 15px;
+}
+
+.pillar-section a {
+  color: #5b21b6;
+  font-weight: 500;
+}
+
+.pillar-section a:hover {
+  text-decoration: underline;
+}
