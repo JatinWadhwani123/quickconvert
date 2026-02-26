@@ -2333,7 +2333,7 @@ padding: 10px 15px !important;
 .pillar-section a:hover {
   text-decoration: underline;
 }
-/* ===== Tool CTA Box ===== */
+/* ===== Tool CTA Box =====
 
 .tool-cta {
   background: #f8f7ff;
@@ -2362,4 +2362,38 @@ padding: 10px 15px !important;
 
 .cta-btn:hover {
   background: #4c1d95;
+} */
+/* ===== Pillar Tool Grid ===== */
+
+.pillar-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin: 40px 0;
+}
+
+.pillar-tool-card {
+  background: #ffffff;
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #333;
+  transition: 0.2s ease;
+}
+
+.pillar-tool-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transform: translateY(-3px);
+}
+
+.pillar-tool-card h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #5b21b6;
+}
+
+.pillar-tool-card p {
+  font-size: 14px;
+  color: #555;
 }
