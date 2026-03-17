@@ -7,6 +7,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const authRoutes = require("./routes/auth");
+const session = require("express-session");
+const passport = require("./config/passport");
+
+
 
 
 
@@ -65,7 +69,14 @@ app.use("/api/reset", resetRoutes);
 const contactRoutes = require("./routes/contact");
 app.use("/api/contact", contactRoutes);
 app.use("/api", authRoutes);
+app.use(session({
+  secret: "secret123",
+  resave: false,
+  saveUninitialized: true
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 
@@ -138,7 +149,31 @@ app.get("/pdf-to-png", (req, res) =>
 app.get("/image-resizer", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/image-resizer.html"))
 );
+/* GOOGLE LOGIN */
 
+app.get("/auth/google",
+  passport.authenticate("google", { scope: ["profile","email"] })
+);
+
+app.get("/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
+
+/* FACEBOOK LOGIN */
+
+app.get("/auth/facebook",
+  passport.authenticate("facebook", { scope: ["email"] })
+);
+
+app.get("/auth/facebook/callback",
+  passport.authenticate("facebook", { failureRedirect: "/login" }),
+  (req, res) => {
+    res.redirect("/");
+  }
+);
 
 
 
