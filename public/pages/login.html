@@ -241,6 +241,53 @@ body{flex-direction:column;}
 .left,.right{width:100%;}
 .right{display:none;}
 }
+/* ===== GOOGLE LOGIN FIX ===== */
+
+.google-login-wrapper{
+display:flex;
+justify-content:center;
+margin-bottom:20px;
+}
+
+.google-login-btn{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+
+width:260px;
+padding:12px;
+
+border:1px solid #ddd;
+border-radius:8px;
+
+background:#fff;
+color:#333;
+
+font-size:14px;
+font-weight:500;
+
+text-decoration:none;
+cursor:pointer;
+}
+
+/* FIX BIG LOGO */
+.google-login-btn img{
+width:18px;
+height:18px;
+display:block;
+}
+
+/* REMOVE UNDERLINE */
+.google-login-btn span{
+display:inline-block;
+}
+
+.google-login-btn:hover{
+border-color:#bbb;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
+background:#fafafa;
+}
 
 </style>
 
@@ -257,12 +304,16 @@ body{flex-direction:column;}
 <div class="sub">Login to your account</div>
 
 <!-- SOCIAL -->
-<div class="socials">
-  <a href="/auth/facebook" class="social-btn">Facebook</a>
-  <a href="/auth/google" class="social-btn">Google</a>
+ <div class="google-login-wrapper">
+  <a href="/auth/google" class="google-login-btn">
+    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+    <span>Continue with Google</span>
+  </a>
 </div>
 
+
 <div class="divider">or</div>
+
 
 <!-- EMAIL -->
 <div class="field">

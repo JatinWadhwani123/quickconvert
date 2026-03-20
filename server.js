@@ -163,18 +163,22 @@ app.get("/auth/google/callback",
 );
 
 /* FACEBOOK LOGIN */
-
-app.get("/auth/facebook",
-  passport.authenticate("facebook", { scope: ["email"] })
+app.get('/auth/facebook',
+  passport.authenticate('facebook', { scope: ['email'] })
 );
 
-app.get("/auth/facebook/callback",
-  passport.authenticate("facebook", { failureRedirect: "/login" }),
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', {
+    session: false,
+    failureRedirect: '/login'
+  }),
   (req, res) => {
-    res.redirect("/");
+    console.log("USER:", req.user);
+
+    // TEMP redirect
+    res.redirect('/login');
   }
 );
-
 
 
 /* ================= IMAGE → PDF ================= */
