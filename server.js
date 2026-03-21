@@ -148,47 +148,26 @@ app.get("/image-resizer", (req, res) =>
 app.get("/auth/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
-    prompt: "select_account"
+    session: false   // ✅ IMPORTANT
   })
 );
 
 app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
+  passport.authenticate('google', {
+    failureRedirect: '/login',
+    session: false
+  }),
   (req, res) => {
 
-    try {
-      console.log("FULL USER OBJECT:", JSON.stringify(req.user, null, 2));
+    const user = req.user;
 
-      if (!req.user) {
-        return res.redirect("/login");
-      }
+    const token = jwt.sign(
+      { email: user.emails[0].value },
+      process.env.JWT_SECRET || "secret123",
+      { expiresIn: "7d" }
+    );
 
-      // ✅ SAFE EXTRACTION (NO CRASH)
-      let email = null;
-
-      if (req.user.emails && req.user.emails.length > 0) {
-        email = req.user.emails[0].value;
-      }
-
-      if (!email) {
-        console.log("❌ Email missing from Google profile");
-        return res.redirect("/login");
-      }
-
-      const token = jwt.sign(
-        { email },
-        process.env.JWT_SECRET || "secret123",
-        { expiresIn: "7d" }
-      );
-
-      console.log("✅ TOKEN CREATED");
-
-      res.redirect(`/auth-success?token=${token}`);
-
-    } catch (err) {
-      console.error("🔥 GOOGLE CALLBACK ERROR:", err);
-      res.status(500).send("Internal Server Error");
-    }
+    res.redirect(`/auth-success?token=${token}`);
   }
 );
 
