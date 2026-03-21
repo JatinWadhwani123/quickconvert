@@ -1,5 +1,5 @@
 require("dotenv").config();
-
+const helmet = require("helmet");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -60,18 +60,40 @@ app.use(cors());
 app.use(express.json());
 
 
-const helmet = require("helmet");
 
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        imgSrc: ["'self'", "data:"],
-        connectSrc: ["'self'", "https://accounts.google.com"]
+
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://accounts.google.com"
+        ],
+
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com"
+        ],
+
+        fontSrc: [
+          "'self'",
+          "https://fonts.gstatic.com"
+        ],
+
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https://developers.google.com"
+        ],
+
+        connectSrc: [
+          "'self'",
+          "https://accounts.google.com"
+        ]
       }
     }
   })
