@@ -8,30 +8,7 @@
 
 <h2>Logging you in...</h2>
 
-<script>
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
-
-    if (token) {
-      console.log("Token received:", token);
-
-      // SAVE TOKEN
-      localStorage.setItem("token", token);
-
-      // CLEAN URL (remove token from URL)
-      window.history.replaceState({}, document.title, "/");
-
-      // REDIRECT TO HOME
-      window.location.href = "/";
-    } else {
-      document.body.innerHTML = "<h2>No token found. Login failed.</h2>";
-    }
-  } catch (err) {
-    console.error("Auth error:", err);
-    document.body.innerHTML = "<h2>Something went wrong</h2>";
-  }
-</script>
+<script src="/js/auth-success.js"></script>
 
 </body>
 </html>
