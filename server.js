@@ -207,7 +207,7 @@ app.get('/auth/google/callback',
       { expiresIn: "7d" }
     );
 
-    res.redirect(`/auth-success?token=${token}`);
+    res.redirect(`/auth-success.html?token=${token}`);
   }
 );
 
