@@ -146,26 +146,46 @@ app.get("/image-resizer", (req, res) =>
 /* GOOGLE LOGIN */
 
 app.get("/auth/google",
-  passport.authenticate("google", { scope: ["profile","email"] })
+  passport.authenticate("google", {
+    scope: ["profile", "email"], // ✅ keep email
+    prompt: "select_account"     // ✅ helps fix missing email
+  })
 );
 
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
 
-    console.log("USER:", req.user); // 👈 check this
+    try {
+      console.log("USER:", req.user);
 
-    if (!req.user) {
-      return res.redirect("/login");
+      if (!req.user) {
+        return res.redirect("/login");
+      }
+
+      // ✅ SAFE EMAIL EXTRACTION
+      const email =
+        req.user.emails && req.user.emails.length > 0
+          ? req.user.emails[0].value
+          : null;
+
+      if (!email) {
+        console.log("No email found");
+        return res.redirect("/login");
+      }
+
+      const token = jwt.sign(
+        { email },
+        process.env.JWT_SECRET || "secret123",
+        { expiresIn: "7d" }
+      );
+
+      res.redirect(`/auth-success?token=${token}`);
+
+    } catch (err) {
+      console.error("GOOGLE CALLBACK ERROR:", err);
+      res.status(500).send("Google Login Failed");
     }
-
-    const token = jwt.sign(
-      { email: req.user.emails[0].value },
-      process.env.JWT_SECRET || "secret123",
-      { expiresIn: "7d" }
-    );
-
-    res.redirect(`/auth-success?token=${token}`);
   }
 );
 
