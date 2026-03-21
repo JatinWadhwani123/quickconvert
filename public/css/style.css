@@ -2945,3 +2945,49 @@ padding: 10px 15px !important;
   max-width: 200px;
   margin: 0 auto;
 }
+.tool-card {
+  background: #ffffff;
+  padding: 24px 20px;
+  border-radius: 16px;
+  text-align: center;
+  transition: all 0.25s ease;
+  border: 1px solid #eee;
+  cursor: pointer;
+}
+
+/* 🔥 ICON BOX */
+.tool-icon {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  border-radius: 10px;
+  background: #f3f4f6;   /* soft grey */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🔥 ICON */
+.tool-icon i {
+  width: 20px;
+  height: 20px;
+  color: #444;
+}
+
+/* 🔥 HOVER */
+.tool-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border-color: #ddd;
+}
+
+/* 🔥 TEXT */
+.tool-card h3 {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.tool-card p {
+  font-size: 13px;
+  color: #666;
+}
