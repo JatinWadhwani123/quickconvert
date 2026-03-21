@@ -59,6 +59,24 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+
+const helmet = require("helmet");
+
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'", "https://accounts.google.com"]
+      }
+    }
+  })
+);
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch(err => console.error("Mongo error:", err));
@@ -72,7 +90,7 @@ app.set("trust proxy", 1); // ✅ VERY IMPORTANT FOR RENDER
 
 app.use(passport.initialize());
 
-
+app.use(express.static("public"));
 
 
 /* ================= ROUTES ================= */
@@ -384,9 +402,6 @@ app.post("/resize-image", upload.single("file"), async (req, res) => {
   }
 });
 
-/* ================= STATIC ================= */
-
-app.use(express.static("public"));
 
 /* ================= START ================= */
 
