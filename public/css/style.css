@@ -2991,3 +2991,65 @@ padding: 10px 15px !important;
   font-size: 13px;
   color: #666;
 }
+
+/* FAQ inside footer */
+.footer-faq {
+  max-width: 900px;
+  margin: 0 auto 40px;
+  padding: 20px;
+}
+
+.footer-faq h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* FAQ items */
+/* FAQ inside dark footer */
+.footer-faq {
+  max-width: 900px;
+  margin: 0 auto 40px;
+  padding: 20px;
+  color: #fff; /* 🔥 important */
+}
+
+.footer-faq h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+/* QUESTION */
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 14px 10px;
+  font-size: 15px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #fff; /* 🔥 fix */
+}
+
+/* ANSWER */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  font-size: 14px;
+  color: #ccc; /* 🔥 lighter grey */
+  transition: all 0.3s ease;
+  padding: 0 10px;
+}
+
+/* ACTIVE */
+.faq-item.active .faq-answer {
+  max-height: 200px;
+  padding: 10px;
+}
+
+/* BORDER */
+.faq-item {
+  border-bottom: 1px solid rgba(255,255,255,0.2); /* 🔥 subtle */
+}

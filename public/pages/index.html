@@ -317,55 +317,7 @@ QuickConvert continues to expand its suite of tools to provide an all-in-one onl
 
 </section>
 
-
-<section style="max-width:1100px;margin:60px auto;padding:40px;background:#ffffff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.08);color:#333;font-size:16px;line-height:1.7;">
-
-<h2 style="text-align:center;margin-bottom:20px;">About QuickConvert</h2>
-
-<p>
-QuickConvert is a free online file conversion platform designed to help users easily transform, compress, and manage digital files without installing any software. Our mission is to provide fast, secure, and user-friendly tools that simplify everyday document and image tasks for students, professionals, businesses, and general users.
-</p>
-
-<p>
-With QuickConvert, you can quickly convert images into professional PDF documents, merge multiple PDFs into one file, compress large files to reduce storage size, and transform PDF files into different formats such as JPG, PNG, or Word documents. All tools work directly in your browser, ensuring convenience and efficiency.
-</p>
-
-<p>
-We prioritize privacy and security. All uploaded files are processed securely and automatically removed from our servers after a short time. We never store, share, or access your files, ensuring complete confidentiality and data protection for our users.
-</p>
-
-<p>
-QuickConvert is built to save time and increase productivity. Instead of downloading complex software or using multiple websites, users can perform all essential file operations in one place. Our platform is optimized for speed, simplicity, and compatibility across all devices, including desktops, tablets, and smartphones.
-</p>
-
-<p>
-Whether you are preparing academic documents, managing business reports, compressing files for email, or converting images into PDFs, QuickConvert provides reliable tools that work instantly with just a few clicks.
-</p>
-
-<p>
-We continuously improve our platform by adding new tools, enhancing performance, and maintaining high standards of user experience. Our goal is to become a trusted online destination for file conversion and document management worldwide.
-</p>
-
-</section>
-
 <section class="seo-section">
-
-<h2>Frequently Asked Questions</h2>
-
-<h3>Is QuickConvert free?</h3>
-<p>Yes, all basic tools on QuickConvert are completely free to use without hidden charges.</p>
-
-<h3>Do I need to install any software?</h3>
-<p>No, all tools work directly inside your web browser.</p>
-
-<h3>Is my data secure?</h3>
-<p>Files are processed securely and automatically removed after processing.</p>
-
-<h3>Can I use QuickConvert on mobile?</h3>
-<p>Yes, the platform is fully responsive and works on smartphones and tablets.</p>
-
-<h3>Does QuickConvert require registration?</h3>
-<p>No registration is required for standard file conversion tools.</p>
 <section class="trust-full">
 
   <div class="trust-inner">
@@ -377,7 +329,7 @@ We continuously improve our platform by adding new tools, enhancing performance,
       Work efficiently while keeping your data safe and secure.
     </p>
 
-    <div class="trust-row">
+    <div class="trust-row"> 
 
       <!-- ITEM 1 -->
       <div class="trust-item">
@@ -444,15 +396,59 @@ We continuously improve our platform by adding new tools, enhancing performance,
 </section>
 <footer class="footer-pro">
 
+  <!-- 🔥 FAQ SECTION -->
+  <div class="footer-faq">
+    <h3>Frequently Asked Questions</h3>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        Do you store my files?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        No. Your files are automatically deleted after processing. We do not store your data.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        Is QuickConvert secure?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        Yes. All files are processed securely and privately.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        What formats are supported?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        We support PDF, JPG, PNG and Word conversions depending on the tool.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        Is it free to use?
+        <span>+</span>
+      </button>
+      <div class="faq-answer">
+        Yes, all tools are free and require no signup.
+      </div>
+    </div>
+  </div>
+
+  <!-- EXISTING FOOTER -->
   <div class="footer-container">
 
-    <!-- COLUMN 1 -->
     <div class="footer-col">
       <h3>⚡ QuickConvert</h3>
       <p>Fast, secure & free online file tools.</p>
     </div>
 
-    <!-- COLUMN 2 -->
     <div class="footer-col">
       <h4>Product</h4>
       <a href="/">Home</a>
@@ -461,7 +457,6 @@ We continuously improve our platform by adding new tools, enhancing performance,
       <a href="/merge-pdf">Merge</a>
     </div>
 
-    <!-- COLUMN 3 -->
     <div class="footer-col">
       <h4>Tools</h4>
       <a href="/pdf-to-word">PDF to Word</a>
@@ -470,7 +465,6 @@ We continuously improve our platform by adding new tools, enhancing performance,
       <a href="/image-resizer">Image Resizer</a>
     </div>
 
-    <!-- COLUMN 4 -->
     <div class="footer-col">
       <h4>Legal</h4>
       <a href="/pages/privacy.html">Privacy Policy</a>
@@ -478,7 +472,6 @@ We continuously improve our platform by adding new tools, enhancing performance,
       <a href="/pages/disclaimer.html">Disclaimer</a>
     </div>
 
-    <!-- COLUMN 5 -->
     <div class="footer-col">
       <h4>Company</h4>
       <a href="/pages/about.html">About Us</a>
@@ -487,7 +480,6 @@ We continuously improve our platform by adding new tools, enhancing performance,
 
   </div>
 
-  <!-- BOTTOM BAR -->
   <div class="footer-bottom">
     <p>© 2026 QuickConvert.online — All Rights Reserved</p>
   </div>
@@ -562,27 +554,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const navSearch = document.querySelector(".nav-search");
   const cards = document.querySelectorAll(".tool-card");
 
+  
   function filterCards(value) {
+    if (!value.trim()) {
+  cards.forEach(card => card.style.display = "block");
+  return;
+}
 
-    const words = value
-      .toLowerCase()
-      .trim()
-      .split(" ")
-      .filter(w => w.length > 0);
+  const words = value
+    .toLowerCase()
+    .trim()
+    .split(" ")
+    .filter(w => w.length > 0);
 
-    cards.forEach(card => {
+  cards.forEach(card => {
 
-      const name = (card.dataset.name || "").toLowerCase();
+    const text = card.innerText.toLowerCase();
 
-      const match = words.every(word =>
-        name.includes(word)
-      );
+    const match = words.every(word =>
+      text.includes(word)
+    );
 
-      card.style.display = match ? "block" : "none";
+    card.style.display = match ? "block" : "none";
 
-    });
+  });
 
-  }
+}
 
   toolSearch?.addEventListener("input", e =>
     filterCards(e.target.value)
