@@ -2692,162 +2692,70 @@ padding: 10px 15px !important;
   height: 60px;
 }
 
-/* ===== GOOGLE BUTTON FIX ===== */
-
-.google-login-wrapper{
-display:flex;
-justify-content:center;
-margin-bottom:20px;
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
-.google-login-btn{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-
-width:260px;
-padding:12px;
-
-border:1px solid #ddd;
-border-radius:8px;
-
-background:#fff;
-color:#333;
-
-font-size:14px;
-font-weight:500;
-
-text-decoration:none;
-transition:0.2s;
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
-.google-login-btn img{
-width:18px;
-height:18px;
+.dropdown-menu a {
+  display: block;
+  padding: 8px 12px;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  padding: 10px 0;
+  border-radius: 8px;
+  min-width: 180px;   /* ✅ FIX WIDTH */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  z-index: 999;
 }
 
-.google-login-btn:hover{
-border-color:#bbb;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
-background:#fafafa;
-}
-/* ===== GOOGLE BUTTON FINAL FIX ===== */
-
-.google-login-wrapper{
-display:flex;
-justify-content:center;
-margin-bottom:20px;
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
-.google-login-btn{
-display:flex !important;
-align-items:center;
-justify-content:center;
-gap:10px;
-
-width:260px;
-padding:12px;
-
-border:1px solid #ddd;
-border-radius:8px;
-
-background:#fff;
-color:#333;
-
-font-size:14px;
-font-weight:500;
-
-text-decoration:none;
-
-cursor:pointer;
+.dropdown-menu a {
+  display: block;
+  padding: 10px 16px;
+  white-space: nowrap;   /* ✅ PREVENT BREAK */
+  color: #333;
+}
+.nav-item {
+  position: relative;
 }
 
-.google-login-btn img{
-width:18px !important;
-height:18px !important;
-display:block;
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  padding: 10px 0;
+  border-radius: 8px;
+  min-width: 200px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  z-index: 999;
 }
 
-.google-login-btn span{
-display:inline-block;
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
-.google-login-btn:hover{
-border-color:#bbb;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
-background:#fafafa;
-}
-
-/* REMOVE DEFAULT LINK STYLE */
-a{
-text-decoration:none;
-}
-/* ===== CENTER ALIGN LOGIN CONTENT ===== */
-
-.card{
-width:360px;
-display:flex;
-flex-direction:column;
-align-items:center;   /* 🔥 THIS FIXES ALIGNMENT */
-}
-
-/* LOGO + TEXT CENTER */
-.logo, .sub{
-text-align:center;
-width:100%;
-}
-
-/* GOOGLE BUTTON WRAPPER */
-.google-login-wrapper{
-width:100%;
-display:flex;
-justify-content:center;
-margin:15px 0;
-}
-
-/* GOOGLE BUTTON */
-.google-login-btn{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-
-width:100%;
-max-width:260px;
-
-padding:12px;
-
-border:1px solid #ddd;
-border-radius:8px;
-
-background:#fff;
-color:#333;
-
-font-size:14px;
-font-weight:500;
-
-text-decoration:none;
-}
-
-/* ICON FIX */
-.google-login-btn img{
-width:18px;
-height:18px;
-}
-
-/* INPUTS FULL WIDTH */
-.field{
-width:100%;
-}
-
-/* BUTTON FULL WIDTH */
-.btn{
-width:100%;
-}
-
-/* REMOVE LINK UNDERLINE */
-a{
-text-decoration:none;
-color:inherit;
+.dropdown-menu a {
+  display: block;
+  padding: 10px 16px;
+  white-space: nowrap;
+  color: #333;
 }

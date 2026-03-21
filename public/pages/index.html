@@ -69,103 +69,79 @@
 <body>
 
 <header class="navbar">
-<div class="nav-left">
-<div class="logo">⚡ QuickConvert</div>
+  <div class="nav-left">
+    <div class="logo">⚡ QuickConvert</div>
 
-<nav class="nav-links">
+    <nav class="nav-links">
 
-<a href="/">Home</a>
+      <a href="/">Home</a>
 
-<!-- CONVERT DROPDOWN -->
-<div class="nav-item dropdown">
+      <!-- CLEAN CONVERT DROPDOWN -->
+      <div class="nav-item dropdown">
+        <span class="nav-link">Convert ▾</span>
 
-  <span class="nav-link">Convert ▾</span>
+        <div class="dropdown-menu">
+          <a href="/image-to-pdf">JPG to PDF</a>
+          <a href="/word-to-pdf">Word to PDF</a>
+          <a href="/pdf-to-jpg">PDF to JPG</a>
+          <a href="/pdf-to-word">PDF to Word</a>
+        </div>
+      </div>
 
-  <div class="mega-menu">
+      <a href="/compress-pdf">Compress</a>
+      <a href="/merge-pdf">Merge</a>
+      <a href="/split-pdf">Split</a>
 
-    <div class="mega-column">
-      <h4>Convert to PDF</h4>
-      <a href="/image-to-pdf">JPG to PDF</a>
-      <a href="/word-to-pdf">Word to PDF</a>
-      <a href="/ppt-to-pdf">PPT to PDF</a>
-    </div>
-
-    <div class="mega-column">
-      <h4>Convert from PDF</h4>
-      <a href="/pdf-to-jpg">PDF to JPG</a>
-      <a href="/pdf-to-word">PDF to Word</a>
-    </div>
-
-  </div>
-
-</div>
-
-<!-- SIMPLE LINKS -->
-<a href="/compress-pdf">Compress</a>
-<a href="/merge-pdf">Merge</a>
-
-<!-- ALL TOOLS DROPDOWN -->
-<div class="nav-item dropdown">
-
+      <div class="nav-item dropdown">
   <span class="nav-link">All Tools ▾</span>
 
-  <div class="mega-menu large">
+  <div class="dropdown-menu">
 
-    <div class="mega-column">
-      <h4>Organize</h4>
-      <a href="/merge-pdf">Merge PDF</a>
-      <a href="/split-pdf">Split PDF</a>
-    </div>
+    <a href="/image-to-pdf">JPG to PDF</a>
+    <a href="/pdf-to-jpg">PDF to JPG</a>
+    <a href="/pdf-to-word">PDF to Word</a>
+    <a href="/pdf-to-png">PDF to PNG</a>
 
-    <div class="mega-column">
-      <h4>Optimize</h4>
-      <a href="/compress-pdf">Compress PDF</a>
-    </div>
+    <a href="/compress-pdf">Compress PDF</a>
+    <a href="/pdf-compressor">PDF Compressor</a>
 
-    <div class="mega-column">
-      <h4>Convert</h4>
-      <a href="/image-to-pdf">JPG to PDF</a>
-      <a href="/pdf-to-jpg">PDF to JPG</a>
-    </div>
+    <a href="/merge-pdf">Merge PDF</a>
+    <a href="/split-pdf">Split PDF</a>
+
+    <a href="/image-resizer">Image Resizer</a>
 
   </div>
-
 </div>
 
-</nav>
-</div>
+    </nav>
+  </div>
 
-<div class="nav-right">
-<input class="nav-search" placeholder="Search tools…" />
+  <div class="nav-right">
+    <input class="nav-search" placeholder="Search tools…" />
 
+    <a href="/login" id="loginBtn" class="nav-login">Login</a>
+    <a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
+    <button id="logoutBtn" class="nav-logout" style="display:none">Logout</button>
 
-<a href="/login" id="loginBtn" class="nav-login">Login</a>
-<a href="/register" id="signupBtn" class="nav-signup">Sign up</a>
-<button id="logoutBtn" class="nav-logout" style="display:none">Logout</button>
-
-<div class="app-launcher">
-
+    <div class="app-launcher">
       <button id="dotsBtn" class="dots-btn">⋮⋮</button>
 
       <div id="launcherMenu" class="launcher-menu">
 
         <div class="menu-section-title">Tools</div>
-
-        <a href="/image-to-pdf">Convert</a>
-<a href="/compress-pdf">Compress</a>
-<a href="/merge-pdf">Merge</a>
+        <a href="/tools">All Tools</a>
 
         <div class="menu-divider"></div>
 
         <div class="menu-section-title">Account</div>
-
         <a href="/login" id="menuLogin">Login</a>
         <a href="/register" id="menuSignup">Sign up</a>
         <a href="#" id="menuLogout" style="display:none">Logout</a>
 
       </div>
+    </div>
 
-</div>
+  </div>
 </header>
 
 
@@ -527,153 +503,7 @@ We continuously improve our platform by adding new tools, enhancing performance,
   </div>
 
 </footer>
-<!-- ================= SCRIPT ================= -->
-
-<!-- <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* =========================
-     AUTH UI CONTROLLER
-  ========================== */
-
-  const token = localStorage.getItem("token");
-
-  const loginBtn = document.getElementById("loginBtn");
-  const signupBtn = document.getElementById("signupBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-
-  const menuLogin = document.getElementById("menuLogin");
-  const menuSignup = document.getElementById("menuSignup");
-  const menuLogout = document.getElementById("menuLogout");
-
-  function updateAuthUI() {
-
-    if (token) {
-
-      loginBtn && (loginBtn.style.display = "none");
-      signupBtn && (signupBtn.style.display = "none");
-      logoutBtn && (logoutBtn.style.display = "inline-block");
-
-      menuLogin && (menuLogin.style.display = "none");
-      menuSignup && (menuSignup.style.display = "none");
-      menuLogout && (menuLogout.style.display = "block");
-
-    } else {
-
-      loginBtn && (loginBtn.style.display = "inline-block");
-      signupBtn && (signupBtn.style.display = "inline-block");
-      logoutBtn && (logoutBtn.style.display = "none");
-
-      menuLogin && (menuLogin.style.display = "block");
-      menuSignup && (menuSignup.style.display = "block");
-      menuLogout && (menuLogout.style.display = "none");
-    }
-  }
-
-  updateAuthUI();
-
-  function logout(e) {
-    e?.preventDefault();
-    localStorage.removeItem("token");
-    window.location.reload();
-  }
-
-  logoutBtn && logoutBtn.addEventListener("click", logout);
-  menuLogout && menuLogout.addEventListener("click", logout);
-
-
-  /* =========================
-     TOOL SEARCH
-  ========================== */
-
-  const toolSearch = document.getElementById("toolSearch");
-  const navSearch = document.querySelector(".nav-search");
-  const cards = document.querySelectorAll(".tool-card");
-
-  function filterCards(value) {
-
-  const words = value
-    .toLowerCase()
-    .trim()
-    .split(" ")
-    .filter(w => w.length > 0);
-
-  cards.forEach(card => {
-
-    const name = (card.dataset.name || "").toLowerCase();
-
-    const match = words.every(word =>
-      name.includes(word)
-    );
-
-    card.style.display = match ? "block" : "none";
-
-  });
-
-}
-
-
-  toolSearch?.addEventListener("input", e =>
-    filterCards(e.target.value)
-  );
-
-  navSearch?.addEventListener("input", e =>
-    filterCards(e.target.value)
-  );
-
-
-  /* =========================
-     CATEGORY FILTER
-  ========================== */
-
-  const tabs = document.querySelectorAll(".tab-btn");
-
-  tabs.forEach(tab => {
-
-    tab.addEventListener("click", () => {
-
-      tabs.forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-
-      const filter = tab.dataset.filter;
-
-      cards.forEach(card => {
-
-        const cat = card.dataset.category || "";
-
-        card.style.display =
-          filter === "all" || cat === filter
-            ? "block"
-            : "none";
-      });
-    });
-  });
-
-
-  /* =========================
-     APP LAUNCHER
-  ========================== */
-
-  const dotsBtn = document.getElementById("dotsBtn");
-  const launcherMenu = document.getElementById("launcherMenu");
-
-  dotsBtn?.addEventListener("click", e => {
-
-    e.stopPropagation();
-
-    launcherMenu.style.display =
-      launcherMenu.style.display === "block"
-        ? "none"
-        : "block";
-  });
-
-  document.addEventListener("click", () => {
-
-    launcherMenu.style.display = "none";
-  });
-
-});
-</script> -->
+<!-- </script> --> 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
