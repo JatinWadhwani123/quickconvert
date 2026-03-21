@@ -6,6 +6,7 @@
      crossorigin="anonymous"></script>
 
      
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P0J95EMTB3"></script>
 <script>
@@ -145,122 +146,111 @@
 </header>
 
 
+<!-- HERO -->
 <section class="dashboard-hero">
-<h1>Free Online PDF & Image Converter Tools</h1>
-<p>Convert, compress, merge, split and resize PDF and image files instantly — secure, browser-based, and lightning fast.</p>
-<div class="hero-badges">
-<span>⚡ Fast processing</span>
-<span>🔒 Secure uploads</span>
-<span>🌍 Works anywhere</span>
-</div>
+  <h1>Free Online PDF & Image Tools</h1>
+  <p>Convert, compress, merge and edit files instantly — fast, secure and browser-based.</p>
 
-<div class="search-bar">
-<input id="toolSearch" placeholder="Search tools…">
+  <div class="hero-badges">
+    <span>⚡ Fast</span>
+    <span>🔒 Secure</span>
+    <span>🌍 Works anywhere</span>
+  </div>
+
+  <div class="search-bar">
+    <input id="toolSearch" placeholder="Search PDF or image tools…">
+  </div>
+</section>
+
+<!-- 🔥 TOOL SECTION (FIXED GRID + CLEAN) -->
+<section class="tool-section">
+
+  <h2 class="section-title">All Tools</h2>
+
+  <div class="tool-grid">
+
+  <a href="/image-to-pdf" class="tool-card">
+    <div class="tool-icon"><i data-lucide="image"></i></div>
+    <h3>Image → PDF</h3>
+    <p>Convert images into PDF files instantly.</p>
+  </a>
+
+  <a href="/compress-pdf" class="tool-card">
+    <div class="tool-icon"><i data-lucide="minimize-2"></i></div>
+    <h3>Image Compressor</h3>
+    <p>Reduce image size while keeping quality.</p>
+  </a>
+
+  <a href="/merge-pdf" class="tool-card">
+    <div class="tool-icon"><i data-lucide="files"></i></div>
+    <h3>PDF Merger</h3>
+    <p>Combine multiple PDFs into one.</p>
+  </a>
+
+  <a href="/split-pdf" class="tool-card">
+    <div class="tool-icon"><i data-lucide="scissors"></i></div>
+    <h3>PDF Splitter</h3>
+    <p>Split or extract PDF pages easily.</p>
+  </a>
+
+  <a href="/pdf-to-jpg" class="tool-card">
+    <div class="tool-icon"><i data-lucide="file-image"></i></div>
+    <h3>PDF → JPG</h3>
+    <p>Convert PDF pages into images.</p>
+  </a>
+
+  <a href="/pdf-to-word" class="tool-card">
+    <div class="tool-icon"><i data-lucide="file-text"></i></div>
+    <h3>PDF → Word</h3>
+    <p>Convert PDF into editable Word.</p>
+  </a>
+
+  <a href="/pdf-compressor" class="tool-card">
+    <div class="tool-icon"><i data-lucide="archive"></i></div>
+    <h3>PDF Compressor</h3>
+    <p>Reduce PDF size instantly.</p>
+  </a>
+
+  <a href="/pdf-to-png" class="tool-card">
+    <div class="tool-icon"><i data-lucide="image"></i></div>
+    <h3>PDF → PNG</h3>
+    <p>Convert PDF into PNG images.</p>
+  </a>
+
+  <a href="/image-resizer" class="tool-card">
+    <div class="tool-icon"><i data-lucide="maximize-2"></i></div>
+    <h3>Image Resizer</h3>
+    <p>Resize images easily.</p>
+  </a>
+
 </div>
 </section>
 
-<section class="tool-grid">
 
-<a href="/image-to-pdf"
+<!-- 🔥 TRUST SECTION (VERY IMPORTANT FOR MONEY) -->
+<section class="trust-section">
 
-   class="tool-card convert"
-   data-name="image pdf convert"
-   data-category="convert">
+  <h2>Why choose QuickConvert?</h2>
 
-<h3>Image → PDF</h3>
-<p>Convert images into professional PDF files instantly.</p>
+  <div class="trust-grid">
 
-</a>
+    <div class="trust-item">
+      <h3>🔒 Secure</h3>
+      <p>Files are automatically deleted after processing.</p>
+    </div>
 
+    <div class="trust-item">
+      <h3>⚡ Fast</h3>
+      <p>Instant processing in your browser.</p>
+    </div>
 
-<a href="/compress-pdf"
+    <div class="trust-item">
+      <h3>🌍 Anywhere</h3>
+      <p>Works on mobile, tablet, and desktop.</p>
+    </div>
 
-   class="tool-card compress"
-   data-name="compress image reduce size"
-   data-category="compress">
-
-<h3>Image Compressor</h3>
-<p>Reduce image file size while keeping high quality.</p>
-
-</a>
-
-
-<a href="/merge-pdf"
-
-   class="tool-card merge"
-   data-name="merge pdf combine"
-   data-category="merge">
-
-<h3>PDF Merger</h3>
-<p>Combine multiple PDF files into one document.</p>
-
-</a>
-
-<a href="/split-pdf"
-
-   class="tool-card merge"
-   data-name="split pdf extract pages separate"
-   data-category="merge">
-
-<h3>PDF Splitter</h3>
-<p>Split large PDF files or extract specific pages easily.</p>
-
-</a>
-
-<a href="/pdf-to-jpg"
-
-   class="tool-card convert"
-   data-name="pdf to jpg pdf to image convert"
-   data-category="convert">
-
-<h3>PDF → JPG</h3>
-<p>Convert PDF pages into high-quality images instantly.</p>
-
-</a>
-<a href="/pdf-to-word"
-   class="tool-card convert"
-   data-name="pdf to word doc convert"
-   data-category="convert">
-
-<h3>PDF → Word</h3>
-<p>Convert PDF documents into editable Word files instantly.</p>
-
-</a>
-<a href="/pdf-compressor"
-
-   class="tool-card compress"
-   data-name="compress pdf reduce file size"
-   data-category="compress">
-
-<h3>PDF Compressor</h3>
-<p>Reduce PDF file size instantly while keeping quality high.</p>
-
-</a>
-<a href="/pdf-to-png"
-
-   class="tool-card convert"
-   data-name="pdf to png convert image"
-   data-category="convert">
-
-<h3>PDF → PNG</h3>
-<p>Convert PDF pages into high-quality PNG images instantly.</p>
-
-</a>
-<a href="/image-resizer"
-
-   class="tool-card convert"
-   data-name="image resize dimensions change size"
-   data-category="convert">
-
-<h3>Image Resizer</h3>
-<p>Resize images by setting custom width and height instantly.</p>
-
-</a>
-
-
-
+  </div>
 </section>
-
 
 
 <section class="seo-section">
@@ -681,8 +671,14 @@ document.addEventListener("DOMContentLoaded", () => {
   ]
 }
 </script>
-
 <script src="/js/core/app.js"></script>
+<script>
+  window.addEventListener("load", function () {
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  });
+</script>
 
 </body>
 </html>

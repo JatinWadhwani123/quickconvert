@@ -2865,3 +2865,83 @@ padding: 10px 15px !important;
 .footer-links a:hover {
   text-decoration: underline;
 }
+
+.section-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.tool-section {
+  padding: 40px 20px;
+}
+
+.trust-section {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.trust-item {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+/* 🔥 ICON CONTAINER (DEFAULT) */
+.tool-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f3f3;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+}
+
+/* ICON SVG */
+.tool-icon svg {
+  width: 22px;
+  height: 22px;
+  color: #444;
+  transition: color 0.25s ease;
+}
+
+/* 🔥 HOVER EFFECT (ONLY ICON CHANGES) */
+.tool-card:hover .tool-icon {
+  background: #e53935;
+}
+
+.tool-card:hover .tool-icon svg {
+  color: #fff;
+}
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 22px;
+
+  max-width: 1200px;   /* 🔥 increased */
+  margin: 0 auto;
+  padding: 0 20px;     /* 🔥 adds side breathing */
+}
+.tool-card {
+  padding: 20px;
+}
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px; /* 🔥 reduces empty spacing */
+}
+.tool-card p {
+  max-width: 200px;
+  margin: 0 auto;
+}

@@ -63,39 +63,7 @@ app.use(express.json());
 
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-
-        scriptSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "https://accounts.google.com"
-        ],
-
-        styleSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "https://fonts.googleapis.com"
-        ],
-
-        fontSrc: [
-          "'self'",
-          "https://fonts.gstatic.com"
-        ],
-
-        imgSrc: [
-          "'self'",
-          "data:",
-          "https://developers.google.com"
-        ],
-
-        connectSrc: [
-          "'self'",
-          "https://accounts.google.com"
-        ]
-      }
-    }
+    contentSecurityPolicy: false
   })
 );
 
