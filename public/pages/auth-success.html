@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Logging in...</title>
+  <title>Login Success</title>
 </head>
 <body>
 
+<h2>Logging you in...</h2>
+
 <script>
-const params = new URLSearchParams(window.location.search);
-const token = params.get("token");
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
 
-if (token) {
-  localStorage.setItem("token", token);
-}
+  if (token) {
+    localStorage.setItem("token", token);
 
-// IMPORTANT: FORCE CLEAN REDIRECT
-window.location.href = "/";
+    // redirect to homepage
+    window.location.href = "/";
+  } else {
+    document.body.innerHTML = "<h2>Login failed</h2>";
+  }
 </script>
 
 </body>
