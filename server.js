@@ -147,8 +147,8 @@ app.get("/image-resizer", (req, res) =>
 
 app.get("/auth/google",
   passport.authenticate("google", {
-    scope: ["profile", "email"], // ✅ keep email
-    prompt: "select_account"     // ✅ helps fix missing email
+    scope: ["profile", "email"],
+    prompt: "select_account"
   })
 );
 
@@ -157,20 +157,21 @@ app.get('/auth/google/callback',
   (req, res) => {
 
     try {
-      console.log("USER:", req.user);
+      console.log("FULL USER OBJECT:", JSON.stringify(req.user, null, 2));
 
       if (!req.user) {
         return res.redirect("/login");
       }
 
-      // ✅ SAFE EMAIL EXTRACTION
-      const email =
-        req.user.emails && req.user.emails.length > 0
-          ? req.user.emails[0].value
-          : null;
+      // ✅ SAFE EXTRACTION (NO CRASH)
+      let email = null;
+
+      if (req.user.emails && req.user.emails.length > 0) {
+        email = req.user.emails[0].value;
+      }
 
       if (!email) {
-        console.log("No email found");
+        console.log("❌ Email missing from Google profile");
         return res.redirect("/login");
       }
 
@@ -180,15 +181,16 @@ app.get('/auth/google/callback',
         { expiresIn: "7d" }
       );
 
+      console.log("✅ TOKEN CREATED");
+
       res.redirect(`/auth-success?token=${token}`);
 
     } catch (err) {
-      console.error("GOOGLE CALLBACK ERROR:", err);
-      res.status(500).send("Google Login Failed");
+      console.error("🔥 GOOGLE CALLBACK ERROR:", err);
+      res.status(500).send("Internal Server Error");
     }
   }
 );
-
 
 /* ================= IMAGE → PDF ================= */
 
