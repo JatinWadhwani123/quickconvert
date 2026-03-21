@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Logging in...</title>
+</head>
+<body>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+
+if (token) {
+  localStorage.setItem("token", token);
+}
+
+// IMPORTANT: FORCE CLEAN REDIRECT
+window.location.href = "/";
+</script>
+
+</body>
+</html>

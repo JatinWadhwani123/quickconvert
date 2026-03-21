@@ -529,7 +529,7 @@ We continuously improve our platform by adding new tools, enhancing performance,
 </footer>
 <!-- ================= SCRIPT ================= -->
 
-<script>
+<!-- <script>
 document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================
@@ -673,8 +673,158 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
-</script>
+</script> -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
+  /* =========================
+     AUTH UI CONTROLLER (FIXED)
+  ========================== */
+
+  function updateAuthUI() {
+
+    const token = localStorage.getItem("token"); // ✅ FIXED (inside function)
+
+    const loginBtn = document.getElementById("loginBtn");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const menuLogin = document.getElementById("menuLogin");
+    const menuSignup = document.getElementById("menuSignup");
+    const menuLogout = document.getElementById("menuLogout");
+
+    if (token) {
+
+      loginBtn && (loginBtn.style.display = "none");
+      signupBtn && (signupBtn.style.display = "none");
+      logoutBtn && (logoutBtn.style.display = "inline-block");
+
+      menuLogin && (menuLogin.style.display = "none");
+      menuSignup && (menuSignup.style.display = "none");
+      menuLogout && (menuLogout.style.display = "block");
+
+    } else {
+
+      loginBtn && (loginBtn.style.display = "inline-block");
+      signupBtn && (signupBtn.style.display = "inline-block");
+      logoutBtn && (logoutBtn.style.display = "none");
+
+      menuLogin && (menuLogin.style.display = "block");
+      menuSignup && (menuSignup.style.display = "block");
+      menuLogout && (menuLogout.style.display = "none");
+    }
+  }
+
+  // ✅ RUN IMMEDIATELY
+  updateAuthUI();
+
+  // ✅ RUN AGAIN (fix Google redirect delay)
+  setTimeout(updateAuthUI, 300);
+
+  function logout(e) {
+    e?.preventDefault();
+    localStorage.removeItem("token");
+    window.location.reload();
+  }
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  const menuLogout = document.getElementById("menuLogout");
+
+  logoutBtn && logoutBtn.addEventListener("click", logout);
+  menuLogout && menuLogout.addEventListener("click", logout);
+
+
+  /* =========================
+     TOOL SEARCH
+  ========================== */
+
+  const toolSearch = document.getElementById("toolSearch");
+  const navSearch = document.querySelector(".nav-search");
+  const cards = document.querySelectorAll(".tool-card");
+
+  function filterCards(value) {
+
+    const words = value
+      .toLowerCase()
+      .trim()
+      .split(" ")
+      .filter(w => w.length > 0);
+
+    cards.forEach(card => {
+
+      const name = (card.dataset.name || "").toLowerCase();
+
+      const match = words.every(word =>
+        name.includes(word)
+      );
+
+      card.style.display = match ? "block" : "none";
+
+    });
+
+  }
+
+  toolSearch?.addEventListener("input", e =>
+    filterCards(e.target.value)
+  );
+
+  navSearch?.addEventListener("input", e =>
+    filterCards(e.target.value)
+  );
+
+
+  /* =========================
+     CATEGORY FILTER
+  ========================== */
+
+  const tabs = document.querySelectorAll(".tab-btn");
+
+  tabs.forEach(tab => {
+
+    tab.addEventListener("click", () => {
+
+      tabs.forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+
+      const filter = tab.dataset.filter;
+
+      cards.forEach(card => {
+
+        const cat = card.dataset.category || "";
+
+        card.style.display =
+          filter === "all" || cat === filter
+            ? "block"
+            : "none";
+      });
+    });
+  });
+
+
+  /* =========================
+     APP LAUNCHER
+  ========================== */
+
+  const dotsBtn = document.getElementById("dotsBtn");
+  const launcherMenu = document.getElementById("launcherMenu");
+
+  dotsBtn?.addEventListener("click", e => {
+
+    e.stopPropagation();
+
+    launcherMenu.style.display =
+      launcherMenu.style.display === "block"
+        ? "none"
+        : "block";
+  });
+
+  document.addEventListener("click", () => {
+
+    launcherMenu.style.display = "none";
+  });
+
+});
+</script>
 
 
 <script type="application/ld+json">

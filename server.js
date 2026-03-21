@@ -7,7 +7,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const authRoutes = require("./routes/auth");
-const session = require("express-session");
 const passport = require("./config/passport");
 
 
@@ -69,14 +68,9 @@ app.use("/api/reset", resetRoutes);
 const contactRoutes = require("./routes/contact");
 app.use("/api/contact", contactRoutes);
 app.use("/api", authRoutes);
-app.use(session({
-  secret: "secret123",
-  resave: false,
-  saveUninitialized: true
-}));
+app.set("trust proxy", 1); // ✅ VERY IMPORTANT FOR RENDER
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 
 
@@ -155,28 +149,23 @@ app.get("/auth/google",
   passport.authenticate("google", { scope: ["profile","email"] })
 );
 
-app.get("/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    res.redirect("/");
-  }
-);
 
-/* FACEBOOK LOGIN */
-app.get('/auth/facebook',
-  passport.authenticate('facebook', { scope: ['email'] })
-);
+    console.log("USER:", req.user); // 👈 check this
 
-app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', {
-    session: false,
-    failureRedirect: '/login'
-  }),
-  (req, res) => {
-    console.log("USER:", req.user);
+    if (!req.user) {
+      return res.redirect("/login");
+    }
 
-    // TEMP redirect
-    res.redirect('/login');
+    const token = jwt.sign(
+      { email: req.user.emails[0].value },
+      process.env.JWT_SECRET || "secret123",
+      { expiresIn: "7d" }
+    );
+
+    res.redirect(`/auth-success?token=${token}`);
   }
 );
 
