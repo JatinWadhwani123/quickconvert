@@ -164,6 +164,16 @@
     <input id="toolSearch" placeholder="Search PDF or image tools…">
   </div>
 </section>
+<section id="profileSection" style="display:none; padding:50px 20px; text-align:center;">
+
+  <h2>Welcome Back 👋</h2>
+  <p id="userEmail">You are logged in</p>
+
+  <div style="margin-top:20px;">
+    <button onclick="logout()" class="nav-signup">Logout</button>
+  </div>
+
+</section>
 
 <!-- 🔥 TOOL SECTION (FIXED GRID + CLEAN) -->
 <section class="tool-section">
@@ -495,6 +505,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateAuthUI() {
 
+    const profileBtn = document.getElementById("profileBtn");
+const profileSection = document.getElementById("profileSection");
+
     const token = localStorage.getItem("token"); // ✅ FIXED (inside function)
 
     const loginBtn = document.getElementById("loginBtn");
@@ -504,8 +517,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const menuLogin = document.getElementById("menuLogin");
     const menuSignup = document.getElementById("menuSignup");
     const menuLogout = document.getElementById("menuLogout");
+    const userEmail = document.getElementById("userEmail");
+
+if (token && userEmail) {
+  userEmail.textContent = "Logged in successfully ✔";
+}
 
     if (token) {
+      profileBtn && (profileBtn.style.display = "inline-block");
+profileSection && (profileSection.style.display = "block");
 
       loginBtn && (loginBtn.style.display = "none");
       signupBtn && (signupBtn.style.display = "none");
@@ -516,7 +536,8 @@ document.addEventListener("DOMContentLoaded", () => {
       menuLogout && (menuLogout.style.display = "block");
 
     } else {
-
+      profileBtn && (profileBtn.style.display = "none");
+profileSection && (profileSection.style.display = "none");
       loginBtn && (loginBtn.style.display = "inline-block");
       signupBtn && (signupBtn.style.display = "inline-block");
       logoutBtn && (logoutBtn.style.display = "none");
@@ -640,6 +661,14 @@ document.addEventListener("DOMContentLoaded", () => {
     launcherMenu.style.display = "none";
   });
 
+
+  const profileBtn = document.getElementById("profileBtn");
+
+profileBtn?.addEventListener("click", () => {
+  document.getElementById("profileSection").scrollIntoView({
+    behavior: "smooth"
+  });
+});
 });
 </script>
 
