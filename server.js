@@ -179,6 +179,10 @@ app.get('/auth/google/callback',
   }
 );
 
+app.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages/dashboard.html"));
+});
+
 /* ================= IMAGE → PDF ================= */
 
 app.post("/convert", upload.single("file"), async (req, res) => {
