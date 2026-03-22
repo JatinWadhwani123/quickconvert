@@ -101,6 +101,37 @@ button {
 button:hover {
   background: #e63c3c;
 }
+/* TOPBAR */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 260px;
+  right: 0;
+  height: 60px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  border-bottom: 1px solid #eee;
+  z-index: 1000;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.nav-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #333;
+}
+
+.main {
+  margin-top: 60px; /* 🔥 IMPORTANT */
+}
 
 </style>
 </head>
@@ -123,7 +154,22 @@ button:hover {
   <a href="#" onclick="showSection('plans')" id="linkPlans">Plans</a>
 
 </div>
+<!-- TOP NAVBAR -->
+<div class="topbar">
 
+  <div class="logo" onclick="goHome()">
+    QuickConvert
+  </div>
+
+  <div class="nav-links">
+    <a href="/">All Tools</a>
+  </div>
+
+  <div class="user-box">
+    👤 <span id="userEmail2">Loading...</span>
+  </div>
+
+</div>
 <!-- MAIN -->
 <div class="main">
 
@@ -300,6 +346,9 @@ function showSection(section) {
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+function goHome() {
+  window.location.href = "/";
 }
 
 lucide.createIcons();
