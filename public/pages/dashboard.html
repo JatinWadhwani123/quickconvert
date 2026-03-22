@@ -407,26 +407,6 @@ async function changePassword() {
     msg.textContent = err.message || "Failed ❌";
   }
 }
-
-/* FAKE 2FA (UI ONLY FOR NOW) */
-let twoFAEnabled = false;
-
-function toggle2FA() {
-  twoFAEnabled = !twoFAEnabled;
-
-  const btn = document.getElementById("twofaBtn");
-  const msg = document.getElementById("twofaMsg");
-
-  if (twoFAEnabled) {
-    btn.textContent = "Disable 2FA";
-    msg.textContent = "2FA Enabled 🔐";
-    msg.style.color = "green";
-  } else {
-    btn.textContent = "Enable 2FA";
-    msg.textContent = "2FA Disabled";
-    msg.style.color = "gray";
-  }
-}
 lucide.createIcons();
 
 </script>
