@@ -3053,3 +3053,87 @@ padding: 10px 15px !important;
 .faq-item {
   border-bottom: 1px solid rgba(255,255,255,0.2); /* 🔥 subtle */
 }
+/* ===============================
+   GLOBAL WIDTH FIX (IMPORTANT)
+=============================== */
+
+/* All main sections center aligned */
+.section-center {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+/* Fix Latest Guides section */
+.guides-section {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+/* Fix heading alignment */
+.guides-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Fix list alignment */
+.guides-section ul {
+  text-align: left;
+}
+
+/* ===============================
+   FORCE CONSISTENT PAGE WIDTH
+=============================== */
+
+/* Prevent random full-width sections */
+section {
+  width: 100%;
+}
+
+/* Fix text sections (SEO, guides, etc.) */
+.seo-section,
+.intro-section,
+.tool-info {
+  max-width: 900px !important;
+  margin: 60px auto !important;
+  padding: 0 20px;
+}
+
+/* ===============================
+   TOOL GRID FINAL FIX (DON'T TOUCH ABOVE)
+=============================== */
+
+.tool-grid {
+  max-width: 1100px !important;
+  margin: 0 auto !important;
+}
+
+/* ===============================
+   REMOVE LEFT SHIFT BUG
+=============================== */
+
+/* Some elements may be inheriting wrong margin */
+body > section {
+  margin-left: auto;
+  margin-right: auto;
+}
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* ✅ 4 columns */
+  gap: 25px;
+  max-width: 1100px;
+  margin: 0 auto;
+}/* Tablet */
+@media (max-width: 992px) {
+  .tool-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .tool-grid {
+    grid-template-columns: 1fr;
+  }
+}
