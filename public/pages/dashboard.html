@@ -240,11 +240,35 @@ button:hover {
 
     <!-- SECURITY -->
     <div id="securitySection" class="section">
-      <h1>Security</h1>
-      <div class="card">
-        <p>Password & 2FA settings</p>
-      </div>
-    </div>
+
+  <h1>Security</h1>
+
+  <!-- CHANGE PASSWORD -->
+  <div class="card">
+    <h3>Change Password</h3>
+
+    <label>Current Password</label>
+    <input type="password" id="currentPassword" style="width:100%;padding:10px;margin:10px 0;">
+
+    <label>New Password</label>
+    <input type="password" id="newPassword" style="width:100%;padding:10px;margin:10px 0;">
+
+    <button onclick="changePassword()">Update Password</button>
+
+    <p id="passwordMsg" style="margin-top:10px;"></p>
+  </div>
+
+  <!-- 2FA -->
+  <div class="card">
+    <h3>Two-Factor Authentication</h3>
+    <p>Add extra security to your account</p>
+
+    <button onclick="toggle2FA()" id="twofaBtn">Enable 2FA</button>
+
+    <p id="twofaMsg" style="margin-top:10px;"></p>
+  </div>
+
+</div>
 
     <!-- TEAMS -->
     <div id="teamsSection" class="section">
@@ -354,7 +378,55 @@ function showSection(section) {
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+/* CHANGE PASSWORD */
+async function changePassword() {
+  const currentPassword = document.getElementById("currentPassword").value;
+  const newPassword = document.getElementById("newPassword").value;
 
+  const msg = document.getElementById("passwordMsg");
+
+  try {
+    const res = await fetch("/api/auth/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message);
+
+    msg.style.color = "green";
+    msg.textContent = "Password updated successfully ✅";
+
+  } catch (err) {
+    msg.style.color = "red";
+    msg.textContent = err.message || "Failed ❌";
+  }
+}
+
+/* FAKE 2FA (UI ONLY FOR NOW) */
+let twoFAEnabled = false;
+
+function toggle2FA() {
+  twoFAEnabled = !twoFAEnabled;
+
+  const btn = document.getElementById("twofaBtn");
+  const msg = document.getElementById("twofaMsg");
+
+  if (twoFAEnabled) {
+    btn.textContent = "Disable 2FA";
+    msg.textContent = "2FA Enabled 🔐";
+    msg.style.color = "green";
+  } else {
+    btn.textContent = "Enable 2FA";
+    msg.textContent = "2FA Disabled";
+    msg.style.color = "gray";
+  }
+}
 lucide.createIcons();
 
 </script>
