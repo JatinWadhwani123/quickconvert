@@ -34,7 +34,9 @@
     "pdf-parse": "^1.1.1",
     "pdf-poppler": "^0.2.3",
     "pdfjs-dist": "^3.11.174",
+    "qrcode": "^1.5.4",
     "resend": "^6.9.2",
-    "sharp": "^0.34.5"
+    "sharp": "^0.34.5",
+    "speakeasy": "^2.0.0"
   }
 }
