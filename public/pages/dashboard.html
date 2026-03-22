@@ -53,6 +53,11 @@ body {
   margin-bottom: 20px;
 }
 
+.sidebar a.active {
+  background: #ff4d4d;
+  color: white;
+}
+
 </style>
 </head>
 
@@ -63,33 +68,82 @@ body {
 
   <h3>My Account</h3>
 
-  <a href="#">Profile</a>
-  <a href="#">Security</a>
-  <a href="#">Teams</a>
+  <a href="#" onclick="showSection('profile')" id="linkProfile" class="active">Profile</a>
+<a href="#" onclick="showSection('security')" id="linkSecurity">Security</a>
+<a href="#" onclick="showSection('teams')" id="linkTeams">Teams</a>
 
   <h3>Settings</h3>
 
-  <a href="#">Tools</a>
-  <a href="#">Workflows</a>
+  <a href="#" onclick="showSection('tools')" id="linkTools">Tools</a>
+<a href="#" onclick="showSection('workflows')" id="linkWorkflows">Workflows</a>
 
   <h3>Billing</h3>
 
-  <a href="#">Plans</a>
+<a href="#" onclick="showSection('plans')" id="linkPlans">Plans</a>
 
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-  <h1>Profile</h1>
+  <!-- PROFILE -->
+  <div id="profileSection" class="section">
+    <h1>Profile</h1>
 
-  <div class="card">
-    <h3>User Info</h3>
-    <p id="userEmail">Loading...</p>
+    <div class="card">
+      <h3>User Info</h3>
+      <p id="userEmail">Loading...</p>
+    </div>
   </div>
 
+  <!-- SECURITY -->
+  <div id="securitySection" class="section" style="display:none;">
+    <h1>Security</h1>
+
+    <div class="card">
+      <h3>Password</h3>
+      <p>Create or update your password</p>
+    </div>
+  </div>
+
+  <!-- TEAMS -->
+  <div id="teamsSection" class="section" style="display:none;">
+    <h1>Teams</h1>
+
+    <div class="card">
+      <p>Create and manage teams</p>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <div id="toolsSection" class="section" style="display:none;">
+    <h1>Tools Settings</h1>
+
+    <div class="card">
+      <p>Tool preferences here</p>
+    </div>
+  </div>
+
+  <!-- WORKFLOWS -->
+  <div id="workflowsSection" class="section" style="display:none;">
+    <h1>Workflows</h1>
+
+    <div class="card">
+      <p>Create workflows</p>
+    </div>
+  </div>
+
+  <!-- PLANS -->
+  <div id="plansSection" class="section" style="display:none;">
+    <h1>Plans</h1>
+
+    <div class="card">
+      <p>Upgrade to premium</p>
+    </div>
+  </div>
+
+  <!-- LOGOUT -->
   <div class="card">
-    <h3>Actions</h3>
     <button onclick="logout()">Logout</button>
   </div>
 
@@ -110,7 +164,28 @@ function logout() {
   localStorage.removeItem("token");
   window.location.href = "/";
 }
+function showSection(section) {
 
+  // hide all
+  document.querySelectorAll(".section").forEach(s => {
+    s.style.display = "none";
+  });
+
+  // remove active
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    link.classList.remove("active");
+  });
+
+  // show selected
+  document.getElementById(section + "Section").style.display = "block";
+
+  // activate link
+  document.getElementById("link" + capitalize(section)).classList.add("active");
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 </script>
 
 <script>
