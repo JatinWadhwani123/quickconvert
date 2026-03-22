@@ -110,18 +110,37 @@ body {
 
   <!-- PROFILE -->
   <div id="profileSection" class="section">
-    <h1>Profile</h1>
 
-    <div class="card">
-      <h3>User Info</h3>
-      <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
+  <h1>My Account</h1>
+
+  <div style="display:flex; gap:20px; flex-wrap:wrap;">
+
+    <!-- LEFT CARD -->
+    <div class="card" style="flex:1; min-width:300px;">
+      <h3>Profile</h3>
+      <p><b>Email:</b> <span id="userEmail">Loading...</span></p>
+      <p><b>Status:</b> Registered</p>
+      <button style="margin-top:10px;">Edit Profile</button>
     </div>
 
-    <div class="card">
-      <h3>Quick Actions</h3>
-      <button onclick="logout()">Logout</button>
+    <!-- RIGHT CARD -->
+    <div class="card" style="flex:1; min-width:300px;">
+      <h3>Social Links</h3>
+      <p>This element is not interactive but shows connected accounts.</p>
+      <p>Google: Connected</p>
+      <button>Manage</button>
     </div>
+
   </div>
+
+  <!-- EMAIL CARD -->
+  <div class="card">
+    <h3>Email</h3>
+    <p>Current email: <span id="userEmail2">Loading...</span></p>
+    <button>Change Email</button>
+  </div>
+
+</div>
 
   <!-- SECURITY -->
   <div id="securitySection" class="section" style="display:none;">
@@ -204,7 +223,7 @@ async function loadUser() {
     if (!res.ok) throw new Error();
 
     document.getElementById("userEmail").textContent = data.email;
-
+    document.getElementById("userEmail2").textContent = data.email;
   } catch (err) {
     localStorage.removeItem("token");
     window.location.href = "/login";
