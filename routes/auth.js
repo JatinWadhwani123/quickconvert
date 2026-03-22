@@ -118,4 +118,21 @@ router.get("/me", async (req, res) => {
     res.status(401).json({ msg: "Unauthorized" });
   }
 });
+router.put("/update", authMiddleware, async (req, res) => {
+  try {
+
+    const user = await User.findById(req.user.id);
+
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    user.name = req.body.name || user.name;
+
+    await user.save();
+
+    res.json({ msg: "Profile updated" });
+
+  } catch (err) {
+    res.status(500).json({ msg: "Server error" });
+  }
+});
 module.exports = router;

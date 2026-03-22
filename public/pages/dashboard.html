@@ -138,18 +138,24 @@ button:hover {
 
   <!-- PROFILE -->
   <div id="profileSection" class="section">
-    <h1>Profile</h1>
 
-    <div class="card">
-      <h3>User Info</h3>
-      <p>Email: <span id="userEmail">Loading...</span></p>
-    </div>
+  <h1>Profile</h1>
 
-    <div class="card">
-      <h3>Account Info</h3>
-      <p>This is your personal dashboard.</p>
-    </div>
+  <div class="card">
+    <h3>User Info</h3>
+
+    <label>Full Name</label><br>
+    <input type="text" id="userName" placeholder="Enter name" style="width:100%;padding:10px;margin:10px 0;"><br>
+
+    <label>Email</label><br>
+    <input type="text" id="userEmail" disabled style="width:100%;padding:10px;margin:10px 0;"><br>
+
+    <button onclick="updateProfile()">Update Profile</button>
+
+    <p id="updateMsg" style="color:green;margin-top:10px;"></p>
   </div>
+
+</div>
 
   <!-- SECURITY -->
   <div id="securitySection" class="section">
@@ -234,17 +240,43 @@ async function loadUser() {
 
     if (!res.ok) throw new Error();
 
-    document.getElementById("userEmail").textContent = data.email;
+    document.getElementById("userEmail").value = data.email;
     document.getElementById("userEmail2").textContent = data.email;
+
+    document.getElementById("userName").value = data.name || "";
 
   } catch (err) {
     localStorage.removeItem("token");
     window.location.href = "/login";
   }
 }
-
 loadUser();
+async function updateProfile() {
 
+  const name = document.getElementById("userName").value;
+
+  try {
+
+    const res = await fetch("/api/auth/update", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ name })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error();
+
+    document.getElementById("updateMsg").textContent = "Profile updated successfully ✅";
+
+  } catch (err) {
+    alert("Update failed ❌");
+  }
+
+}
 /* LOGOUT */
 function logout() {
   localStorage.removeItem("token");
