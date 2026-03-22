@@ -88,13 +88,46 @@ body {
 
   <!-- PROFILE -->
   <div id="profileSection" class="section">
-    <h1>Profile</h1>
 
-    <div class="card">
-      <h3>User Info</h3>
+  <h1>My Account</h1>
+
+  <!-- TOP CARDS -->
+  <div style="display:flex; gap:20px; flex-wrap:wrap;">
+
+    <!-- PROFILE CARD -->
+    <div class="card" style="flex:1; min-width:280px;">
+      <h3>Profile</h3>
+
+      <p><strong>Email:</strong></p>
       <p id="userEmail">Loading...</p>
+
+      <br>
+
+      <button class="primary-btn">Change</button>
     </div>
+
+    <!-- SOCIAL CARD -->
+    <div class="card" style="flex:1; min-width:280px;">
+      <h3>Social Links</h3>
+
+      <p>This element is not interactive but shows connected accounts.</p>
+
+      <p>Google: Connected ✅</p>
+    </div>
+
   </div>
+
+  <!-- EMAIL CARD -->
+  <div class="card">
+    <h3>Email</h3>
+
+    <p><strong>Current email:</strong></p>
+    <p id="userEmail2">Loading...</p>
+
+    <button class="primary-btn">Change</button>
+  </div>
+
+</div>
 
   <!-- SECURITY -->
   <div id="securitySection" class="section" style="display:none;">
