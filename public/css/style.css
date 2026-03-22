@@ -3137,3 +3137,13 @@ body > section {
     grid-template-columns: 1fr;
   }
 }
+.section {
+  display: none;
+}
+
+#profileSection {
+  display: block;
+}
+.section {
+  display: block !important;
+}
