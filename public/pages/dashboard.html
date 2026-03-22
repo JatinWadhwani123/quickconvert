@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard</title>
+
 <link rel="stylesheet" href="/css/style.css">
 <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -11,6 +12,7 @@
 body {
   display: flex;
   font-family: sans-serif;
+  margin: 0;
 }
 
 /* SIDEBAR */
@@ -22,7 +24,7 @@ body {
 }
 
 .sidebar h3 {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .sidebar a {
@@ -32,16 +34,23 @@ body {
   text-decoration: none;
   color: black;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .sidebar a:hover {
   background: #ddd;
 }
 
+.sidebar a.active {
+  background: #ff4d4d;
+  color: white;
+}
+
 /* MAIN */
 .main {
   flex: 1;
   padding: 40px;
+  background: #fafafa;
 }
 
 /* CARD */
@@ -53,9 +62,25 @@ body {
   margin-bottom: 20px;
 }
 
-.sidebar a.active {
-  background: #ff4d4d;
-  color: white;
+/* TOOL GRID */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.tool {
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.tool:hover {
+  transform: translateY(-5px);
 }
 
 </style>
@@ -67,19 +92,16 @@ body {
 <div class="sidebar">
 
   <h3>My Account</h3>
-
-  <a href="#" onclick="showSection('profile')" id="linkProfile" class="active">Profile</a>
-<a href="#" onclick="showSection('security')" id="linkSecurity">Security</a>
-<a href="#" onclick="showSection('teams')" id="linkTeams">Teams</a>
+  <a onclick="showSection('profile')" id="linkProfile" class="active">Profile</a>
+  <a onclick="showSection('security')" id="linkSecurity">Security</a>
+  <a onclick="showSection('teams')" id="linkTeams">Teams</a>
 
   <h3>Settings</h3>
-
-  <a href="#" onclick="showSection('tools')" id="linkTools">Tools</a>
-<a href="#" onclick="showSection('workflows')" id="linkWorkflows">Workflows</a>
+  <a onclick="showSection('tools')" id="linkTools">Tools</a>
+  <a onclick="showSection('workflows')" id="linkWorkflows">Workflows</a>
 
   <h3>Billing</h3>
-
-<a href="#" onclick="showSection('plans')" id="linkPlans">Plans</a>
+  <a onclick="showSection('plans')" id="linkPlans">Plans</a>
 
 </div>
 
@@ -88,54 +110,26 @@ body {
 
   <!-- PROFILE -->
   <div id="profileSection" class="section">
+    <h1>Profile</h1>
 
-  <h1>My Account</h1>
-
-  <!-- TOP CARDS -->
-  <div style="display:flex; gap:20px; flex-wrap:wrap;">
-
-    <!-- PROFILE CARD -->
-    <div class="card" style="flex:1; min-width:280px;">
-      <h3>Profile</h3>
-
-      <p><strong>Email:</strong></p>
-      <p id="userEmail">Loading...</p>
-
-      <br>
-
-      <button class="primary-btn">Change</button>
+    <div class="card">
+      <h3>User Info</h3>
+      <p><strong>Email:</strong> <span id="userEmail">Loading...</span></p>
     </div>
 
-    <!-- SOCIAL CARD -->
-    <div class="card" style="flex:1; min-width:280px;">
-      <h3>Social Links</h3>
-
-      <p>This element is not interactive but shows connected accounts.</p>
-
-      <p>Google: Connected ✅</p>
+    <div class="card">
+      <h3>Quick Actions</h3>
+      <button onclick="logout()">Logout</button>
     </div>
-
   </div>
-
-  <!-- EMAIL CARD -->
-  <div class="card">
-    <h3>Email</h3>
-
-    <p><strong>Current email:</strong></p>
-    <p id="userEmail2">Loading...</p>
-
-    <button class="primary-btn">Change</button>
-  </div>
-
-</div>
 
   <!-- SECURITY -->
   <div id="securitySection" class="section" style="display:none;">
     <h1>Security</h1>
 
     <div class="card">
-      <h3>Password</h3>
-      <p>Create or update your password</p>
+      <h3>Change Password</h3>
+      <p>This feature will be added soon.</p>
     </div>
   </div>
 
@@ -144,16 +138,20 @@ body {
     <h1>Teams</h1>
 
     <div class="card">
-      <p>Create and manage teams</p>
+      <p>No teams yet.</p>
     </div>
   </div>
 
   <!-- TOOLS -->
   <div id="toolsSection" class="section" style="display:none;">
-    <h1>Tools Settings</h1>
+    <h1>Your Tools</h1>
 
-    <div class="card">
-      <p>Tool preferences here</p>
+    <div class="tool-grid">
+      <div class="tool" onclick="goTool('/image-to-pdf')">Image → PDF</div>
+      <div class="tool" onclick="goTool('/pdf-to-jpg')">PDF → JPG</div>
+      <div class="tool" onclick="goTool('/pdf-to-png')">PDF → PNG</div>
+      <div class="tool" onclick="goTool('/merge-pdf')">Merge PDF</div>
+      <div class="tool" onclick="goTool('/split-pdf')">Split PDF</div>
     </div>
   </div>
 
@@ -162,7 +160,7 @@ body {
     <h1>Workflows</h1>
 
     <div class="card">
-      <p>Create workflows</p>
+      <p>Create automation workflows (coming soon).</p>
     </div>
   </div>
 
@@ -171,30 +169,30 @@ body {
     <h1>Plans</h1>
 
     <div class="card">
-      <p>Upgrade to premium</p>
+      <h3>Free Plan</h3>
+      <p>You are currently using free version.</p>
     </div>
-  </div>
 
-  <!-- LOGOUT -->
-  <div class="card">
-    <button onclick="logout()">Logout</button>
+    <div class="card">
+      <h3>Pro Plan</h3>
+      <p>Upgrade coming soon 🚀</p>
+    </div>
   </div>
 
 </div>
 
 <script>
 
+// ===== AUTH CHECK =====
 const token = localStorage.getItem("token");
 
 if (!token) {
   window.location.href = "/login";
 }
 
-// ✅ LOAD USER FROM BACKEND
+// ===== LOAD USER =====
 async function loadUser() {
-
   try {
-
     const res = await fetch("/api/auth/me", {
       headers: {
         "Authorization": "Bearer " + token
@@ -208,21 +206,20 @@ async function loadUser() {
     document.getElementById("userEmail").textContent = data.email;
 
   } catch (err) {
-
     localStorage.removeItem("token");
     window.location.href = "/login";
-
   }
-
 }
 
 loadUser();
 
+// ===== LOGOUT =====
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "/";
 }
 
+// ===== SWITCH SECTIONS =====
 function showSection(section) {
 
   document.querySelectorAll(".section").forEach(s => {
@@ -239,6 +236,11 @@ function showSection(section) {
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// ===== TOOL NAVIGATION =====
+function goTool(path) {
+  window.location.href = path;
 }
 
 lucide.createIcons();
