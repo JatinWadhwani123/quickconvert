@@ -76,6 +76,7 @@ app.use("/api/reset", resetRoutes);
 const contactRoutes = require("./routes/contact");
 app.use("/api/contact", contactRoutes);
 app.use("/api", authRoutes);
+app.use("/api/auth", require("./routes/auth"));
 app.set("trust proxy", 1); // ✅ VERY IMPORTANT FOR RENDER
 
 app.use(passport.initialize());

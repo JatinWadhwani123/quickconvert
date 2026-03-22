@@ -149,44 +149,62 @@ body {
 
 </div>
 
-<script>
-
 const token = localStorage.getItem("token");
 
 if (!token) {
   window.location.href = "/login";
 }
 
-// fake display
-document.getElementById("userEmail").textContent = "Logged in ✔";
+// ✅ LOAD USER FROM BACKEND
+async function loadUser() {
+
+  try {
+
+    const res = await fetch("/api/auth/me", {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error();
+
+    document.getElementById("userEmail").textContent = data.email;
+
+  } catch (err) {
+
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+
+  }
+
+}
+
+loadUser();
 
 function logout() {
   localStorage.removeItem("token");
   window.location.href = "/";
 }
+
 function showSection(section) {
 
-  // hide all
   document.querySelectorAll(".section").forEach(s => {
     s.style.display = "none";
   });
 
-  // remove active
   document.querySelectorAll(".sidebar a").forEach(link => {
     link.classList.remove("active");
   });
 
-  // show selected
   document.getElementById(section + "Section").style.display = "block";
-
-  // activate link
   document.getElementById("link" + capitalize(section)).classList.add("active");
 }
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-</script>
 
 <script>
 lucide.createIcons();
