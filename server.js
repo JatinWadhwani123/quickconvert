@@ -3,21 +3,28 @@ const helmet = require("helmet");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const authRoutes = require("./routes/auth");
+const path = require("path");
+const fs = require("fs");
+
 const passport = require("./config/passport");
+
+// ROUTES
+const authRoutes = require("./routes/auth");
+const otpRoutes = require("./routes/otp");
+const resetRoutes = require("./routes/reset");
+const contactRoutes = require("./routes/contact");
 const teamRoutes = require("./routes/team");
 
+// LIBS
+const sharp = require("sharp");
+const archiver = require("archiver");
+const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
+const mammoth = require("mammoth");
+const { PDFDocument } = require("pdf-lib");
 
-
-
-
-
-
-
-/* ================= MULTER STORAGE ================= */
+/* ================= MULTER ================= */
 
 const storage = multer.diskStorage({
   destination: "uploads/",
@@ -28,32 +35,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-const sharp = require("sharp");
-const path = require("path");
-const fs = require("fs");
-
-const User = require("./models/user");
-const otpRoutes = require("./routes/otp");
-const resetRoutes = require("./routes/reset");
-
-const { Resend } = require("resend");
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const archiver = require("archiver");
-const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
-const mammoth = require("mammoth");
-const { PDFDocument, StandardFonts } = require("pdf-lib");
-
-class NodeCanvasFactory {
-  create(width, height) {
-    const Canvas = require("canvas");
-    const canvas = Canvas.createCanvas(width, height);
-    const context = canvas.getContext("2d");
-    return { canvas, context };
-  }
-}
-pdfjsLib.NodeCanvasFactory = NodeCanvasFactory;
-
 /* ================= APP ================= */
 
 const app = express();
@@ -62,33 +43,39 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-
-
 app.use(
   helmet({
     contentSecurityPolicy: false
   })
 );
 
+// ✅ IMPORTANT (FIX FOR RENDER)
+app.use(express.static(path.join(__dirname, "public")));
+
+/* ================= DB ================= */
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch(err => console.error("Mongo error:", err));
 
-app.use("/api", otpRoutes);
-app.use("/api/reset", resetRoutes);
-const contactRoutes = require("./routes/contact");
-app.use("/api/contact", contactRoutes);
-app.use("/api", authRoutes);
-app.use("/api/auth", require("./routes/auth"));
-app.set("trust proxy", 1); // ✅ VERY IMPORTANT FOR RENDER
+/* ================= AUTH ================= */
 
 app.use(passport.initialize());
+app.set("trust proxy", 1);
 
-app.use(express.static("public"));
+/* ================= API ROUTES ================= */
+
+app.use("/api", otpRoutes);
+app.use("/api/reset", resetRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api", authRoutes);
 app.use("/api/team", teamRoutes);
 
+/* ================= PAGE ROUTES ================= */
 
-/* ================= ROUTES ================= */
+app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/index.html"))
+);
 
 app.get("/login", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/login.html"))
@@ -98,80 +85,30 @@ app.get("/register", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/register.html"))
 );
 
-app.get("/", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/index.html"))
+app.get("/dashboard", (req, res) =>
+  res.sendFile(path.join(__dirname, "public/pages/dashboard.html"))
 );
 
-app.get("/converter", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/converter.html"))
-);
+// ✅ 🔥 VERY IMPORTANT (YOUR ISSUE FIXED HERE)
+app.get("/pages/join-team.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages/join-team.html"));
+});
 
-app.get("/image-to-pdf", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/image-to-pdf.html"))
-);
-
-app.get("/compress-pdf", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/compress-pdf.html"))
-);
-
-app.get("/merge-pdf", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/merge-pdf.html"))
-);
-
-app.get("/split-pdf", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/split-pdf.html"))
-);
-
-app.get("/pdf-to-jpg", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/pdf-to-jpg.html"))
-);
-
-app.get("/pdf-to-word", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/pdf-to-word.html"))
-);
-
-app.get("/word-to-pdf", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/word-to-pdf.html"))
-);
-
-app.get("/compressor", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/compressor.html"))
-);
-
-app.get("/merger", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/merger.html"))
-);
-
-app.get("/disclaimer", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/disclaimer.html"))
-);
-
-app.get("/pdf-compressor", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/pdf-compressor.html"))
-);
-
-app.get("/pdf-to-png", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/pdf-to-png.html"))
-);
-app.get("/image-resizer", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/pages/image-resizer.html"))
-);
-/* GOOGLE LOGIN */
+/* ================= GOOGLE LOGIN ================= */
 
 app.get("/auth/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
-    session: false   // ✅ IMPORTANT
+    session: false
   })
 );
 
-app.get('/auth/google/callback',
-  passport.authenticate('google', {
-    failureRedirect: '/login',
+app.get("/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
     session: false
   }),
   (req, res) => {
-
     const user = req.user;
 
     const token = jwt.sign(
@@ -184,9 +121,8 @@ app.get('/auth/google/callback',
   }
 );
 
-app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/pages/dashboard.html"));
-});
+/* ================= FILE FEATURES (UNCHANGED) ================= */
+
 
 /* ================= IMAGE → PDF ================= */
 
@@ -401,6 +337,14 @@ app.post("/resize-image", upload.single("file"), async (req, res) => {
   }
 });
 
+
+
+/* ================= FALLBACK (IMPORTANT FOR RENDER) ================= */
+
+// ✅ prevents "Cannot GET"
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/pages/index.html"));
+});
 
 /* ================= START ================= */
 

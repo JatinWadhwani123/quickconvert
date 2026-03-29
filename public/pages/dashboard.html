@@ -203,10 +203,19 @@ body {
 
     <!-- ✅ TEAMS FIXED -->
     <div id="teamsSection" class="section">
-  <h2>Teams</h2>
+  <h1>Teams</h1>
 
-  <input id="teamName" placeholder="Team name">
-  <button onclick="createTeam()">Create Team</button>
+  <div class="card">
+    <h3>Create Team</h3>
+
+    <input 
+      id="teamName" 
+      placeholder="Enter team name"
+      style="width:70%;padding:10px;margin-right:10px;"
+    >
+
+    <button onclick="createTeam()">+ Create Team</button>
+  </div>
 
   <div id="teamsList"></div>
 </div>
@@ -347,9 +356,7 @@ async function createTeam() {
 
 async function loadTeams() {
   const res = await fetch("/api/team/my", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
+    headers: { Authorization: "Bearer " + token }
   });
 
   const teams = await res.json();
@@ -357,21 +364,34 @@ async function loadTeams() {
   const container = document.getElementById("teamsList");
   container.innerHTML = "";
 
+  if (teams.length === 0) {
+    container.innerHTML = "<p>No teams yet 🚀</p>";
+    return;
+  }
+
   teams.forEach(team => {
     container.innerHTML += `
-      <div style="border:1px solid #ddd;padding:10px;margin-top:10px;">
-        <b>${team.name}</b><br>
-        Members: ${team.members.length}
+      <div class="card">
 
-        <br><br>
+        <h3>${team.name}</h3>
+        <p><b>Members:</b> ${team.members.length}</p>
 
-        <input id="invite-${team._id}" placeholder="Enter email">
+        <hr style="margin:15px 0;">
+
+        <p><b>Invite Member</b></p>
+
+        <input 
+          id="invite-${team._id}" 
+          placeholder="Enter email"
+          style="width:60%;padding:8px;"
+        >
 
         <button onclick="inviteMember('${team._id}')">
           Invite
         </button>
 
-        <div id="link-${team._id}"></div>
+        <div id="link-${team._id}" style="margin-top:10px;"></div>
+
       </div>
     `;
   });
@@ -391,10 +411,27 @@ async function inviteMember(teamId) {
   const data = await res.json();
 
   document.getElementById("link-" + teamId).innerHTML = `
-    <input value="${data.inviteLink}" readonly style="width:100%">
+    <p style="color:green;">✅ Invite link generated</p>
+
+    <input 
+      value="${data.inviteLink}" 
+      readonly 
+      style="width:100%;padding:8px;"
+    >
+
+    <br><br>
+
     <button onclick="navigator.clipboard.writeText('${data.inviteLink}')">
-      Copy
+      Copy Link
     </button>
+
+    <button onclick="window.open('https://wa.me/?text=${encodeURIComponent(data.inviteLink)}')">
+      Share WhatsApp
+    </button>
+
+    <p style="font-size:12px;color:#666;margin-top:5px;">
+      Send this link to your friend to join the team
+    </p>
   `;
 }
 

@@ -1,20 +1,44 @@
-<h2>Joining Team...</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Join Team</title>
+</head>
+<body style="font-family:sans-serif;text-align:center;padding:50px;">
 
-<script>
-const token = new URLSearchParams(window.location.search).get("token");
-const jwt = localStorage.getItem("token");
+  <h1>Joining Team...</h1>
+  <p id="status">Please wait...</p>
 
-fetch("/api/team/join", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + jwt
-  },
-  body: JSON.stringify({ token })
-})
-.then(res => res.json())
-.then(() => {
-  alert("Joined Team ✅");
-  window.location.href = "/dashboard.html";
-});
-</script>
+  <script>
+    const token = new URLSearchParams(window.location.search).get("token");
+    const jwt = localStorage.getItem("token");
+
+    if (!jwt) {
+      document.getElementById("status").innerHTML =
+        "⚠️ Please login first, then open this link again.";
+    } else {
+      fetch("/api/team/join", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + jwt
+        },
+        body: JSON.stringify({ token })
+      })
+      .then(res => res.json())
+      .then(() => {
+        document.getElementById("status").innerHTML =
+          "✅ Successfully joined team!";
+        
+        setTimeout(() => {
+          window.location.href = "/pages/dashboard.html";
+        }, 2000);
+      })
+      .catch(() => {
+        document.getElementById("status").innerHTML =
+          "❌ Failed to join team";
+      });
+    }
+  </script>
+
+</body>
+</html>

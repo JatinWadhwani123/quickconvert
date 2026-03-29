@@ -49,7 +49,7 @@ router.post("/invite", authMiddleware, async (req, res) => {
     team.invites.push({ email, token });
     await team.save();
 
-    const inviteLink = `https://quickconvert.online/join-team.html?token=${token}`;
+    const inviteLink = `https://quickconvert.online/pages/join-team.html?token=${token}`;
 
     res.json({ inviteLink });
 
