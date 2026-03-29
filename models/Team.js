@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const teamSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name: String,
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -10,20 +10,17 @@ const teamSchema = new mongoose.Schema({
 
   members: [
     {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      email: String,
-      role: { type: String, default: "member" }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
     }
   ],
 
   invites: [
     {
       email: String,
-      token: String,
-      status: { type: String, default: "pending" }
+      token: String
     }
   ]
-
-}, { timestamps: true });
+});
 
 module.exports = mongoose.model("Team", teamSchema);

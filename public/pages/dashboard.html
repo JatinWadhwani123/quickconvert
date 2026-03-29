@@ -202,17 +202,13 @@ body {
     </div>
 
     <!-- ✅ TEAMS FIXED -->
-    <div id="teamsSection" class="section">
-  <h1>Teams</h1>
+    <div id="teamsSection" style="display:none;">
+  <h2>Teams</h2>
 
-  <div class="card">
+  <input id="teamName" placeholder="Team name">
+  <button onclick="createTeam()">Create Team</button>
 
-    <input id="teamName" placeholder="Team name" />
-    <button onclick="createTeam()">Create Team</button>
-
-    <div id="teamsList"></div>
-
-  </div>
+  <div id="teamsList"></div>
 </div>
 
     <!-- TOOLS -->
@@ -325,8 +321,21 @@ function logout() {
   window.location.href = "/";
 }
 
-function openCreateTeam() {
-  alert("Create Team coming soon 🚀");
+async function createTeam() {
+  const name = document.getElementById("teamName").value;
+
+  const res = await fetch("/api/team/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ name })
+  });
+
+  const data = await res.json();
+
+  loadTeams();
 }
 
 function viewTeam() {
@@ -363,7 +372,6 @@ async function loadTeams() {
   const teams = await res.json();
 
   const container = document.getElementById("teamsList");
-
   container.innerHTML = "";
 
   teams.forEach(team => {
@@ -374,13 +382,17 @@ async function loadTeams() {
 
         <br><br>
 
-        <input placeholder="Invite email" id="invite-${team._id}" />
-        <button onclick="inviteMember('${team._id}')">Invite</button>
+        <input id="invite-${team._id}" placeholder="Enter email">
+
+        <button onclick="inviteMember('${team._id}')">
+          Invite
+        </button>
+
+        <div id="link-${team._id}"></div>
       </div>
     `;
   });
 }
-
 async function inviteMember(teamId) {
   const email = document.getElementById("invite-" + teamId).value;
 
@@ -395,7 +407,12 @@ async function inviteMember(teamId) {
 
   const data = await res.json();
 
-  alert("Invite link generated (check console)");
+  document.getElementById("link-" + teamId).innerHTML = `
+    <input value="${data.inviteLink}" readonly style="width:100%">
+    <button onclick="navigator.clipboard.writeText('${data.inviteLink}')">
+      Copy
+    </button>
+  `;
 }
 
 loadTeams();

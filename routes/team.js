@@ -1,99 +1,88 @@
 const express = require("express");
 const router = express.Router();
-const crypto = require("crypto");
-
-const Team = require("../models/Team");
-const User = require("../models/user");
+const Team = require("../models/team");
 const authMiddleware = require("../middleware/authMiddleware");
 
-
-// ✅ CREATE TEAM
+// 🔹 CREATE TEAM
 router.post("/create", authMiddleware, async (req, res) => {
   try {
+    const { name } = req.body;
+
     const team = new Team({
-      name: req.body.name,
+      name,
       owner: req.user.id,
-      members: [
-        {
-          user: req.user.id,
-          email: req.user.email,
-          role: "admin"
-        }
-      ]
+      members: [req.user.id]
     });
 
     await team.save();
 
     res.json(team);
-  } catch (err) {
+  } catch {
     res.status(500).json({ msg: "Error creating team" });
   }
 });
 
-
-// ✅ GET MY TEAMS
+// 🔹 GET MY TEAMS
 router.get("/my", authMiddleware, async (req, res) => {
-  const teams = await Team.find({
-    "members.user": req.user.id
-  });
+  try {
+    const teams = await Team.find({
+      members: req.user.id
+    });
 
-  res.json(teams);
+    res.json(teams);
+  } catch {
+    res.status(500).json({ msg: "Error fetching teams" });
+  }
 });
 
-
-// ✅ INVITE MEMBER
+// 🔹 INVITE MEMBER (FREE LINK)
 router.post("/invite", authMiddleware, async (req, res) => {
-  const { teamId, email } = req.body;
-
   try {
+    const { teamId, email } = req.body;
+
     const team = await Team.findById(teamId);
 
     if (!team) return res.status(404).json({ msg: "Team not found" });
 
-    const token = crypto.randomBytes(20).toString("hex");
+    const token = Math.random().toString(36).substring(2);
 
-    team.invites.push({
-      email,
-      token
-    });
-
+    team.invites.push({ email, token });
     await team.save();
 
-    // 🔥 EMAIL LINK
-    const inviteLink = `https://yourdomain.com/join-team?token=${token}`;
+    const inviteLink = `https://quickconvert.online/join-team.html?token=${token}`;
 
-    console.log("Invite link:", inviteLink);
+    res.json({ inviteLink });
 
-    // Later we will send real email
-
-    res.json({ msg: "Invite sent", inviteLink });
-
-  } catch (err) {
-    res.status(500).json({ msg: "Error inviting" });
+  } catch {
+    res.status(500).json({ msg: "Invite error" });
   }
 });
 
+// 🔹 JOIN TEAM
+router.post("/join", authMiddleware, async (req, res) => {
+  try {
+    const { token } = req.body;
 
-// ✅ ACCEPT INVITE
-router.post("/accept", authMiddleware, async (req, res) => {
-  const { token } = req.body;
+    const team = await Team.findOne({
+      "invites.token": token
+    });
 
-  const team = await Team.findOne({ "invites.token": token });
+    if (!team) return res.status(400).json({ msg: "Invalid link" });
 
-  if (!team) return res.status(404).json({ msg: "Invalid invite" });
+    if (!team.members.includes(req.user.id)) {
+      team.members.push(req.user.id);
+    }
 
-  const invite = team.invites.find(i => i.token === token);
+    // remove invite after join
+    team.invites = team.invites.filter(i => i.token !== token);
 
-  invite.status = "accepted";
+    await team.save();
 
-  team.members.push({
-    user: req.user.id,
-    email: req.user.email
-  });
+    res.json({ msg: "Joined team" });
 
-  await team.save();
-
-  res.json({ msg: "Joined team" });
+  } catch {
+    res.status(500).json({ msg: "Join failed" });
+  }
 });
 
 module.exports = router;

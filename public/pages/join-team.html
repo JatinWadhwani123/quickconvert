@@ -1,0 +1,20 @@
+<h2>Joining Team...</h2>
+
+<script>
+const token = new URLSearchParams(window.location.search).get("token");
+const jwt = localStorage.getItem("token");
+
+fetch("/api/team/join", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + jwt
+  },
+  body: JSON.stringify({ token })
+})
+.then(res => res.json())
+.then(() => {
+  alert("Joined Team ✅");
+  window.location.href = "/dashboard.html";
+});
+</script>
