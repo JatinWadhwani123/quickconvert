@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 
 const teamSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true
+  },
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -23,8 +26,4 @@ const teamSchema = new mongoose.Schema({
   ]
 });
 
-<<<<<<< HEAD:models/team.js
 module.exports = mongoose.model("Team", teamSchema);
-=======
-module.exports = mongoose.model("team", teamSchema);
->>>>>>> a061584 (fix pdfjs version):models/Team.js
