@@ -23,4 +23,8 @@ const teamSchema = new mongoose.Schema({
   ]
 });
 
+<<<<<<< HEAD:models/team.js
 module.exports = mongoose.model("Team", teamSchema);
+=======
+module.exports = mongoose.model("team", teamSchema);
+>>>>>>> a061584 (fix pdfjs version):models/Team.js
