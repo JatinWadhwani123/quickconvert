@@ -342,7 +342,7 @@ app.post("/resize-image", upload.single("file"), async (req, res) => {
 /* ================= FALLBACK (IMPORTANT FOR RENDER) ================= */
 
 // ✅ prevents "Cannot GET"
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/pages/index.html"));
 });
 
