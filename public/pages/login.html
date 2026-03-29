@@ -399,8 +399,8 @@ Fast, secure and accessible anywhere.
 
 /* ===== EXISTING LOGIC ===== */
 
-if(localStorage.getItem("token")){
-window.location.href="/dashboard";
+if (localStorage.getItem("token") && !window.location.pathname.includes("login")) {
+  window.location.href = "/dashboard";
 }
 
 function togglePass(){
