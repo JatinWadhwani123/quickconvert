@@ -190,20 +190,17 @@ body {
 
     <!-- ✅ TEAMS FIXED -->
     <div id="teamsSection" class="section">
-      <h1>Teams</h1>
+  <h1>Teams</h1>
 
-      <div class="card">
-        <button onclick="openCreateTeam()">+ Create Team</button>
+  <div class="card">
 
-        <div style="margin-top:20px;">
-          <h3>My Team</h3>
-          <p>3 Members</p>
+    <input id="teamName" placeholder="Team name" />
+    <button onclick="createTeam()">Create Team</button>
 
-          <button onclick="viewTeam()">View</button>
-          <button>Delete</button>
-        </div>
-      </div>
-    </div>
+    <div id="teamsList"></div>
+
+  </div>
+</div>
 
     <!-- TOOLS -->
     <div id="toolsSection" class="section">
@@ -322,6 +319,72 @@ function viewTeam() {
   alert("Team details coming soon 🔥");
 }
 
+async function createTeam() {
+  const name = document.getElementById("teamName").value;
+
+  const res = await fetch("/api/team/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ name })
+  });
+
+  const data = await res.json();
+
+  alert("Team created ✅");
+
+  loadTeams();
+}
+
+
+async function loadTeams() {
+  const res = await fetch("/api/team/my", {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  });
+
+  const teams = await res.json();
+
+  const container = document.getElementById("teamsList");
+
+  container.innerHTML = "";
+
+  teams.forEach(team => {
+    container.innerHTML += `
+      <div style="border:1px solid #ddd;padding:10px;margin-top:10px;">
+        <b>${team.name}</b><br>
+        Members: ${team.members.length}
+
+        <br><br>
+
+        <input placeholder="Invite email" id="invite-${team._id}" />
+        <button onclick="inviteMember('${team._id}')">Invite</button>
+      </div>
+    `;
+  });
+}
+
+async function inviteMember(teamId) {
+  const email = document.getElementById("invite-" + teamId).value;
+
+  const res = await fetch("/api/team/invite", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ teamId, email })
+  });
+
+  const data = await res.json();
+
+  alert("Invite link generated (check console)");
+}
+
+loadTeams();
 </script>
 
 </body>

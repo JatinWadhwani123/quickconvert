@@ -8,6 +8,9 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const authRoutes = require("./routes/auth");
 const passport = require("./config/passport");
+const teamRoutes = require("./routes/team");
+
+
 
 
 
@@ -82,6 +85,7 @@ app.set("trust proxy", 1); // ✅ VERY IMPORTANT FOR RENDER
 app.use(passport.initialize());
 
 app.use(express.static("public"));
+app.use("/api/team", teamRoutes);
 
 
 /* ================= ROUTES ================= */
