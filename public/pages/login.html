@@ -400,7 +400,7 @@ Fast, secure and accessible anywhere.
 /* ===== EXISTING LOGIC ===== */
 
 if(localStorage.getItem("token")){
-window.location.href="/";
+window.location.href="/pages/dashboard.html";
 }
 
 function togglePass(){
@@ -418,6 +418,8 @@ async function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
+  console.log("Login clicked");
+
   const res = await fetch("/api/login", {
     method: "POST",
     headers: {
@@ -427,13 +429,14 @@ async function login() {
   });
 
   const data = await res.json();
+  console.log("Response:", data);
 
   if (data.token) {
-    // ✅ IMPORTANT
     localStorage.setItem("token", data.token);
 
-    // ✅ REDIRECT
-    window.location.href = "/dashboard";
+    alert("Login successful ✅");
+
+    window.location.href = "/pages/dashboard.html"; // ✅ FIXED
   } else {
     alert(data.msg || "Login failed");
   }
