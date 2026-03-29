@@ -400,7 +400,7 @@ Fast, secure and accessible anywhere.
 /* ===== EXISTING LOGIC ===== */
 
 if(localStorage.getItem("token")){
-window.location.href="/pages/dashboard.html";
+window.location.href="/dashboard";
 }
 
 function togglePass(){
@@ -434,11 +434,11 @@ async function login() {
   if (data.token) {
     localStorage.setItem("token", data.token);
 
-    alert("Login successful ✅");
+    alert("Login success ✅");
 
-    window.location.href = "/pages/dashboard.html"; // ✅ FIXED
+    window.location.href = "/dashboard";
   } else {
-    alert(data.msg || "Login failed");
+    alert(data.msg || "Login failed ❌");
   }
 }
 
