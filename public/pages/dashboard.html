@@ -202,7 +202,7 @@ body {
     </div>
 
     <!-- ✅ TEAMS FIXED -->
-    <div id="teamsSection" style="display:none;">
+    <div id="teamsSection" class="section">
   <h2>Teams</h2>
 
   <input id="teamName" placeholder="Team name">
@@ -275,6 +275,11 @@ function showSection(section) {
 
   document.getElementById(section + "Section").classList.add("active");
   document.getElementById("link" + capitalize(section)).classList.add("active");
+
+  // 🔥 IMPORTANT FIX
+  if (section === "teams") {
+    loadTeams();
+  }
 }
 
 function capitalize(str) {
@@ -320,28 +325,6 @@ function logout() {
   localStorage.removeItem("token");
   window.location.href = "/";
 }
-
-async function createTeam() {
-  const name = document.getElementById("teamName").value;
-
-  const res = await fetch("/api/team/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify({ name })
-  });
-
-  const data = await res.json();
-
-  loadTeams();
-}
-
-function viewTeam() {
-  alert("Team details coming soon 🔥");
-}
-
 async function createTeam() {
   const name = document.getElementById("teamName").value;
 
