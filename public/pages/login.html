@@ -415,33 +415,39 @@ box.style.display="block";
 }
 
 async function login() {
+  console.log("🔥 LOGIN BUTTON CLICKED");
+
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  console.log("Login clicked");
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-  const res = await fetch("/api/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email, password })
-  });
+    const data = await res.json();
 
-  const data = await res.json();
-  console.log("Response:", data);
+    console.log("🔥 RESPONSE:", data);
 
-  if (data.token) {
-    localStorage.setItem("token", data.token);
+    if (data.token) {
+      localStorage.setItem("token", data.token);
 
-    alert("Login success ✅");
+      alert("Login success ✅");
 
-    window.location.href = "/dashboard";
-  } else {
-    alert(data.msg || "Login failed ❌");
+      window.location.href = "/dashboard";
+    } else {
+      alert(data.msg || "Login failed ❌");
+    }
+
+  } catch (err) {
+    console.error("🔥 ERROR:", err);
+    alert("Server error");
   }
 }
-
 /* OTP */
 
 function openOTP(){
