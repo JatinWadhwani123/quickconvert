@@ -263,12 +263,30 @@ button:hover {
 </div>
 
     <!-- TEAMS -->
-    <div id="teamsSection" class="section">
-      <h1>Teams</h1>
-      <div class="card">
-        <button>Create Team</button>
+    <div class="teams-container">
+
+  <div class="teams-header">
+    <h2>Teams</h2>
+    <button class="btn-primary" onclick="openCreateTeam()">+ Create Team</button>
+  </div>
+
+  <!-- Team List -->
+  <div id="teamsList" class="teams-grid">
+
+    <!-- Example Team Card -->
+    <div class="team-card">
+      <h3>My Team</h3>
+      <p>3 Members</p>
+
+      <div class="team-actions">
+        <button onclick="viewTeam()">View</button>
+        <button class="danger">Delete</button>
       </div>
     </div>
+
+  </div>
+
+</div>
 
     <!-- TOOLS -->
     <div id="toolsSection" class="section">
@@ -398,6 +416,14 @@ async function changePassword() {
     msg.style.color = "red";
     msg.textContent = err.message || "Failed ❌";
   }
+}
+
+function openCreateTeam() {
+  alert("Create Team popup coming soon 🚀");
+}
+
+function viewTeam() {
+  alert("Team details page coming soon 🔥");
 }
 lucide.createIcons();
 
