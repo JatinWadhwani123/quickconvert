@@ -256,9 +256,13 @@ if (!token) {
 
 async function loadUser() {
   try {
-    const res = await fetch("/api/auth/me", {
+    const res = await fetch("/api/me", {
       headers: { "Authorization": "Bearer " + token }
     });
+
+    if (!res.ok) {
+      throw new Error("Auth failed");
+    }
 
     const data = await res.json();
 
@@ -266,7 +270,9 @@ async function loadUser() {
     document.getElementById("userEmail2").textContent = data.email;
     document.getElementById("userName").value = data.name || "";
 
-  } catch {
+  } catch (err) {
+    console.log("ERROR:", err);
+
     localStorage.removeItem("token");
     window.location.href = "/login";
   }

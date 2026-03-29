@@ -399,7 +399,7 @@ Fast, secure and accessible anywhere.
 
 /* ===== EXISTING LOGIC ===== */
 
-if (localStorage.getItem("token") && !window.location.pathname.includes("login")) {
+if (localStorage.getItem("token")) {
   window.location.href = "/dashboard";
 }
 
