@@ -180,8 +180,19 @@ body {
         <h3>Change Password</h3>
 
         <form onsubmit="changePassword(event)">
-  <input type="password" id="currentPassword" placeholder="Current Password">
-  <input type="password" id="newPassword" placeholder="New Password">
+  <input 
+  type="password" 
+  id="currentPassword" 
+  placeholder="Current Password"
+  autocomplete="current-password"
+>
+
+<input 
+  type="password" 
+  id="newPassword" 
+  placeholder="New Password"
+  autocomplete="new-password"
+>
 
   <button type="submit">Update Password</button>
 </form>
