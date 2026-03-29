@@ -414,39 +414,29 @@ box.innerText=msg;
 box.style.display="block";
 }
 
-async function login(){
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-document.getElementById("errorBox").style.display="none";
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  });
 
-const email=document.getElementById("email").value.trim();
-const password=document.getElementById("password").value.trim();
+  const data = await res.json();
 
-if(!email||!password){
-showError("Fill all fields");
-return;
-}
+  if (data.token) {
+    // ✅ IMPORTANT
+    localStorage.setItem("token", data.token);
 
-try{
-
-const res=await fetch("/api/login",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({email,password})
-});
-
-const data=await res.json();
-
-if(res.ok && data.token){
-localStorage.setItem("token",data.token);
-window.location.href="/";
-}else{
-showError(data.message||"Login failed");
-}
-
-}catch{
-showError("Server error");
-}
-
+    // ✅ REDIRECT
+    window.location.href = "/dashboard";
+  } else {
+    alert(data.msg || "Login failed");
+  }
 }
 
 /* OTP */
