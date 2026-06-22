@@ -45,6 +45,7 @@ form.addEventListener("submit", async (e) => {
       method: "POST",
       body: formData
     });
+    if (!response.ok) throw new Error("Conversion failed");
 
     const blob = await response.blob();
 

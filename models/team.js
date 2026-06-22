@@ -20,10 +20,15 @@ const teamSchema = new mongoose.Schema({
 
   invites: [
     {
-      email: String,
-      token: String
+      email: {
+        type: String,
+        lowercase: true,
+        trim: true
+      },
+      token: String,
+      expiresAt: Date
     }
   ]
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Team", teamSchema);

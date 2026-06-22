@@ -2,9 +2,12 @@
   "name": "jpgtopdftool",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node -c server.js && node -c routes/toolRoutes.js && node -c services/fileToolsService.js && node -c middleware/upload.js",
+    "test": "npm run check"
   },
   "keywords": [],
   "author": "",
@@ -15,17 +18,21 @@
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cloudconvert": "^3.0.0",
+    "compression": "^1.8.1",
     "cors": "^2.8.6",
     "crypto": "^1.0.1",
     "docx": "^9.5.2",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
     "express-session": "^1.19.0",
+    "file-type": "^16.5.4",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mammoth": "^1.11.0",
     "mongoose": "^9.2.1",
     "multer": "^2.0.2",
+    "node-cron": "^4.5.0",
     "node-qpdf": "^1.0.3",
     "nodemailer": "^8.0.1",
     "passport": "^0.7.0",
@@ -34,9 +41,12 @@
     "pdf-parse": "^1.1.1",
     "pdf-poppler": "^0.2.3",
     "pdfjs-dist": "^3.11.174",
+    "pino-http": "^11.0.0",
     "qrcode": "^1.5.4",
     "resend": "^6.9.2",
+    "sanitize-filename": "^1.6.4",
     "sharp": "^0.34.5",
-    "speakeasy": "^2.0.0"
+    "speakeasy": "^2.0.0",
+    "zod": "^4.4.3"
   }
 }

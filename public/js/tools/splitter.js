@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const uploadArea = document.getElementById("uploadArea");
   const fileInput = document.getElementById("fileInput");
   const form = document.getElementById("convertForm");
+  const pageRange = document.getElementById("pageRange");
 
   const progress = document.getElementById("convertProgress");
   const bar = document.getElementById("convertBar");
@@ -38,6 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
+    if (pageRange?.value.trim()) {
+      formData.append("pages", pageRange.value.trim());
+    }
 
     progress.classList.remove("hidden");
 
@@ -54,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         body: formData
       });
+      if (!res.ok) throw new Error("Split failed");
 
       const blob = await res.blob();
 

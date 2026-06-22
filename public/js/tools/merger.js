@@ -87,6 +87,7 @@ form.addEventListener("submit", async e => {
 
   try {
     const res = await fetch("/merge", { method: "POST", body: formData });
+    if (!res.ok) throw new Error("Merge failed");
     const blob = await res.blob();
 
     bar.style.width = "100%";

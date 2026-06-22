@@ -60,11 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
         viewport: viewport
       }).promise;
 
-      const imageData = canvas.toDataURL("image/png");
+      const imageData = canvas.toDataURL("image/jpeg", 0.92);
 
       const base64 = imageData.split(",")[1];
 
-      zip.file(`page-${i}.png`, base64, { base64: true });
+      zip.file(`page-${i}.jpg`, base64, { base64: true });
 
       const percent = Math.floor((i / pdf.numPages) * 100);
       bar.style.width = percent + "%";
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const a = document.createElement("a");
     a.href = URL.createObjectURL(content);
-    a.download = "images.zip";
+    a.download = "pdf-to-jpg.zip";
     a.click();
 
     setTimeout(() => {

@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "POST",
         body: formData
       });
+      if (!res.ok) throw new Error("Resize failed");
 
       const blob = await res.blob();
 

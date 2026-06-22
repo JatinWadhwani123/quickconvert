@@ -1,103 +1,95 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-const User = require("../models/user");
-const authMiddleware = require("../middleware/authMiddleware");
-
 const speakeasy = require("speakeasy");
 const QRCode = require("qrcode");
+const { z } = require("zod");
+
+const env = require("../config/env");
+const User = require("../models/user");
+const authMiddleware = require("../middleware/authMiddleware");
+const { authLimiter } = require("../middleware/rateLimiters");
 
 const router = express.Router();
 
+const emailSchema = z.string().email().transform(email => email.toLowerCase().trim());
+const passwordSchema = z.string().min(8).max(128);
+const otpSchema = z.string().regex(/^\d{6}$/);
 
-// ================= REGISTER =================
+function parseBody(schema, req, res) {
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ msg: "Invalid request fields" });
+    return null;
+  }
+  return parsed.data;
+}
 
-router.post("/register", async (req, res) => {
-  const { email, password } = req.body;
+function signUserToken(user, expiresIn = "2h") {
+  return jwt.sign({ id: user._id }, env.JWT_SECRET, { expiresIn });
+}
 
-  if (!email || !password)
-    return res.status(400).json({ msg: "Missing fields" });
+router.post("/register", authLimiter, async (req, res) => {
+  const body = parseBody(z.object({
+    email: emailSchema,
+    password: passwordSchema
+  }), req, res);
+  if (!body) return;
 
   try {
-    const exists = await User.findOne({ email });
-
-    if (exists)
-      return res.status(400).json({ msg: "User exists" });
-
-    const hash = await bcrypt.hash(password, 10);
+    const exists = await User.findOne({ email: body.email });
+    if (exists) return res.status(400).json({ msg: "User exists" });
 
     const user = new User({
-      email,
-      password: hash,
+      email: body.email,
+      password: await bcrypt.hash(body.password, 10),
       authProvider: "local"
     });
 
     await user.save();
-
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "2h" }
-    );
-
-    res.json({ msg: "User registered", token });
-
-  } catch {
+    res.json({ msg: "User registered", token: signUserToken(user) });
+  } catch (err) {
+    console.error("Register error:", err);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-
-// ================= LOGIN =================
-
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+router.post("/login", authLimiter, async (req, res) => {
+  const body = parseBody(z.object({
+    email: emailSchema,
+    password: z.string().min(1).max(128)
+  }), req, res);
+  if (!body) return;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: body.email });
 
-    if (!user)
-      return res.status(400).json({ msg: "Invalid credentials" });
+    if (!user) return res.status(400).json({ msg: "Invalid credentials" });
+    if (!user.password) return res.status(400).json({ msg: "Please continue with Google for this account" });
 
-    if (!user.password)
-      return res.status(400).json({ msg: "Please continue with Google for this account" });
+    const match = await bcrypt.compare(body.password, user.password);
+    if (!match) return res.status(400).json({ msg: "Invalid credentials" });
 
-    const match = await bcrypt.compare(password, user.password);
-
-    if (!match)
-      return res.status(400).json({ msg: "Invalid credentials" });
-
-    // 🔐 2FA CHECK
     if (user.twoFactorEnabled) {
-      return res.json({
-        requires2FA: true,
-        userId: user._id
-      });
+      return res.json({ requires2FA: true, userId: user._id });
     }
 
-    // ✅ NORMAL LOGIN
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "2h" }
-    );
-
-    res.json({ token });
-
-  } catch {
+    res.json({ token: signUserToken(user) });
+  } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-
-// ================= 2FA LOGIN VERIFY =================
-
-router.post("/2fa/login", async (req, res) => {
-  const { userId, token } = req.body;
+router.post("/2fa/login", authLimiter, async (req, res) => {
+  const body = parseBody(z.object({
+    userId: z.string().min(1),
+    token: otpSchema
+  }), req, res);
+  if (!body) return;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(body.userId);
 
     if (!user || !user.twoFactorSecret) {
       return res.status(400).json({ message: "2FA is not configured" });
@@ -106,51 +98,43 @@ router.post("/2fa/login", async (req, res) => {
     const verified = speakeasy.totp.verify({
       secret: user.twoFactorSecret,
       encoding: "base32",
-      token,
+      token: body.token,
       window: 1
     });
 
-    if (!verified) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
+    if (!verified) return res.status(400).json({ message: "Invalid OTP" });
 
-    const jwtToken = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "2h" }
-    );
-
-    res.json({ token: jwtToken });
-
-  } catch {
+    res.json({ token: signUserToken(user) });
+  } catch (err) {
+    console.error("2FA login error:", err);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-
-// ================= CHANGE PASSWORD =================
-
 router.post("/change-password", authMiddleware, async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
+  const body = parseBody(z.object({
+    currentPassword: z.string().min(1).max(128),
+    newPassword: passwordSchema
+  }), req, res);
+  if (!body) return;
 
-  const user = await User.findById(req.user.id);
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user.password) return res.status(400).json({ message: "Password login is not enabled for this account" });
 
-  if (!user) return res.status(404).json({ message: "User not found" });
+    const isMatch = await bcrypt.compare(body.currentPassword, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Wrong password" });
 
-  const isMatch = await bcrypt.compare(currentPassword, user.password);
+    user.password = await bcrypt.hash(body.newPassword, 10);
+    await user.save();
 
-  if (!isMatch)
-    return res.status(400).json({ message: "Wrong password" });
-
-  user.password = await bcrypt.hash(newPassword, 10);
-
-  await user.save();
-
-  res.json({ message: "Password updated" });
+    res.json({ message: "Password updated" });
+  } catch (err) {
+    console.error("Change password error:", err);
+    res.status(500).json({ message: "Unable to update password" });
+  }
 });
-
-
-// ================= 2FA SETUP =================
 
 router.get("/2fa/generate", authMiddleware, async (req, res) => {
   try {
@@ -160,32 +144,27 @@ router.get("/2fa/generate", authMiddleware, async (req, res) => {
     });
 
     const user = await User.findById(req.user.id);
-
     if (!user) return res.status(404).json({ message: "User not found" });
 
     user.twoFactorSecret = secret.base32;
     await user.save();
 
-    const qr = await QRCode.toDataURL(secret.otpauth_url);
-
     res.json({
-      qr,
+      qr: await QRCode.toDataURL(secret.otpauth_url),
       secret: secret.base32
     });
-  } catch {
+  } catch (err) {
+    console.error("2FA generate error:", err);
     res.status(500).json({ message: "Unable to generate 2FA setup" });
   }
 });
 
-
-// ================= 2FA VERIFY =================
-
 router.post("/2fa/verify", authMiddleware, async (req, res) => {
-  const { token } = req.body;
+  const body = parseBody(z.object({ token: otpSchema }), req, res);
+  if (!body) return;
 
   try {
     const user = await User.findById(req.user.id);
-
     if (!user || !user.twoFactorSecret) {
       return res.status(400).json({ message: "2FA setup not found" });
     }
@@ -193,91 +172,72 @@ router.post("/2fa/verify", authMiddleware, async (req, res) => {
     const verified = speakeasy.totp.verify({
       secret: user.twoFactorSecret,
       encoding: "base32",
-      token,
+      token: body.token,
       window: 1
     });
 
-    if (!verified) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
+    if (!verified) return res.status(400).json({ message: "Invalid OTP" });
 
     user.twoFactorEnabled = true;
     await user.save();
 
     res.json({ message: "2FA enabled successfully" });
-  } catch {
+  } catch (err) {
+    console.error("2FA verify error:", err);
     res.status(500).json({ message: "2FA verification failed" });
   }
 });
 
-
-// ================= 2FA DISABLE =================
-
 router.post("/2fa/disable", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-
     if (!user) return res.status(404).json({ message: "User not found" });
 
     user.twoFactorEnabled = false;
     user.twoFactorSecret = "";
-
     await user.save();
 
     res.json({ message: "2FA disabled" });
-  } catch {
+  } catch (err) {
+    console.error("2FA disable error:", err);
     res.status(500).json({ message: "Unable to disable 2FA" });
   }
 });
 
-
-// ================= GET CURRENT USER =================
-
 router.get("/me", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) return res.status(401).json({ msg: "No token" });
 
-    if (!authHeader)
-      return res.status(401).json({ msg: "No token" });
+    const decoded = jwt.verify(authHeader.split(" ")[1], env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password -twoFactorSecret -resetOTP");
 
-    const token = authHeader.split(" ")[1];
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = decoded.id
-      ? await User.findById(decoded.id).select("-password -twoFactorSecret")
-      : await User.findOne({ email: decoded.email }).select("-password -twoFactorSecret");
-
-    if (!user)
-      return res.status(404).json({ msg: "User not found" });
+    if (!user) return res.status(404).json({ msg: "User not found" });
 
     res.json(user);
-
   } catch {
     res.status(401).json({ msg: "Unauthorized" });
   }
 });
 
-
-// ================= UPDATE PROFILE =================
-
 router.put("/update", authMiddleware, async (req, res) => {
+  const body = parseBody(z.object({
+    name: z.string().trim().max(80).optional()
+  }), req, res);
+  if (!body) return;
+
   try {
     const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
 
-    if (!user)
-      return res.status(404).json({ msg: "User not found" });
-
-    user.name = req.body.name || user.name;
-
+    user.name = body.name || user.name;
     await user.save();
 
     res.json({ msg: "Profile updated" });
-
-  } catch {
+  } catch (err) {
+    console.error("Update profile error:", err);
     res.status(500).json({ msg: "Server error" });
   }
 });
-
 
 module.exports = router;

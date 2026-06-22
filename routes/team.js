@@ -1,86 +1,116 @@
+const crypto = require("crypto");
 const express = require("express");
-const router = express.Router();
+const { z } = require("zod");
+
 const Team = require("../models/team");
 const authMiddleware = require("../middleware/authMiddleware");
 
-// 🔹 CREATE TEAM
-router.post("/create", authMiddleware, async (req, res) => {
-  try {
-    const { name } = req.body;
+const router = express.Router();
 
+const createTeamSchema = z.object({
+  name: z.string().trim().min(2).max(80)
+});
+
+const inviteSchema = z.object({
+  teamId: z.string().min(1),
+  email: z.string().email().transform(email => email.toLowerCase().trim())
+});
+
+const joinSchema = z.object({
+  token: z.string().min(32).max(128)
+});
+
+function parseBody(schema, req, res) {
+  const parsed = schema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ msg: "Invalid request fields" });
+    return null;
+  }
+  return parsed.data;
+}
+
+router.post("/create", authMiddleware, async (req, res) => {
+  const body = parseBody(createTeamSchema, req, res);
+  if (!body) return;
+
+  try {
     const team = new Team({
-      name,
+      name: body.name,
       owner: req.user.id,
       members: [req.user.id]
     });
 
     await team.save();
-
     res.json(team);
-  } catch {
+  } catch (err) {
+    console.error("Create team error:", err);
     res.status(500).json({ msg: "Error creating team" });
   }
 });
 
-// 🔹 GET MY TEAMS
 router.get("/my", authMiddleware, async (req, res) => {
   try {
-    const teams = await Team.find({
-      members: req.user.id
-    });
-
+    const teams = await Team.find({ members: req.user.id }).sort({ updatedAt: -1 });
     res.json(teams);
-  } catch {
+  } catch (err) {
+    console.error("Fetch teams error:", err);
     res.status(500).json({ msg: "Error fetching teams" });
   }
 });
 
-// 🔹 INVITE MEMBER (FREE LINK)
 router.post("/invite", authMiddleware, async (req, res) => {
+  const body = parseBody(inviteSchema, req, res);
+  if (!body) return;
+
   try {
-    const { teamId, email } = req.body;
-
-    const team = await Team.findById(teamId);
-
+    const team = await Team.findById(body.teamId);
     if (!team) return res.status(404).json({ msg: "Team not found" });
 
-    const token = Math.random().toString(36).substring(2);
+    if (String(team.owner) !== String(req.user.id)) {
+      return res.status(403).json({ msg: "Only the team owner can invite members" });
+    }
 
-    team.invites.push({ email, token });
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    team.invites.push({ email: body.email, token, expiresAt });
     await team.save();
 
-    const inviteLink = `https://quickconvert.online/pages/join-team.html?token=${token}`;
-
-    res.json({ inviteLink });
-
-  } catch {
+    res.json({
+      inviteLink: `https://quickconvert.online/pages/join-team.html?token=${token}`,
+      expiresAt
+    });
+  } catch (err) {
+    console.error("Invite error:", err);
     res.status(500).json({ msg: "Invite error" });
   }
 });
 
-// 🔹 JOIN TEAM
 router.post("/join", authMiddleware, async (req, res) => {
+  const body = parseBody(joinSchema, req, res);
+  if (!body) return;
+
   try {
-    const { token } = req.body;
-
-    const team = await Team.findOne({
-      "invites.token": token
-    });
-
+    const team = await Team.findOne({ "invites.token": body.token });
     if (!team) return res.status(400).json({ msg: "Invalid link" });
 
-    if (!team.members.includes(req.user.id)) {
+    const invite = team.invites.find(item => item.token === body.token);
+    if (!invite || invite.expiresAt < new Date()) {
+      team.invites = team.invites.filter(item => item.token !== body.token);
+      await team.save();
+      return res.status(400).json({ msg: "Invite link expired" });
+    }
+
+    if (!team.members.some(member => String(member) === String(req.user.id))) {
       team.members.push(req.user.id);
     }
 
-    // remove invite after join
-    team.invites = team.invites.filter(i => i.token !== token);
-
+    team.invites = team.invites.filter(item => item.token !== body.token);
     await team.save();
 
     res.json({ msg: "Joined team" });
-
-  } catch {
+  } catch (err) {
+    console.error("Join team error:", err);
     res.status(500).json({ msg: "Join failed" });
   }
 });

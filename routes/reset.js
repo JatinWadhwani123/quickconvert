@@ -1,70 +1,86 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const { Resend } = require("resend");
+const { z } = require("zod");
 
-const router = express.Router();
 const User = require("../models/user");
 
+const router = express.Router();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ===== OTP MEMORY STORE =====
-const otpStore = new Map();
+const resetSchema = z.object({
+  email: z.string().email().transform(email => email.toLowerCase().trim())
+});
 
-// ================= SEND OTP =================
+const verifySchema = resetSchema.extend({
+  otp: z.string().regex(/^\d{6}$/),
+  newPassword: z.string().min(8).max(128)
+});
+
+function hashOtp(otp) {
+  return crypto.createHash("sha256").update(otp).digest("hex");
+}
+
 router.post("/send-otp", async (req, res) => {
   try {
-    const { email } = req.body;
+    const parsed = resetSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ msg: "Invalid email" });
 
-    const user = await User.findOne({ email });
-    if (!user)
-      return res.status(400).json({ msg: "Email not found" });
+    const user = await User.findOne({ email: parsed.data.email });
 
-    const otp = Math.floor(100000 + Math.random() * 900000);
+    // Avoid account enumeration. Real users still receive mail.
+    if (!user) return res.json({ msg: "If the account exists, an OTP has been sent." });
 
-    otpStore.set(email, otp);
+    const otp = crypto.randomInt(100000, 999999).toString();
+    user.resetOTP = hashOtp(otp);
+    user.otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+    await user.save();
 
     await resend.emails.send({
       from: `QuickConvert Support <${process.env.MAIL_FROM}>`,
-      to: email,
+      to: user.email,
       subject: "Password Reset OTP",
       html: `
         <h2>Password Reset</h2>
-        <p>Your OTP is:</p>
-        <h1 style="color:#ff4d4d">${otp}</h1>
-        <p>This OTP expires soon.</p>
+        <p>Your QuickConvert OTP is:</p>
+        <h1>${otp}</h1>
+        <p>This code expires in 5 minutes.</p>
       `
     });
 
-    console.log("✅ OTP sent:", email);
-
-    res.json({ msg: "OTP sent successfully" });
-
+    res.json({ msg: "If the account exists, an OTP has been sent." });
   } catch (err) {
-    console.error("EMAIL ERROR:", err);
+    console.error("Password reset email error:", err);
     res.status(500).json({ msg: "Failed to send OTP" });
   }
 });
 
-// ================= VERIFY OTP =================
 router.post("/verify-reset", async (req, res) => {
   try {
-    const { email, otp, newPassword } = req.body;
+    const parsed = verifySchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ msg: "Invalid reset request" });
 
-    if (otpStore.get(email) != otp)
-      return res.status(400).json({ msg: "Invalid OTP" });
+    const { email, otp, newPassword } = parsed.data;
+    const user = await User.findOne({ email });
 
-    const hashed = await bcrypt.hash(newPassword, 10);
+    if (!user || !user.resetOTP || !user.otpExpiry || Date.now() > user.otpExpiry.getTime()) {
+      return res.status(400).json({ msg: "Invalid or expired OTP" });
+    }
 
-    await User.updateOne(
-      { email },
-      { password: hashed }
-    );
+    if (user.resetOTP !== hashOtp(otp)) {
+      return res.status(400).json({ msg: "Invalid or expired OTP" });
+    }
 
-    otpStore.delete(email);
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.authProvider = user.authProvider || "local";
+    user.resetOTP = null;
+    user.otpExpiry = null;
+    await user.save();
 
     res.json({ msg: "Password reset success" });
-
-  } catch {
+  } catch (err) {
+    console.error("Password reset verify error:", err);
     res.status(500).json({ msg: "Reset failed" });
   }
 });
