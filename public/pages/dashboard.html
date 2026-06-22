@@ -1,448 +1,428 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Dashboard</title>
-
-<script src="https://unpkg.com/lucide@latest"></script>
-<style>
-body {
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  background: #f6f7fb;
-}
-
-/* HEADER */
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.7);
-  border-bottom: 1px solid #eee;
-  position: sticky;
-  top: 0;
-}
-
-.logo {
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.home-btn {
-  background: linear-gradient(135deg, #ff4d4f, #ff7875);
-  color: white;
-  padding: 8px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-}
-
-.user-box {
-  background: #fff;
-  padding: 8px 14px;
-  border-radius: 20px;
-  font-size: 13px;
-}
-
-/* LAYOUT */
-.dashboard-container {
-  display: flex;
-}
-
-.sidebar {
-  width: 240px;
-  background: white;
-  padding: 25px;
-  border-right: 1px solid #eee;
-  min-height: calc(100vh - 60px);
-}
-
-.sidebar h3 {
-  font-size: 12px;
-  color: #999;
-  margin-top: 25px;
-  text-transform: uppercase;
-}
-
-.sidebar a {
-  display: block;
-  padding: 10px 14px;
-  margin: 6px 0;
-  text-decoration: none;
-  color: #333;
-  border-radius: 10px;
-}
-
-.sidebar a.active {
-  background: linear-gradient(135deg, #ff4d4f, #ff7875);
-  color: white;
-}
-
-/* CONTENT */
-.main-content {
-  flex: 1;
-  padding: 35px;
-}
-
-/* CARD */
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-}
-
-/* SECTION FIX */
-.section {
-  display: none;
-}
-
-.section.active {
-  display: block;
-}
-
-/* DEFAULT SHOW */
-#profileSection {
-  display: block;
-}
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard | QuickConvert</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+  <script defer src="/js/lucide.min.js"></script>
 </head>
 
-<body>
+<body class="qc-dashboard-page">
+  <div class="qc-dashboard-shell">
+    <aside class="qc-sidebar" aria-label="Dashboard navigation">
+      <a class="qc-dashboard-brand" href="/">
+        <img src="/logo.png" alt="" width="32" height="32">
+        <span>QuickConvert</span>
+      </a>
 
-<!-- HEADER -->
-<div class="dashboard-header">
-  <div class="logo">QuickConvert</div>
+      <nav>
+        <p>Workspace</p>
+        <a href="#" onclick="showSection('overview')" id="linkOverview" class="active"><i data-lucide="layout-dashboard"></i> Overview</a>
+        <a href="#" onclick="showSection('profile')" id="linkProfile"><i data-lucide="user"></i> Profile</a>
+        <a href="#" onclick="showSection('security')" id="linkSecurity"><i data-lucide="shield-check"></i> Security</a>
+        <a href="#" onclick="showSection('teams')" id="linkTeams"><i data-lucide="users"></i> Teams</a>
 
-  <div class="header-actions">
-    <a href="/" class="home-btn">Home</a>
-    <div class="user-box">
-      👤 <span id="userEmail2"></span>
-    </div>
+        <p>Operations</p>
+        <a href="#" onclick="showSection('activity')" id="linkActivity"><i data-lucide="history"></i> Activity</a>
+        <a href="#" onclick="showSection('settings')" id="linkSettings"><i data-lucide="settings"></i> Settings</a>
+        <a href="#" onclick="showSection('plans')" id="linkPlans"><i data-lucide="badge-dollar-sign"></i> Plans</a>
+      </nav>
+    </aside>
+
+    <main class="qc-dashboard-main">
+      <header class="qc-dashboard-topbar">
+        <div>
+          <p class="qc-eyebrow">Dashboard</p>
+          <h1>Workspace</h1>
+        </div>
+        <div class="qc-dashboard-actions">
+          <a href="/" class="qc-secondary">Home</a>
+          <button onclick="logout()" class="qc-ghost-small" type="button">Logout</button>
+          <div class="qc-user-pill">
+            <i data-lucide="user"></i>
+            <span id="userEmail2">Loading...</span>
+          </div>
+        </div>
+      </header>
+
+      <section id="overviewSection" class="section qc-dash-section active">
+        <div class="qc-metric-grid">
+          <article>
+            <span><i data-lucide="file-stack"></i></span>
+            <p>Available tools</p>
+            <strong>10</strong>
+          </article>
+          <article>
+            <span><i data-lucide="users"></i></span>
+            <p>Teams</p>
+            <strong id="teamCount">0</strong>
+          </article>
+          <article>
+            <span><i data-lucide="shield"></i></span>
+            <p>Account status</p>
+            <strong>Active</strong>
+          </article>
+        </div>
+
+        <div class="qc-dashboard-grid">
+          <article class="card qc-dashboard-card">
+            <div class="qc-card-heading">
+              <div>
+                <p class="qc-eyebrow">Quick tools</p>
+                <h2>Start a common workflow</h2>
+              </div>
+            </div>
+            <div class="qc-quick-tool-grid">
+              <a href="/image-to-pdf"><i data-lucide="image"></i> Image to PDF</a>
+              <a href="/pdf-compressor"><i data-lucide="archive"></i> PDF Compressor</a>
+              <a href="/merge-pdf"><i data-lucide="files"></i> Merge PDF</a>
+              <a href="/image-resizer"><i data-lucide="maximize-2"></i> Image Resizer</a>
+            </div>
+          </article>
+
+          <article class="card qc-dashboard-card">
+            <div class="qc-card-heading">
+              <div>
+                <p class="qc-eyebrow">Account</p>
+                <h2>Profile snapshot</h2>
+              </div>
+            </div>
+            <dl class="qc-profile-list">
+              <div><dt>Name</dt><dd id="overviewName">Not set</dd></div>
+              <div><dt>Email</dt><dd id="overviewEmail">Loading...</dd></div>
+            </dl>
+          </article>
+        </div>
+      </section>
+
+      <section id="profileSection" class="section qc-dash-section">
+        <div class="card qc-dashboard-card">
+          <div class="qc-card-heading">
+            <div>
+              <p class="qc-eyebrow">Profile</p>
+              <h2>User information</h2>
+            </div>
+          </div>
+
+          <div class="qc-form-grid">
+            <label>
+              <span>Full name</span>
+              <input type="text" id="userName" autocomplete="name">
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" id="userEmail" disabled>
+            </label>
+          </div>
+
+          <button onclick="updateProfile()" class="qc-auth-submit qc-dashboard-submit" type="button">Update Profile</button>
+          <p id="updateMsg" class="qc-inline-status"></p>
+        </div>
+      </section>
+
+      <section id="securitySection" class="section qc-dash-section">
+        <div class="card qc-dashboard-card">
+          <div class="qc-card-heading">
+            <div>
+              <p class="qc-eyebrow">Security</p>
+              <h2>Change password</h2>
+            </div>
+          </div>
+
+          <form onsubmit="changePassword(event)" class="qc-form-grid">
+            <label>
+              <span>Current password</span>
+              <input type="password" id="currentPassword" autocomplete="current-password">
+            </label>
+            <label>
+              <span>New password</span>
+              <input type="password" id="newPassword" autocomplete="new-password">
+            </label>
+            <button type="submit" class="qc-auth-submit qc-dashboard-submit">Update Password</button>
+          </form>
+          <p id="passwordMsg" class="qc-inline-status"></p>
+        </div>
+      </section>
+
+      <section id="teamsSection" class="section qc-dash-section">
+        <div class="qc-card-heading qc-section-toolbar">
+          <div>
+            <p class="qc-eyebrow">Teams</p>
+            <h2>Collaborate with people you trust</h2>
+          </div>
+        </div>
+
+        <div class="card qc-dashboard-card">
+          <div class="qc-team-create">
+            <input id="teamName" placeholder="Enter team name">
+            <button onclick="createTeam()" class="qc-auth-submit qc-dashboard-submit" type="button">Create Team</button>
+          </div>
+        </div>
+
+        <div id="teamsList" class="qc-teams-grid"></div>
+      </section>
+
+      <section id="activitySection" class="section qc-dash-section">
+        <div class="card qc-dashboard-card qc-empty-state">
+          <i data-lucide="history"></i>
+          <h2>No recent activity yet</h2>
+          <p>File processing history can appear here as the platform expands.</p>
+        </div>
+      </section>
+
+      <section id="settingsSection" class="section qc-dash-section">
+        <div class="card qc-dashboard-card">
+          <div class="qc-card-heading">
+            <div>
+              <p class="qc-eyebrow">Settings</p>
+              <h2>Workspace preferences</h2>
+            </div>
+          </div>
+          <div class="qc-setting-list">
+            <label><input type="checkbox" checked> Prefer compact tool cards</label>
+            <label><input type="checkbox" checked> Show dashboard quick actions</label>
+            <label><input type="checkbox"> Send product update emails</label>
+          </div>
+        </div>
+      </section>
+
+      <section id="plansSection" class="section qc-dash-section">
+        <div class="card qc-dashboard-card qc-empty-state">
+          <i data-lucide="badge-dollar-sign"></i>
+          <h2>Current plan: Free</h2>
+          <p>Core file tools are available. Upgrade options can be added here when billing is ready.</p>
+        </div>
+      </section>
+    </main>
   </div>
-</div>
 
-<!-- MAIN -->
-<div class="dashboard-container">
+  <script>
+    const token = localStorage.getItem("token");
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <h3>My Account</h3>
-    <a href="#" onclick="showSection('profile')" id="linkProfile" class="active">Profile</a>
-    <a href="#" onclick="showSection('security')" id="linkSecurity">Security</a>
-    <a href="#" onclick="showSection('teams')" id="linkTeams">Teams</a>
-
-    <h3>Settings</h3>
-    <a href="#" onclick="showSection('tools')" id="linkTools">Tools</a>
-    <a href="#" onclick="showSection('workflows')" id="linkWorkflows">Workflows</a>
-
-    <h3>Billing</h3>
-    <a href="#" onclick="showSection('plans')" id="linkPlans">Plans</a>
-  </div>
-
-  <!-- CONTENT -->
-  <div class="main-content">
-
-    <h2>Dashboard</h2>
-
-    <!-- PROFILE -->
-    <div id="profileSection" class="section active">
-      <h1>Profile</h1>
-
-      <div class="card">
-        <h3>User Info</h3>
-
-        <label>Full Name</label><br>
-        <input type="text" id="userName" style="width:100%;padding:10px;margin:10px 0;"><br>
-
-        <label>Email</label><br>
-        <input type="text" id="userEmail" disabled style="width:100%;padding:10px;margin:10px 0;"><br>
-
-        <button onclick="updateProfile()">Update Profile</button>
-
-        <p id="updateMsg" style="color:green;margin-top:10px;"></p>
-      </div>
-    </div>
-
-    <!-- SECURITY -->
-    <div id="securitySection" class="section">
-      <h1>Security</h1>
-
-      <div class="card">
-        <h3>Change Password</h3>
-
-        <form onsubmit="changePassword(event)">
-  <input 
-  type="password" 
-  id="currentPassword" 
-  placeholder="Current Password"
-  autocomplete="current-password"
->
-
-<input 
-  type="password" 
-  id="newPassword" 
-  placeholder="New Password"
-  autocomplete="new-password"
->
-
-  <button type="submit">Update Password</button>
-</form>
-
-        <p id="passwordMsg"></p>
-      </div>
-    </div>
-
-    <!-- ✅ TEAMS FIXED -->
-    <div id="teamsSection" class="section">
-  <h1>Teams</h1>
-
-  <div class="card">
-    <h3>Create Team</h3>
-
-    <input 
-      id="teamName" 
-      placeholder="Enter team name"
-      style="width:70%;padding:10px;margin-right:10px;"
-    >
-
-    <button onclick="createTeam()">+ Create Team</button>
-  </div>
-
-  <div id="teamsList"></div>
-</div>
-
-    <!-- TOOLS -->
-    <div id="toolsSection" class="section">
-      <h1>Tools</h1>
-      <div class="card">Tool preferences</div>
-    </div>
-
-    <!-- WORKFLOWS -->
-    <div id="workflowsSection" class="section">
-      <h1>Workflows</h1>
-      <div class="card"><button>Create Workflow</button></div>
-    </div>
-
-    <!-- PLANS -->
-    <div id="plansSection" class="section">
-      <h1>Plans</h1>
-      <div class="card"><button>Upgrade</button></div>
-    </div>
-
-    <!-- LOGOUT -->
-    <div class="card">
-      <button onclick="logout()">Logout</button>
-    </div>
-
-  </div>
-</div>
-
-<script>
-
-const token = localStorage.getItem("token");
-
-if (!token) {
-  window.location.href = "/login";
-}
-
-async function loadUser() {
-  try {
-    const res = await fetch("/api/me", {
-      headers: { "Authorization": "Bearer " + token }
-    });
-
-    if (!res.ok) {
-      throw new Error("Auth failed");
+    if (!token) {
+      window.location.href = "/login";
     }
 
-    const data = await res.json();
+    async function loadUser() {
+      try {
+        const res = await fetch("/api/me", {
+          headers: { Authorization: "Bearer " + token }
+        });
 
-    document.getElementById("userEmail").value = data.email;
-    document.getElementById("userEmail2").textContent = data.email;
-    document.getElementById("userName").value = data.name || "";
+        if (!res.ok) throw new Error("Auth failed");
 
-  } catch (err) {
-    console.log("ERROR:", err);
+        const data = await res.json();
+        const name = data.name || "";
 
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  }
-}
-loadUser();
+        document.getElementById("userEmail").value = data.email || "";
+        document.getElementById("userEmail2").textContent = data.email || "Account";
+        document.getElementById("userName").value = name;
+        document.getElementById("overviewName").textContent = name || "Not set";
+        document.getElementById("overviewEmail").textContent = data.email || "Not available";
+      } catch (err) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
+    }
 
-function showSection(section) {
-  document.querySelectorAll(".section").forEach(sec => {
-    sec.classList.remove("active");
-  });
+    function showSection(section) {
+      document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+      document.querySelectorAll(".qc-sidebar a").forEach(link => link.classList.remove("active"));
 
-  document.querySelectorAll(".sidebar a").forEach(link => {
-    link.classList.remove("active");
-  });
+      document.getElementById(section + "Section")?.classList.add("active");
+      document.getElementById("link" + capitalize(section))?.classList.add("active");
 
-  document.getElementById(section + "Section").classList.add("active");
-  document.getElementById("link" + capitalize(section)).classList.add("active");
+      if (section === "teams" || section === "overview") {
+        loadTeams();
+      }
 
-  // 🔥 IMPORTANT FIX
-  if (section === "teams") {
-    loadTeams();
-  }
-}
+      if (window.lucide) lucide.createIcons();
+    }
 
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
-async function updateProfile() {
-  const name = document.getElementById("userName").value;
+    async function updateProfile() {
+      const name = document.getElementById("userName").value.trim();
+      const msg = document.getElementById("updateMsg");
 
-  await fetch("/api/auth/update", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify({ name })
-  });
+      const res = await fetch("/api/auth/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ name })
+      });
 
-  document.getElementById("updateMsg").textContent =
-    "Profile updated successfully ✅";
-}
+      msg.textContent = res.ok ? "Profile updated successfully." : "Unable to update profile.";
+      msg.className = res.ok ? "qc-inline-status success" : "qc-inline-status error";
 
-async function changePassword(e) {
-  e.preventDefault();
+      if (res.ok) {
+        document.getElementById("overviewName").textContent = name || "Not set";
+      }
+    }
 
-  const currentPassword = document.getElementById("currentPassword").value;
-  const newPassword = document.getElementById("newPassword").value;
+    async function changePassword(e) {
+      e.preventDefault();
 
-  const res = await fetch("/api/auth/change-password", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify({ currentPassword, newPassword })
-  });
+      const currentPassword = document.getElementById("currentPassword").value;
+      const newPassword = document.getElementById("newPassword").value;
+      const msg = document.getElementById("passwordMsg");
 
-  const data = await res.json();
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ currentPassword, newPassword })
+      });
 
-  document.getElementById("passwordMsg").textContent = data.message;
-}
-function logout() {
-  localStorage.removeItem("token");
-  window.location.href = "/";
-}
-async function createTeam() {
-  const name = document.getElementById("teamName").value;
+      const data = await res.json();
+      msg.textContent = data.message || data.msg || (res.ok ? "Password updated." : "Unable to update password.");
+      msg.className = res.ok ? "qc-inline-status success" : "qc-inline-status error";
+    }
 
-  const res = await fetch("/api/team/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify({ name })
-  });
+    function logout() {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
 
-  const data = await res.json();
+    async function createTeam() {
+      const input = document.getElementById("teamName");
+      const name = input.value.trim();
 
-  alert("Team created ✅");
+      if (!name) {
+        input.focus();
+        return;
+      }
 
-  loadTeams();
-}
+      const res = await fetch("/api/team/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ name })
+      });
 
+      if (res.ok) {
+        input.value = "";
+        loadTeams();
+      }
+    }
 
-async function loadTeams() {
-  const res = await fetch("/api/team/my", {
-    headers: { Authorization: "Bearer " + token }
-  });
+    async function loadTeams() {
+      try {
+        const res = await fetch("/api/team/my", {
+          headers: { Authorization: "Bearer " + token }
+        });
 
-  const teams = await res.json();
+        if (!res.ok) throw new Error("Unable to load teams");
 
-  const container = document.getElementById("teamsList");
-  container.innerHTML = "";
+        const teams = await res.json();
+        const count = document.getElementById("teamCount");
+        const container = document.getElementById("teamsList");
 
-  if (teams.length === 0) {
-    container.innerHTML = "<p>No teams yet 🚀</p>";
-    return;
-  }
+        if (count) count.textContent = teams.length;
+        if (!container) return;
 
-  teams.forEach(team => {
-    container.innerHTML += `
-      <div class="card">
+        container.innerHTML = "";
 
-        <h3>${team.name}</h3>
-        <p><b>Members:</b> ${team.members.length}</p>
+        if (!teams.length) {
+          container.innerHTML = `
+            <div class="card qc-dashboard-card qc-empty-state">
+              <i data-lucide="users"></i>
+              <h2>No teams yet</h2>
+              <p>Create a team to generate invite links and collaborate.</p>
+            </div>
+          `;
+          if (window.lucide) lucide.createIcons();
+          return;
+        }
 
-        <hr style="margin:15px 0;">
+        teams.forEach(team => {
+          const card = document.createElement("article");
+          card.className = "card qc-dashboard-card qc-team-card";
+          card.innerHTML = `
+            <div class="qc-card-heading">
+              <div>
+                <p class="qc-eyebrow">Team</p>
+                <h2>${escapeHTML(team.name)}</h2>
+              </div>
+              <span>${team.members.length} member${team.members.length === 1 ? "" : "s"}</span>
+            </div>
+            <div class="qc-team-invite">
+              <input id="invite-${team._id}" type="email" placeholder="Member email">
+              <button onclick="inviteMember('${team._id}')" class="qc-auth-submit qc-dashboard-submit" type="button">Invite</button>
+            </div>
+            <div id="link-${team._id}" class="qc-invite-result"></div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        const container = document.getElementById("teamsList");
+        if (container) {
+          container.innerHTML = "<p class='qc-inline-status error'>Unable to load teams.</p>";
+        }
+      }
+    }
 
-        <p><b>Invite Member</b></p>
+    async function inviteMember(teamId) {
+      const email = document.getElementById("invite-" + teamId).value.trim();
+      const target = document.getElementById("link-" + teamId);
 
-        <input 
-          id="invite-${team._id}" 
-          placeholder="Enter email"
-          style="width:60%;padding:8px;"
-        >
+      if (!email) {
+        target.innerHTML = "<p class='qc-inline-status error'>Enter an email first.</p>";
+        return;
+      }
 
-        <button onclick="inviteMember('${team._id}')">
-          Invite
-        </button>
+      const res = await fetch("/api/team/invite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify({ teamId, email })
+      });
 
-        <div id="link-${team._id}" style="margin-top:10px;"></div>
+      const data = await res.json();
 
-      </div>
-    `;
-  });
-}
-async function inviteMember(teamId) {
-  const email = document.getElementById("invite-" + teamId).value;
+      if (!res.ok || !data.inviteLink) {
+        target.innerHTML = "<p class='qc-inline-status error'>Unable to generate invite link.</p>";
+        return;
+      }
 
-  const res = await fetch("/api/team/invite", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify({ teamId, email })
-  });
+      target.innerHTML = `
+        <p class="qc-inline-status success">Invite link generated.</p>
+        <div class="qc-copy-row">
+          <input value="${data.inviteLink}" readonly>
+          <button type="button" onclick="navigator.clipboard.writeText('${data.inviteLink}')">Copy</button>
+        </div>
+      `;
+    }
 
-  const data = await res.json();
+    function escapeHTML(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
-  document.getElementById("link-" + teamId).innerHTML = `
-    <p style="color:green;">✅ Invite link generated</p>
+    Promise.all([loadUser(), loadTeams()]).then(() => {
+      if (window.lucide) lucide.createIcons();
+    });
 
-    <input 
-      value="${data.inviteLink}" 
-      readonly 
-      style="width:100%;padding:8px;"
-    >
-
-    <br><br>
-
-    <button onclick="navigator.clipboard.writeText('${data.inviteLink}')">
-      Copy Link
-    </button>
-
-    <button onclick="window.open('https://wa.me/?text=${encodeURIComponent(data.inviteLink)}')">
-      Share WhatsApp
-    </button>
-
-    <p style="font-size:12px;color:#666;margin-top:5px;">
-      Send this link to your friend to join the team
-    </p>
-  `;
-}
-
-loadTeams();
-</script>
-
+    window.addEventListener("load", () => {
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
 </body>
 </html>

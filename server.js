@@ -9,6 +9,7 @@ const path = require("path");
 const fs = require("fs");
 
 const passport = require("./config/passport");
+const User = require("./models/user");
 
 // ROUTES
 const authRoutes = require("./routes/auth");
@@ -20,9 +21,8 @@ const teamRoutes = require("./routes/team");
 // LIBS
 const sharp = require("sharp");
 const archiver = require("archiver");
-const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
 const mammoth = require("mammoth");
-const { PDFDocument } = require("pdf-lib");
+const { PDFDocument, StandardFonts, rgb } = require("pdf-lib");
 
 /* ================= MULTER ================= */
 
@@ -69,6 +69,7 @@ app.use("/api", otpRoutes);
 app.use("/api/reset", resetRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/team", teamRoutes);
 
 /* ================= PAGE ROUTES ================= */
@@ -88,6 +89,31 @@ app.get("/register", (req, res) =>
 app.get("/dashboard", (req, res) =>
   res.sendFile(path.join(__dirname, "public/pages/dashboard.html"))
 );
+
+const pageRoutes = {
+  "/image-to-pdf": "image-to-pdf.html",
+  "/compress-pdf": "compress-pdf.html",
+  "/merge-pdf": "merge-pdf.html",
+  "/split-pdf": "split-pdf.html",
+  "/pdf-to-jpg": "pdf-to-jpg.html",
+  "/pdf-to-png": "pdf-to-png.html",
+  "/pdf-to-word": "pdf-to-word.html",
+  "/word-to-pdf": "word-to-pdf.html",
+  "/pdf-compressor": "pdf-compressor.html",
+  "/image-resizer": "image-resizer.html",
+  "/resize-image": "image-resizer.html",
+  "/about": "about.html",
+  "/contact": "contact.html",
+  "/privacy": "privacy.html",
+  "/terms": "terms.html",
+  "/disclaimer": "disclaimer.html"
+};
+
+Object.entries(pageRoutes).forEach(([route, file]) => {
+  app.get(route, (req, res) => {
+    res.sendFile(path.join(__dirname, "public/pages", file));
+  });
+});
 
 // ✅ 🔥 VERY IMPORTANT (YOUR ISSUE FIXED HERE)
 app.get("/pages/join-team.html", (req, res) => {
@@ -109,15 +135,30 @@ app.get("/auth/google/callback",
     session: false
   }),
   (req, res) => {
-    const user = req.user;
+    const profile = req.user;
+    const email = profile.emails?.[0]?.value;
+    const name = profile.displayName || "";
 
-    const token = jwt.sign(
-      { email: user.emails[0].value },
+    if (!email) {
+      return res.redirect("/login");
+    }
+
+    User.findOneAndUpdate(
+      { email },
+      { $setOnInsert: { email, name, password: "", authProvider: "google" } },
+      { new: true, upsert: true }
+    ).then(user => {
+      const token = jwt.sign(
+      { id: user._id },
       process.env.JWT_SECRET || "secret123",
       { expiresIn: "7d" }
     );
 
     res.redirect(`/auth-success.html?token=${token}`);
+    }).catch(err => {
+      console.error("Google login error:", err);
+      res.redirect("/login");
+    });
   }
 );
 
@@ -129,25 +170,29 @@ app.get("/auth/google/callback",
 app.post("/convert", upload.single("file"), async (req, res) => {
   try {
     const pdfDoc = await PDFDocument.create();
+    const imageBytes = fs.readFileSync(req.file.path);
 
     const image =
       req.file.mimetype === "image/jpeg"
-        ? await pdfDoc.embedJpg(req.file.buffer)
-        : await pdfDoc.embedPng(req.file.buffer);
+        ? await pdfDoc.embedJpg(imageBytes)
+        : await pdfDoc.embedPng(imageBytes);
 
     const page = pdfDoc.addPage([image.width, image.height]);
     page.drawImage(image, { x: 0, y: 0 });
 
     const bytes = await pdfDoc.save();
+    fs.unlinkSync(req.file.path);
 
     res.set({
       "Content-Type": "application/pdf",
-      "Content-Disposition": "attachment"
+      "Content-Disposition": "attachment; filename=converted.pdf"
     });
 
     res.end(Buffer.from(bytes));
 
-  } catch {
+  } catch (err) {
+    console.error("Image to PDF error:", err);
+    if (req.file?.path && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
     res.status(500).send("Conversion failed");
   }
 });
@@ -312,6 +357,90 @@ app.post("/api/pdf-to-word", upload.single("file"), async (req, res) => {
     res.status(500).send("Conversion failed");
   }
 });
+
+/* ================= WORD → PDF ================= */
+
+app.post("/api/word-to-pdf", upload.single("file"), async (req, res) => {
+  try {
+    const result = await mammoth.extractRawText({ path: req.file.path });
+    const text = result.value?.trim() || "No readable text found.";
+
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const pageSize = [595.28, 841.89];
+    const margin = 54;
+    const fontSize = 11;
+    const lineHeight = 16;
+    const maxWidth = pageSize[0] - margin * 2;
+
+    let page = pdfDoc.addPage(pageSize);
+    let y = pageSize[1] - margin;
+
+    page.drawText("QuickConvert Word to PDF", {
+      x: margin,
+      y,
+      size: 16,
+      font: boldFont,
+      color: rgb(0.12, 0.12, 0.16)
+    });
+
+    y -= 28;
+
+    const wrapText = (line) => {
+      const words = line.split(/\s+/).filter(Boolean);
+      const lines = [];
+      let current = "";
+
+      words.forEach(word => {
+        const next = current ? `${current} ${word}` : word;
+        if (font.widthOfTextAtSize(next, fontSize) <= maxWidth) {
+          current = next;
+        } else {
+          if (current) lines.push(current);
+          current = word;
+        }
+      });
+
+      if (current) lines.push(current);
+      return lines.length ? lines : [""];
+    };
+
+    text.split(/\r?\n/).forEach(rawLine => {
+      wrapText(rawLine).forEach(line => {
+        if (y < margin) {
+          page = pdfDoc.addPage(pageSize);
+          y = pageSize[1] - margin;
+        }
+
+        page.drawText(line, {
+          x: margin,
+          y,
+          size: fontSize,
+          font,
+          color: rgb(0.18, 0.18, 0.22)
+        });
+
+        y -= line ? lineHeight : lineHeight / 2;
+      });
+    });
+
+    const bytes = await pdfDoc.save();
+    fs.unlinkSync(req.file.path);
+
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment; filename=converted.pdf"
+    });
+
+    res.end(Buffer.from(bytes));
+
+  } catch (err) {
+    console.error("Word to PDF error:", err);
+    if (req.file?.path && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+    res.status(500).send("Word to PDF conversion failed");
+  }
+});
 /* ================= IMAGE RESIZER ================= */
 
 app.post("/resize-image", upload.single("file"), async (req, res) => {
@@ -341,8 +470,8 @@ app.post("/resize-image", upload.single("file"), async (req, res) => {
 
 /* ================= FALLBACK (IMPORTANT FOR RENDER) ================= */
 
-// ✅ prevents "Cannot GET"
-app.get((req, res) => {
+// ✅ prevents "Cannot GET" — use a catch-all middleware to avoid path-to-regexp issues
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "public/pages/index.html"));
 });
 

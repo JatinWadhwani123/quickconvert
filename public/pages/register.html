@@ -1,176 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-P0J95EMTB3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-P0J95EMTB3');
-</script>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Create Account — QuickConvert</title>
-
-<link rel="stylesheet" href="../css/style.css">
-
-<style>
-
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: linear-gradient(120deg,#f5f6ff,#ffecec);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.register-card {
-  background: white;
-  padding: 40px;
-  border-radius: 18px;
-  width: 380px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-  animation: fadeIn .4s ease;
-}
-
-.register-card h2 {
-  margin: 0 0 8px;
-}
-
-.register-card p {
-  margin-bottom: 25px;
-  color: #666;
-}
-
-.input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 14px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 14px;
-}
-
-.input:focus {
-  outline: none;
-  border-color: #ff4d4d;
-}
-
-.btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: #ff4d4d;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
-  transition: .2s;
-}
-
-.btn:hover {
-  opacity: .9;
-}
-
-.status {
-  margin-top: 12px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.success { color: green; }
-.error { color: red; }
-
-.footer-link {
-  margin-top: 18px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.footer-link a {
-  color: #ff4d4d;
-  text-decoration: none;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-</style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P0J95EMTB3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-P0J95EMTB3");
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Account | QuickConvert</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+  <script defer src="/js/lucide.min.js"></script>
 </head>
 
-<body>
+<body class="qc-auth-page">
+  <main class="qc-auth-shell qc-auth-shell-reverse">
+    <aside class="qc-auth-aside" aria-label="QuickConvert workspace">
+      <div>
+        <p class="qc-eyebrow">Start free</p>
+        <h2>Create a workspace for faster file tasks.</h2>
+        <div class="qc-auth-benefits">
+          <span><i data-lucide="file-check"></i> Save account preferences</span>
+          <span><i data-lucide="layout-dashboard"></i> Access your dashboard</span>
+          <span><i data-lucide="users"></i> Invite team members</span>
+        </div>
+      </div>
+    </aside>
 
-<div class="register-card">
+    <section class="qc-auth-card" aria-labelledby="registerTitle">
+      <a class="qc-auth-brand" href="/">
+        <img src="/logo.png" alt="" width="34" height="34">
+        <span>QuickConvert</span>
+      </a>
 
-<h2>Create Account</h2>
-<p>Join QuickConvert and start converting instantly</p>
+      <div class="qc-auth-heading">
+        <p class="qc-eyebrow">New account</p>
+        <h1 id="registerTitle">Create your account</h1>
+        <p>Join QuickConvert and start managing PDF and image tasks from one clean workspace.</p>
+      </div>
 
-<input id="email" class="input" type="email" placeholder="Email">
-<input id="password" class="input" type="password" placeholder="Password">
+      <div class="field qc-field">
+        <input id="email" type="email" placeholder=" " autocomplete="email">
+        <label>Email</label>
+      </div>
 
-<button class="btn" onclick="register()">Create Account</button>
+      <div class="field qc-field">
+        <input id="password" type="password" placeholder=" " autocomplete="new-password">
+        <label>Password</label>
+      </div>
 
-<div id="status" class="status"></div>
+      <button class="qc-auth-submit" type="button" onclick="register()">Create Account</button>
+      <div id="status" class="status qc-status" role="status"></div>
 
-<div class="footer-link">
-Already have an account?
-<a href="/login">Login</a>
-</div>
+      <p class="qc-auth-footer">Already have an account? <a href="/login">Login</a></p>
+    </section>
+  </main>
 
-</div>
+  <script>
+    if (localStorage.getItem("token")) {
+      window.location.href = "/dashboard";
+    }
 
-<script>
+    async function register() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const status = document.getElementById("status");
 
-async function register() {
+      status.textContent = "Creating account...";
+      status.className = "status qc-status";
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const status = document.getElementById("status");
+      if (!email || !password) {
+        status.textContent = "Enter your email and password.";
+        status.className = "status qc-status error";
+        return;
+      }
 
-  status.textContent = "Creating account...";
-  status.className = "status";
+      try {
+        const res = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
 
-  try {
+        const data = await res.json();
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
+        if (!res.ok) throw new Error(data.msg || data.message || "Registration failed");
+
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+
+        status.textContent = "Account created. Redirecting...";
+        status.className = "status qc-status success";
+
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 800);
+      } catch (err) {
+        status.textContent = err.message || "Registration failed";
+        status.className = "status qc-status error";
+      }
+    }
+
+    window.addEventListener("load", () => {
+      if (window.lucide) lucide.createIcons();
     });
-
-    const data = await res.json();
-
-    if (!res.ok) throw new Error(data.message);
-
-    // auto login
-    localStorage.setItem("token", data.token);
-
-    status.textContent = "Account created! Redirecting...";
-    status.className = "status success";
-
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 1200);
-
-  } catch (err) {
-
-    status.textContent = err.message || "Registration failed";
-    status.className = "status error";
-
-  }
-
-}
-
-</script>
-
+  </script>
 </body>
 </html>

@@ -29,12 +29,19 @@ router.post("/register", async (req, res) => {
 
     const user = new User({
       email,
-      password: hash
+      password: hash,
+      authProvider: "local"
     });
 
     await user.save();
 
-    res.json({ msg: "User registered" });
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+
+    res.json({ msg: "User registered", token });
 
   } catch {
     res.status(500).json({ msg: "Server error" });
@@ -52,6 +59,9 @@ router.post("/login", async (req, res) => {
 
     if (!user)
       return res.status(400).json({ msg: "Invalid credentials" });
+
+    if (!user.password)
+      return res.status(400).json({ msg: "Please continue with Google for this account" });
 
     const match = await bcrypt.compare(password, user.password);
 
@@ -89,10 +99,15 @@ router.post("/2fa/login", async (req, res) => {
   try {
     const user = await User.findById(userId);
 
-    const verified = speakeasy.totp({
+    if (!user || !user.twoFactorSecret) {
+      return res.status(400).json({ message: "2FA is not configured" });
+    }
+
+    const verified = speakeasy.totp.verify({
       secret: user.twoFactorSecret,
       encoding: "base32",
-      token
+      token,
+      window: 1
     });
 
     if (!verified) {
@@ -138,19 +153,28 @@ router.post("/change-password", authMiddleware, async (req, res) => {
 // ================= 2FA SETUP =================
 
 router.get("/2fa/generate", authMiddleware, async (req, res) => {
-  const secret = speakeasy.generateSecret({ length: 20 });
+  try {
+    const secret = speakeasy.generateSecret({
+      length: 20,
+      name: "QuickConvert"
+    });
 
-  const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id);
 
-  user.twoFactorSecret = secret.base32;
-  await user.save();
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-  const qr = await QRCode.toDataURL(secret.otpauth_url);
+    user.twoFactorSecret = secret.base32;
+    await user.save();
 
-  res.json({
-    qr,
-    secret: secret.base32
-  });
+    const qr = await QRCode.toDataURL(secret.otpauth_url);
+
+    res.json({
+      qr,
+      secret: secret.base32
+    });
+  } catch {
+    res.status(500).json({ message: "Unable to generate 2FA setup" });
+  }
 });
 
 
@@ -159,36 +183,51 @@ router.get("/2fa/generate", authMiddleware, async (req, res) => {
 router.post("/2fa/verify", authMiddleware, async (req, res) => {
   const { token } = req.body;
 
-  const user = await User.findById(req.user.id);
+  try {
+    const user = await User.findById(req.user.id);
 
-  const verified = speakeasy.totp({
-    secret: user.twoFactorSecret,
-    encoding: "base32",
-    token
-  });
+    if (!user || !user.twoFactorSecret) {
+      return res.status(400).json({ message: "2FA setup not found" });
+    }
 
-  if (!verified) {
-    return res.status(400).json({ message: "Invalid OTP" });
+    const verified = speakeasy.totp.verify({
+      secret: user.twoFactorSecret,
+      encoding: "base32",
+      token,
+      window: 1
+    });
+
+    if (!verified) {
+      return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    user.twoFactorEnabled = true;
+    await user.save();
+
+    res.json({ message: "2FA enabled successfully" });
+  } catch {
+    res.status(500).json({ message: "2FA verification failed" });
   }
-
-  user.twoFactorEnabled = true;
-  await user.save();
-
-  res.json({ message: "2FA enabled successfully" });
 });
 
 
 // ================= 2FA DISABLE =================
 
 router.post("/2fa/disable", authMiddleware, async (req, res) => {
-  const user = await User.findById(req.user.id);
+  try {
+    const user = await User.findById(req.user.id);
 
-  user.twoFactorEnabled = false;
-  user.twoFactorSecret = null;
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-  await user.save();
+    user.twoFactorEnabled = false;
+    user.twoFactorSecret = "";
 
-  res.json({ message: "2FA disabled" });
+    await user.save();
+
+    res.json({ message: "2FA disabled" });
+  } catch {
+    res.status(500).json({ message: "Unable to disable 2FA" });
+  }
 });
 
 
@@ -205,7 +244,12 @@ router.get("/me", async (req, res) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id).select("-password");
+    const user = decoded.id
+      ? await User.findById(decoded.id).select("-password -twoFactorSecret")
+      : await User.findOne({ email: decoded.email }).select("-password -twoFactorSecret");
+
+    if (!user)
+      return res.status(404).json({ msg: "User not found" });
 
     res.json(user);
 

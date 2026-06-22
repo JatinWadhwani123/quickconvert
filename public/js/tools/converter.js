@@ -46,15 +46,22 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     uploadArea.classList.remove("drag-active");
 
-    const file = e.dataTransfer.files[0];
-    selectedFile = file;
+    const droppedFiles = Array.from(e.dataTransfer.files).filter(file =>
+      file.type.startsWith("image/")
+    );
 
     const dt = new DataTransfer();
-    dt.items.add(file);
+    droppedFiles.forEach(file => dt.items.add(file));
     fileInput.files = dt.files;
+    selectedFiles = droppedFiles;
 
-    uploadText.innerHTML = `📄 <strong>${file.name}</strong>`;
-    uploadSub.textContent = "Click to change file";
+    if (!selectedFiles.length) {
+      alert("Only images allowed");
+      return;
+    }
+
+    uploadText.innerHTML = `📄 <strong>${selectedFiles.length} image(s) selected</strong>`;
+    uploadSub.textContent = "Click to change files";
   });
 
   form.addEventListener("submit", async e => {

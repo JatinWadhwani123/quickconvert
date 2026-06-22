@@ -14,7 +14,27 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    default: ""
+  },
+  authProvider: {
+    type: String,
+    default: "local"
+  },
+  twoFactorEnabled: {
+    type: Boolean,
+    default: false
+  },
+  twoFactorSecret: {
+    type: String,
+    default: ""
+  },
+  resetOTP: {
+    type: String,
+    default: null
+  },
+  otpExpiry: {
+    type: Date,
+    default: null
   }
 
 }, { timestamps: true });

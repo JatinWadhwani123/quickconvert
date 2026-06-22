@@ -1,499 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login — QuickConvert</title>
-
-<style>
-
-/* ===== RESET ===== */
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:system-ui, -apple-system;
-}
-
-/* ===== LAYOUT ===== */
-
-body{
-display:flex;
-height:100vh;
-}
-
-/* LEFT */
-
-.left{
-width:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#fff;
-}
-
-/* RIGHT */
-
-.right{
-width:50%;
-background:linear-gradient(135deg,#f5f6fa,#e9ecf5);
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-/* ===== CARD ===== */
-
-.card{
-width:360px;
-}
-
-/* ===== LOGO ===== */
-
-.logo{
-font-size:26px;
-font-weight:700;
-text-align:center;
-margin-bottom:10px;
-}
-
-.sub{
-text-align:center;
-color:#666;
-margin-bottom:20px;
-}
-
-/* ===== SOCIAL ===== */
-
-.socials{
-display:flex;
-gap:10px;
-margin-bottom:15px;
-}
-
-.social-btn{
-flex:1;
-padding:10px;
-border-radius:8px;
-border:1px solid #ddd;
-background:#fff;
-cursor:pointer;
-font-size:13px;
-transition:.2s;
-}
-
-.social-btn:hover{
-background:#f5f5f5;
-}
-
-/* ===== DIVIDER ===== */
-
-.divider{
-text-align:center;
-margin:15px 0;
-color:#999;
-font-size:12px;
-}
-
-/* ===== FLOAT INPUT ===== */
-
-.field{
-position:relative;
-margin-bottom:14px;
-}
-
-.field input{
-width:100%;
-padding:14px 12px;
-border-radius:8px;
-border:1px solid #ccc;
-font-size:14px;
-}
-
-.field label{
-position:absolute;
-top:50%;
-left:12px;
-transform:translateY(-50%);
-font-size:13px;
-color:#888;
-pointer-events:none;
-transition:.2s;
-background:#fff;
-padding:0 4px;
-}
-
-.field input:focus{
-border-color:#ff4d4d;
-outline:none;
-}
-
-.field input:focus + label,
-.field input:not(:placeholder-shown) + label{
-top:-8px;
-font-size:11px;
-color:#ff4d4d;
-}
-
-/* ===== PASSWORD EYE ===== */
-
-.eye{
-position:absolute;
-right:10px;
-top:50%;
-transform:translateY(-50%);
-cursor:pointer;
-opacity:.6;
-}
-
-/* ===== OPTIONS ===== */
-
-.options{
-display:flex;
-justify-content:space-between;
-font-size:13px;
-margin-bottom:15px;
-}
-
-.options label{
-display:flex;
-gap:5px;
-cursor:pointer;
-}
-
-/* ===== BUTTON ===== */
-
-.btn{
-width:100%;
-padding:12px;
-border-radius:8px;
-border:none;
-background:#ff4d4d;
-color:white;
-font-size:15px;
-cursor:pointer;
-transition:.2s;
-}
-
-.btn:hover{
-background:#e53935;
-}
-
-/* ===== ERROR ===== */
-
-.error{
-color:#e53935;
-font-size:13px;
-margin-top:8px;
-display:none;
-}
-
-/* ===== FOOTER ===== */
-
-.footer{
-text-align:center;
-margin-top:15px;
-font-size:13px;
-}
-
-.footer a{
-color:#ff4d4d;
-text-decoration:none;
-}
-
-/* ===== OTP PANEL ===== */
-
-.otp-panel{
-margin-top:15px;
-padding:12px;
-border-radius:8px;
-background:#fafafa;
-border:1px solid #eee;
-display:none;
-}
-
-/* ===== RIGHT CONTENT ===== */
-
-.info{
-max-width:340px;
-}
-
-.info h2{
-font-size:24px;
-margin-bottom:10px;
-}
-
-.info p{
-color:#666;
-margin-bottom:15px;
-}
-
-.info li{
-margin-bottom:8px;
-}
-
-/* ===== MOBILE ===== */
-
-@media(max-width:768px){
-body{flex-direction:column;}
-.left,.right{width:100%;}
-.right{display:none;}
-}
-/* ===== GOOGLE LOGIN FIX ===== */
-
-.google-login-wrapper{
-display:flex;
-justify-content:center;
-margin-bottom:20px;
-}
-
-.google-login-btn{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-
-width:260px;
-padding:12px;
-
-border:1px solid #ddd;
-border-radius:8px;
-
-background:#fff;
-color:#333;
-
-font-size:14px;
-font-weight:500;
-
-text-decoration:none;
-cursor:pointer;
-}
-
-/* FIX BIG LOGO */
-.google-login-btn img{
-width:18px;
-height:18px;
-display:block;
-}
-
-/* REMOVE UNDERLINE */
-.google-login-btn span{
-display:inline-block;
-}
-
-.google-login-btn:hover{
-border-color:#bbb;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
-background:#fafafa;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | QuickConvert</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+  <script defer src="/js/lucide.min.js"></script>
 </head>
 
-<body>
+<body class="qc-auth-page">
+  <main class="qc-auth-shell">
+    <section class="qc-auth-card" aria-labelledby="loginTitle">
+      <div id="loginPanel" class="qc-login-panel">
+        <a class="qc-auth-brand" href="/">
+          <img src="/logo.png" alt="" width="34" height="34">
+          <span>QuickConvert</span>
+        </a>
 
-<!-- LEFT -->
-<div class="left">
+        <div class="qc-auth-heading">
+          <p class="qc-eyebrow">Account access</p>
+          <h1 id="loginTitle">Welcome back</h1>
+          <p>Sign in to manage your workspace, profile, teams, and file workflows.</p>
+        </div>
 
-<div class="card">
+        <a href="/auth/google" class="qc-google-btn">
+          <span class="qc-google-mark">G</span>
+          Continue with Google
+        </a>
 
-<div class="logo">⚡ QuickConvert</div>
-<div class="sub">Login to your account</div>
+        <div class="qc-divider"><span>or use email</span></div>
 
-<!-- SOCIAL -->
- <div class="google-login-wrapper">
-  <a href="/auth/google" class="google-login-btn">
-    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
-    <span>Continue with Google</span>
-  </a>
-</div>
+        <div class="field qc-field">
+          <input id="email" type="email" placeholder=" " autocomplete="email">
+          <label>Email</label>
+        </div>
 
+        <div class="field qc-field">
+          <input id="password" type="password" placeholder=" " autocomplete="current-password">
+          <label>Password</label>
+          <button class="qc-eye" type="button" onclick="togglePass()" aria-label="Show or hide password">
+            <i data-lucide="eye"></i>
+          </button>
+        </div>
 
-<div class="divider">or</div>
+        <div class="qc-auth-options">
+          <label><input type="checkbox"> Remember me</label>
+          <button type="button" onclick="openOTP()">Forgot password?</button>
+        </div>
 
+        <button class="qc-auth-submit" type="button" onclick="login()">Login</button>
+        <p class="qc-auth-footer">New to QuickConvert? <a href="/register">Create an account</a></p>
+      </div>
 
-<!-- EMAIL -->
-<div class="field">
-<input id="email" placeholder=" " />
-<label>Email</label>
-</div>
+      <div id="otpPanel" class="otp-panel qc-otp-panel" hidden>
+        <a class="qc-auth-brand" href="/">
+          <img src="/logo.png" alt="" width="34" height="34">
+          <span>QuickConvert</span>
+        </a>
+        <h2>Password reset</h2>
+        <p class="qc-reset-copy">Enter your account email, request an OTP, then set a new password.</p>
+        <div class="field qc-field">
+          <input id="otpEmail" type="email" placeholder=" " autocomplete="email">
+          <label>Email</label>
+        </div>
+        <button class="qc-auth-submit qc-secondary-submit" type="button" onclick="requestOTP()">Send OTP</button>
 
-<!-- PASSWORD -->
-<div class="field">
-<input id="password" type="password" placeholder=" " />
-<label>Password</label>
-<span class="eye" onclick="togglePass()">👁</span>
-</div>
+        <div class="field qc-field">
+          <input id="otpCode" placeholder=" " inputmode="numeric">
+          <label>Enter OTP</label>
+        </div>
 
-<!-- OPTIONS -->
-<div class="options">
-<label><input type="checkbox"> Remember me</label>
-<span onclick="openOTP()" style="color:#ff4d4d;cursor:pointer">Forgot?</span>
-</div>
+        <div class="field qc-field">
+          <input id="newPass" type="password" placeholder=" " autocomplete="new-password">
+          <label>New password</label>
+        </div>
 
-<!-- BUTTON -->
-<button class="btn" onclick="login()">Login</button>
+        <button class="qc-auth-submit" type="button" onclick="verifyOTP()">Reset Password</button>
+        <button class="qc-reset-back" type="button" onclick="closeOTP()">Back to login</button>
+      </div>
 
-<div id="errorBox" class="error"></div>
+      <div id="errorBox" class="error qc-error" role="alert"></div>
+    </section>
 
-<!-- OTP PANEL -->
-<div id="otpPanel" class="otp-panel">
+    <aside class="qc-auth-aside" aria-label="QuickConvert benefits">
+      <div>
+        <p class="qc-eyebrow">Professional file tools</p>
+        <h2>Keep document work moving without desktop software.</h2>
+        <div class="qc-auth-benefits">
+          <span><i data-lucide="zap"></i> Fast file workflows</span>
+          <span><i data-lucide="shield-check"></i> Privacy-aware processing</span>
+          <span><i data-lucide="users"></i> Team-ready dashboard</span>
+        </div>
+      </div>
+    </aside>
+  </main>
 
-<b>Password Reset</b>
-
-<div class="field">
-<input id="otpEmail" placeholder=" " />
-<label>Email</label>
-</div>
-
-<button class="btn" onclick="requestOTP()">Send OTP</button>
-
-<div class="field">
-<input id="otpCode" placeholder=" " />
-<label>Enter OTP</label>
-</div>
-
-<div class="field">
-<input id="newPass" placeholder=" " />
-<label>New Password</label>
-</div>
-
-<button class="btn" onclick="verifyOTP()">Reset Password</button>
-
-</div>
-
-<div class="footer">
-New here? <a href="/register">Create account</a>
-</div>
-
-</div>
-
-</div>
-
-<!-- RIGHT -->
-<div class="right">
-
-<div class="info">
-
-<h2>Work smarter with QuickConvert</h2>
-
-<p>
-Convert, compress and manage PDFs easily.
-Fast, secure and accessible anywhere.
-</p>
-
-<ul>
-<li>⚡ Fast processing</li>
-<li>🔒 Secure uploads</li>
-<li>🌍 Works everywhere</li>
-</ul>
-
-</div>
-
-</div>
-
-<script>
-
-/* ===== EXISTING LOGIC ===== */
-
-if (localStorage.getItem("token")) {
-  window.location.href = "/dashboard";
-}
-
-function togglePass(){
-const p=document.getElementById("password");
-p.type=p.type==="password"?"text":"password";
-}
-
-function showError(msg){
-const box=document.getElementById("errorBox");
-box.innerText=msg;
-box.style.display="block";
-}
-
-async function login() {
-  console.log("🔥 LOGIN BUTTON CLICKED");
-
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
-    });
-
-    const data = await res.json();
-
-    console.log("🔥 RESPONSE:", data);
-
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-
-      alert("Login success ✅");
-
+  <script>
+    if (localStorage.getItem("token")) {
       window.location.href = "/dashboard";
-    } else {
-      alert(data.msg || "Login failed ❌");
     }
 
-  } catch (err) {
-    console.error("🔥 ERROR:", err);
-    alert("Server error");
-  }
-}
-/* OTP */
+    function togglePass() {
+      const passwordInput = document.getElementById("password");
+      passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    }
 
-function openOTP(){
-document.getElementById("otpPanel").style.display="block";
-}
+    function showError(message) {
+      const box = document.getElementById("errorBox");
+      box.innerText = message;
+      box.style.display = "block";
+    }
 
-async function requestOTP(){
-const email=document.getElementById("otpEmail").value.trim();
-if(!email){alert("Enter email");return;}
+    async function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-await fetch("/api/reset/send-otp",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({email})
-});
+      if (!email || !password) {
+        showError("Enter your email and password.");
+        return;
+      }
 
-alert("OTP sent");
-}
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
 
-async function verifyOTP(){
+        const data = await res.json();
 
-const email=document.getElementById("otpEmail").value.trim();
-const otp=document.getElementById("otpCode").value.trim();
-const pass=document.getElementById("newPass").value.trim();
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+          window.location.href = "/dashboard";
+          return;
+        }
 
-if(!email||!otp||!pass){
-alert("Fill all fields");
-return;
-}
+        showError(data.msg || "Login failed. Please check your credentials.");
+      } catch (err) {
+        showError("Server error. Please try again.");
+      }
+    }
 
-const res=await fetch("/api/reset/verify-reset",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({email,otp,newPassword:pass})
-});
+    function openOTP() {
+      document.getElementById("loginPanel").hidden = true;
+      document.getElementById("otpPanel").hidden = false;
+      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("otpEmail").focus();
+    }
 
-if(res.ok){
-alert("Password reset");
-document.getElementById("otpPanel").style.display="none";
-}else{
-alert("Invalid OTP");
-}
+    function closeOTP() {
+      document.getElementById("otpPanel").hidden = true;
+      document.getElementById("loginPanel").hidden = false;
+      document.getElementById("errorBox").style.display = "none";
+      document.getElementById("email").focus();
+    }
 
-}
+    async function requestOTP() {
+      const email = document.getElementById("otpEmail").value.trim();
 
-</script>
+      if (!email) {
+        showError("Enter your account email first.");
+        return;
+      }
 
+      const res = await fetch("/api/reset/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      showError(res.ok ? "OTP sent. Check your email." : "Unable to send OTP.");
+    }
+
+    async function verifyOTP() {
+      const email = document.getElementById("otpEmail").value.trim();
+      const otp = document.getElementById("otpCode").value.trim();
+      const pass = document.getElementById("newPass").value.trim();
+
+      if (!email || !otp || !pass) {
+        showError("Fill all password reset fields.");
+        return;
+      }
+
+      const res = await fetch("/api/reset/verify-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp, newPassword: pass })
+      });
+
+      if (res.ok) {
+        closeOTP();
+        showError("Password reset successful. You can log in now.");
+      } else {
+        showError("Invalid OTP or reset request.");
+      }
+    }
+
+    window.addEventListener("load", () => {
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
 </body>
 </html>
